@@ -1,0 +1,33 @@
+### Changes are required ###
+
+# Rclone remotes
+[remote]
+# List of remote storages that rclone will check if the file exists there before attempting to download the file
+downloadSource = ["source1:", "source2:", "source3:"]
+
+# List of remote storages that rclone will upload the hardsubbed file to
+uploadDestination = ["destination1:", "destination2:", "destination3:"]
+
+############################################
+
+### Changes are optional ###
+
+# For notification module
+[notification]
+discordWebhooks = [
+  { name = "", url = "https://discordapp.com/..." },
+  { name = "", url = "https://discordapp.com/..." },
+  { name = "", url = "https://discordapp.com/..." },
+]
+
+# To display Shiden's status in a Discord bot's activity
+[discord_bot]
+token = ""
+
+# Flags when running child processes
+[flags]
+rclone = "--progress --stats-one-line --stats 1s --bwlimit 20M -v --config conf/rclone.conf"
+
+# ExpressJS settings
+[express]
+port = 64000

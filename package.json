@@ -1,0 +1,27 @@
+{
+  "name": "shiden",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "test": "test/test.suite.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wizo06/Shiden.git"
+  },
+  "author": "wizo06",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wizo06/Shiden/issues"
+  },
+  "homepage": "https://github.com/wizo06/Shiden#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "js-yaml": "^3.13.1",
+    "moment": "^2.24.0",
+    "request": "^2.88.0",
+    "toml-require": "^1.2.0"
+  }
+}

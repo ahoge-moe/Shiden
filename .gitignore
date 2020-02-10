@@ -1,0 +1,17 @@
+# Ignore binaries
+bin/
+
+# Ignore all files in conf/
+conf/*
+
+# Except template files
+!conf/template_*
+
+# Ignore node_modules/
+node_modules/
+
+# Ignore temp folders
+temp/
+
+# Ignore queue file
+queue.json
