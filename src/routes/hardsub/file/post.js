@@ -47,18 +47,17 @@ module.exports = router.post('/hardsub/file', async (req, res) => {
     logger.success(`*************************`);
 
     // If queue is empty, push payload onto queue and start processing the job right away
-    if (await queueHandler.isEmpty()) {
-      await queueHandler.push(payload);
+    if (queueHandler.isEmpty()) {
+      queueHandler.push(payload);
       processNextJob();
     }
     // else, simply push payload onto queue
     else {
-      await queueHandler.push(payload);
+      queueHandler.push(payload);
     }
   }
   catch (e) {
     if (e === 'JSONparseSyntaxError') return res.status(400).send(e);
-    if (e === 'QueuePushError') return logger.error('Failed to push payload to queue');
     return logger.error('Unknown error');
   }
 });
