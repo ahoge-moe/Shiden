@@ -10,7 +10,7 @@ require('toml-require').install({ toml: require('toml') });
 // Import custom modules
 const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js'));
-const CONFIG = require(path.join(process.cwd(), 'src/utils/config.js'));
+const CONFIG = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 
 // Import routes
 const hardsubFilePost = require(path.join(process.cwd(), 'src/routes/hardsub/file/post.js'));
