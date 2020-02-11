@@ -11,8 +11,6 @@ const path = require('path');
 // master will be set to TRUE if current git branch name is 'master'
 const master = ('master' === fs.readFileSync(path.join(process.cwd(), '.git/HEAD'), { encoding: 'utf8' }).match(/ref: refs\/heads\/([^\n]+)/)[1]);
 
-const verbosity = process.argv.slice(2).includes('--quiet');
-
 module.exports = logger = {
   colors: {
     reset: '\x1b[0m',
@@ -49,32 +47,32 @@ module.exports = logger = {
   success: (data, color = '') => {
     const timestamp = moment().format('MMMDD|HH:mm:ss');
     const iconColor = logger.colors.bright + logger.colors.green;
-    console.log(`[${timestamp}][SUCCESS]: [${logger.getCallingDetails()}]:${iconColor}✔ ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
+    console.log(`[${timestamp}][${logger.getCallingDetails()}]:${iconColor}✔ ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
   },
 
   info: (data, color = '') => {
     const timestamp = moment().format('MMMDD|HH:mm:ss');
     const iconColor = logger.colors.bright + logger.colors.cyan;
-    console.log(`[${timestamp}][INFO]: [${logger.getCallingDetails()}]:${iconColor}i ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
+    console.log(`[${timestamp}][${logger.getCallingDetails()}]:${iconColor}i ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
   },
 
   debug: (data, color = '') => {
     const timestamp = moment().format('MMMDD|HH:mm:ss');
     const iconColor = logger.colors.bright + logger.colors.yellow;
-    (master || verbosity) ? '' :
-      console.log(`[${timestamp}][DEBUG]: [${logger.getCallingDetails()}]:${iconColor}! ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
+    (master) ? '' :
+      console.log(`[${timestamp}][${logger.getCallingDetails()}]:${iconColor}! ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
   },
 
   warning: (data, color = '') => {
     const timestamp = moment().format('MMMDD|HH:mm:ss');
     const iconColor = logger.colors.bright + logger.colors.yellow;
-    console.log(`[${timestamp}][WARNING]: [${logger.getCallingDetails()}]:${iconColor}⚠ ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
+    console.log(`[${timestamp}][${logger.getCallingDetails()}]:${iconColor}⚠ ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
   },
 
   error: (data, color = '') => {
     const timestamp = moment().format('MMMDD|HH:mm:ss');
     const iconColor = logger.colors.bright + logger.colors.red;
-    console.log(`[${timestamp}][ERROR]: [${logger.getCallingDetails()}]:${iconColor}✖ ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
+    console.log(`[${timestamp}][${logger.getCallingDetails()}]:${iconColor}✖ ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
   },
 
 };
