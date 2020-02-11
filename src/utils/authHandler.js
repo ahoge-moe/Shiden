@@ -15,7 +15,12 @@ const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const master = ('master' === fs.readFileSync(path.join(process.cwd(), '.git/HEAD'), { encoding: 'utf8' }).match(/ref: refs\/heads\/([^\n]+)/)[1]);
 
 module.exports = authHandler = {
-  authorize: tokenFromRequest => {
+  /**
+   * Checks if token from incoming request is authorized
+   * @param {{string}} tokenFromRequest
+   * @return {{boolean}}
+   */
+  isAuthorized: tokenFromRequest => {
     try {
       let authPath;
       if (master) authPath = path.join(process.cwd(), 'conf/user_auth.yml');
