@@ -35,7 +35,7 @@ module.exports = rclone = {
         // If file not found in any source, reject
         if (!validSource) {
           logger.error(`No sources contained the file, cancelling operation`);
-          return reject(3);
+          return reject(600);
         }
 
         const jobFile = pathHandler.parseRclonePaths(validSource, job.sourceFile);
@@ -51,7 +51,7 @@ module.exports = rclone = {
       catch (e) {
         logger.error(e);
         logger.error(`rclone failed during download`);
-        return reject(3);
+        return reject(600);
       }
     });
   },
@@ -107,7 +107,7 @@ module.exports = rclone = {
       catch (e) {
         Logger.error(e);
         logger.error(`rclone failed during upload`);
-        return reject(5);
+        return reject(601);
       }
     });
   },

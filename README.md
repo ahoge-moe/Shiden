@@ -50,3 +50,10 @@ npm start
 | audioIndex | No | Number | First available | Stream index that will be used for audio |
 | subIndex | No | Number | First available | Stream index that will be used for subtitle |
 | fontStyle | No | String | NotoSansJP-Medium | Font style used for text based hardsub |
+
+# Error codes
+
+| Code | Description |
+| --- | --- |
+| 600 | Rclone failed to download |
+| 601 | Rclone failed to upload |

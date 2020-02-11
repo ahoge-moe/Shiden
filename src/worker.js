@@ -1,6 +1,6 @@
 /**
  * @module worker
- * This module handles jobs from the queue
+ * This module handles processing jobs from the queue
  */
 
 // Import node modules
@@ -42,9 +42,8 @@ module.exports = processNextJob = async () => {
     if (!queueHandler.isEmpty()) processNextJob();
   }
   catch (e) {
-    if (e === 3) logger.error('Download failed');
-    if (e === 4) logger.error('Transcode failed');
-    if (e === 5) logger.error('Upload failed');
+    if (e === 600) logger.error('Download failed');
+    if (e === 601) logger.error('Upload failed');
 
     // Step 4 Notify
     await notification.send(job);

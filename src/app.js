@@ -1,5 +1,7 @@
 /**
- * @fileoverview An ExpressJS app that exposes routes.
+ * @module app
+ * This module is an Express app that exposes routes 
+ * and push incoming payloads onto the queue
  */
 
 // Import node modules
