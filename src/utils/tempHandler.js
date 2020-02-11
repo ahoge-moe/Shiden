@@ -1,5 +1,5 @@
 /**
- * @module temp
+ * @module tempHandler
  * This module handles the "temp" folder
  */
 

@@ -27,7 +27,7 @@ app.use(express.text({ type: 'application/json' }));
 // Define routes
 app.use(hardsubFilePost);
 
-app.listen(CONFIG.express.port, async () => {
+app.listen(CONFIG.express.port, () => {
   try {
     logger.info(`Running on http://localhost:${CONFIG.express.port}/`);
 

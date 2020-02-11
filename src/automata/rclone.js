@@ -39,10 +39,10 @@ module.exports = rclone = {
         }
 
         const jobFile = pathHandler.parseRclonePaths(validSource, job.sourceFile);
-        const destination = tempHandler.getTempFolderPath();
+        const tempFolderPath = tempHandler.getTempFolderPath();
 
         logger.info(`Downloading ${jobFile}`);
-        const command = `${pathHandler.rcloneBinary} copy "${jobFile}" "${destination}" ${CONFIG.flags.rclone}`;
+        const command = `${pathHandler.rcloneBinary} copy "${jobFile}" "${tempFolderPath}" ${CONFIG.flags.rclone}`;
         await Promisefied.exec(command);
 
         logger.success(`Download completed`);
@@ -90,9 +90,9 @@ module.exports = rclone = {
   upload: job => {
     return new Promise(async (resolve, reject) => {
       try {
-        const tempPath = tempHandler.getTempFolderPath();
+        const tempFolderPath = tempHandler.getTempFolderPath();
         const ext = path.extname(job.sourceFile);
-        const transcodedFile = path.join(tempPath, path.basename(job.sourceFile.replace(ext, '.mp4')));
+        const transcodedFile = path.join(tempFolderPath, path.basename(job.sourceFile.replace(ext, '.mp4')));
 
         for (remoteName of CONFIG.remote.uploadDestination) {
           const destination = pathHandler.parseRclonePaths(remoteName, job.destFolder);

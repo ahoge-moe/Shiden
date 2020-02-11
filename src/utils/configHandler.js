@@ -1,5 +1,5 @@
 /**
- * @module config
+ * @module configHandler
  * This module handles loading config file
  */
 

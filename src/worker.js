@@ -1,3 +1,8 @@
+/**
+ * @module worker
+ * This module handles jobs from the queue
+ */
+
 // Import node modules
 const path = require('path');
 
@@ -6,6 +11,7 @@ const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js'));
 const rclone = require(path.join(process.cwd(), 'src/automata/rclone.js'));
 const tempHandler = require(path.join(process.cwd(), 'src/utils/tempHanlder.js'));
+const pipeline = require(path.join(process.cwd(), 'src/pipeline.js'));
 
 module.exports = processNextJob = async () => {
   try {
@@ -18,7 +24,7 @@ module.exports = processNextJob = async () => {
 
     // Step 2 Hardsub
     logger.info(['[2/4] Transcoding'])
-    await transcode.x264(job);
+    await pipeline.x264(job);
 
     // Step 3 Upload
     await rclone.upload(job);
