@@ -16,6 +16,7 @@ module.exports = processNextJob = async () => {
     await rclone.download(job);
 
     // Step 2 Hardsub
+    logger.info(['[2/4] Transcoding'])
     await transcode.x264(job);
 
     // Step 3 Upload
