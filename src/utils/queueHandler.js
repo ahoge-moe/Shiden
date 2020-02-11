@@ -55,6 +55,10 @@ module.exports = queueHandler = {
         return true;
       }
     }
+    else {
+      logger.debug('Queue file does not exist');
+      return true;
+    }
   },
 
   /**
