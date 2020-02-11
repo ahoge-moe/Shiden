@@ -6,7 +6,6 @@ const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js'));
 
 module.exports = processNextJob = () => {
-  logger.debug('Processing next job');
   // Step 1 Download
   // Step 2 Hardsub
   // Step 3 Upload
