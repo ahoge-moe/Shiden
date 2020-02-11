@@ -5,7 +5,7 @@ const path = require('path');
 const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js'));
 const rclone = require(path.join(process.cwd(), 'src/automata/rclone.js'));
-const tempHandler = require(path.join(process.cwd(), 'src/utils/temp.js'));
+const tempHandler = require(path.join(process.cwd(), 'src/utils/tempHanlder.js'));
 
 module.exports = processNextJob = async () => {
   try {
