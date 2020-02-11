@@ -5,5 +5,5 @@ module.exports = processNextJob = () => {
   // Step 4 Notify
 
   // Check if queue has jobs and recursively process next job
-  if (!(await queueHandler.isEmpty())) processNextJob();
+  if (!queueHandler.isEmpty()) processNextJob();
 };

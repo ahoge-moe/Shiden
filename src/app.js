@@ -31,10 +31,10 @@ app.listen(CONFIG.express.port, async () => {
     logger.info(`Running on http://localhost:${CONFIG.express.port}/`);
 
     // If "--clean" flag is passed, remove queue file
-    if (process.argv.slice(2).includes('--clean')) await queueHandler.wipe();
+    if (process.argv.slice(2).includes('--clean')) queueHandler.wipe();
 
     // If queue has jobs, start processing right away
-    if (!(await queueHandler.isEmpty())) processNextJob();
+    if (!queueHandler.isEmpty()) processNextJob();
   }
   catch (e) {
     logger.error(e);
