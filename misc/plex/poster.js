@@ -16,8 +16,8 @@ const Anilist = require(path.join(process.cwd(), 'src/shared/automata/anilist.js
 const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 const Temp = require(path.join(process.cwd(), 'src/utils/temp.js'));
-const Paths = require(path.join(process.cwd(), 'src/utils/paths.js'));
-const { remote } = require(path.join(process.cwd(), 'src/utils/config.js'));
+const pathHandler = require(path.join(process.cwd(), 'src/utils/pathHandler.js'));
+const { remote } = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 
 const REMOTE = (process.argv[2]) ? process.argv[2] : `${remote.plex}Pending`;
 
@@ -25,13 +25,13 @@ const REMOTE = (process.argv[2]) ? process.argv[2] : `${remote.plex}Pending`;
   try {
     const tempPath = await Temp.getPlexTempFolderPath();
 
-    let command = `${Paths.rclonePath} lsf "${REMOTE}" --dirs-only -d=false`;
+    let command = `${pathHandler.rcloneBinary} lsf "${REMOTE}" --dirs-only -d=false`;
     let response = await promisefied.exec(command);
     const shows = response.split('\n').slice(0, -1);
     logger.info(`shows size: ${shows.length}`, logger.Colors.green);
 
     // Poster
-    command = `${Paths.rclonePath} lsf "${REMOTE}" -R --files-only --include "poster.*"`;
+    command = `${pathHandler.rcloneBinary} lsf "${REMOTE}" -R --files-only --include "poster.*"`;
     response = await promisefied.exec(command);
     let showsWithPoster = response.split('\n').slice(0, -1);
     showsWithPoster = showsWithPoster.map(line => line.split('/')[0]);
@@ -52,7 +52,7 @@ const REMOTE = (process.argv[2]) ? process.argv[2] : `${remote.plex}Pending`;
         await promisefied.exec(command);
 
         // Upload poster
-        command = `${Paths.rclonePath} copyto "${path.join(tempPath, coverImageFileName)}"`;
+        command = `${pathHandler.rcloneBinary} copyto "${path.join(tempPath, coverImageFileName)}"`;
         command += ` "${REMOTE}/${anilistName}/poster${path.extname(coverImageFileName)}"`;
         logger.debug(`Uploading ${coverImageFileName}`);
         await promisefied.exec(command);
@@ -67,7 +67,7 @@ const REMOTE = (process.argv[2]) ? process.argv[2] : `${remote.plex}Pending`;
     }
 
     // Background
-    command = `${Paths.rclonePath} lsf "${REMOTE}" -R --files-only --include "background.*"`;
+    command = `${pathHandler.rcloneBinary} lsf "${REMOTE}" -R --files-only --include "background.*"`;
     response = await promisefied.exec(command);
     let showsWithBackground = response.split('\n').slice(0, -1);
     showsWithBackground = showsWithBackground.map(line => line.split('/')[0]);
@@ -89,7 +89,7 @@ const REMOTE = (process.argv[2]) ? process.argv[2] : `${remote.plex}Pending`;
           await promisefied.exec(command);
 
           // Upload background
-          command = `${Paths.rclonePath} copyto "${path.join(tempPath, bannerImageFileName)}"`;
+          command = `${pathHandler.rcloneBinary} copyto "${path.join(tempPath, bannerImageFileName)}"`;
           command += ` "${REMOTE}/${anilistName}/background${path.extname(bannerImageFileName)}"`;
           logger.debug(`Uploading ${bannerImageFileName}`);
           await promisefied.exec(command);
@@ -106,7 +106,7 @@ const REMOTE = (process.argv[2]) ? process.argv[2] : `${remote.plex}Pending`;
     }
 
     // Banner
-    command = `${Paths.rclonePath} lsf "${REMOTE}" -R --files-only --include "banner.*"`;
+    command = `${pathHandler.rcloneBinary} lsf "${REMOTE}" -R --files-only --include "banner.*"`;
     response = await promisefied.exec(command);
     let showsWithBanner = response.split('\n').slice(0, -1);
     showsWithBanner = showsWithBanner.map(line => line.split('/')[0]);
@@ -128,7 +128,7 @@ const REMOTE = (process.argv[2]) ? process.argv[2] : `${remote.plex}Pending`;
           await promisefied.exec(command);
 
           // Upload background
-          command = `${Paths.rclonePath} copyto "${path.join(tempPath, bannerImageFileName)}"`;
+          command = `${pathHandler.rcloneBinary} copyto "${path.join(tempPath, bannerImageFileName)}"`;
           command += ` "${REMOTE}/${anilistName}/banner${path.extname(bannerImageFileName)}"`;
           logger.debug(`Uploading ${bannerImageFileName}`);
           await promisefied.exec(command);

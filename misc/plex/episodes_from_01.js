@@ -9,8 +9,8 @@ const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 
 // Import config
-const Paths = require(path.join(process.cwd(), 'src/utils/paths.js'));
-const { remote } = require(path.join(process.cwd(), 'src/utils/config.js'));
+const pathHandler = require(path.join(process.cwd(), 'src/utils/pathHandler.js'));
+const { remote } = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 
 /**
  * @todo
@@ -19,7 +19,7 @@ const SHOW = 'Beatless ~ ビートレス [anidb-13500]';
 
 (async () => {
   try {
-    const command = `${Paths.rclonePath} lsf "${remote.plex}Premiered/${SHOW}" --files-only --include "*.{mkv,mp4}"`;
+    const command = `${pathHandler.rcloneBinary} lsf "${remote.plex}Premiered/${SHOW}" --files-only --include "*.{mkv,mp4}"`;
     const response = await promisefied.exec(command);
     const files = response.split('\n').slice(0, -1);
     const regex = /\s\d+\s\[[\d\w]+\]\.[\d\w]+/;
@@ -76,7 +76,7 @@ const rename = (file, newName, SHOW) => {
   return new Promise(async (resolve, reject) => {
     try {
       logger.info(`${file} => ${newName}`);
-      let command = `${Paths.rclonePath} moveto "${remote.plex}Premiered/${SHOW}/${file}"`;
+      let command = `${pathHandler.rcloneBinary} moveto "${remote.plex}Premiered/${SHOW}/${file}"`;
       command += ` "${remote.plex}Premiered/${SHOW}/${newName}" --progress --stats-one-line -v`;
       const response = await promisefied.exec(command);
       logger.info(response);

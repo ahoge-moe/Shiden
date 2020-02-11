@@ -18,14 +18,14 @@ const Anilist = require(path.join(process.cwd(), 'src/shared/automata/anilist.js
 const AnimeOfflineDatabase = require(path.join(process.cwd(), 'src/shared/automata/animeOfflineDatabase.js'));
 
 // Import config
-const Paths = require(path.join(process.cwd(), 'src/utils/paths.js'));
-const { flags } = require(path.join(process.cwd(), 'src/utils/config.js'));
-const { remote } = require(path.join(process.cwd(), 'src/utils/config.js'));
+const pathHandler = require(path.join(process.cwd(), 'src/utils/pathHandler.js'));
+const { flags } = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
+const { remote } = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 
 (async () => {
   try {
     /** For ALL shows in Airing */
-    // let command = `${Paths.rclonePath} lsf "${remote.plex}Airing" --dirs-only -d=false`;
+    // let command = `${pathHandler.rcloneBinary} lsf "${remote.plex}Airing" --dirs-only -d=false`;
     // let response = await promisefied.exec(command);
     // let AIRING_FOLDERS = response.split('\n').slice(0,-1);
 
@@ -45,7 +45,7 @@ const { remote } = require(path.join(process.cwd(), 'src/utils/config.js'));
 
           // Move shows from Airing to Pending
           logger.info(`Moving ${anilistName} ~ ${anilistResponse.title.native} [anidb-${anidbID}]`);
-          let command = `${Paths.rclonePath} move "${remote.plex}Airing/${anilistName}"`;
+          let command = `${pathHandler.rcloneBinary} move "${remote.plex}Airing/${anilistName}"`;
           command += ` "${remote.plex}Pending/${anilistName} ~ ${anilistResponse.title.native} [anidb-${anidbID}]"`;
           command += ` ${flags.rclone}`;
           const response = await promisefied.exec(command);

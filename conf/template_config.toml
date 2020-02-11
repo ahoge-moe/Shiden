@@ -2,7 +2,7 @@
 
 # Rclone remotes
 [remote]
-# List of remote storages that rclone will check if the file exists there before attempting to download the file
+# List of remote storages that rclone will check if the file exists before downloading the file
 downloadSource = ["source1:", "source2:", "source3:"]
 
 # List of remote storages that rclone will upload the hardsubbed file to

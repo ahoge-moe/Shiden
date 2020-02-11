@@ -13,12 +13,12 @@ const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 const Anilist = require(path.join(process.cwd(), 'src/shared/automata/anilist.js'));
 const AnimeOfflineDatabase = require(path.join(process.cwd(), 'src/shared/automata/animeOfflineDatabase.js'));
-const Paths = require(path.join(process.cwd(), 'src/utils/paths.js'));
-const { remote } = require(path.join(process.cwd(), 'src/utils/config.js'));
+const pathHandler = require(path.join(process.cwd(), 'src/utils/pathHandler.js'));
+const { remote } = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 
 (async () => {
   try {
-    const command = `${Paths.rclonePath} lsf "${remote.plex}Premiered" --dirs-only -d=false --exclude "*\[anidb-*\]/"`;
+    const command = `${pathHandler.rcloneBinary} lsf "${remote.plex}Premiered" --dirs-only -d=false --exclude "*\[anidb-*\]/"`;
     const response = await promisefied.exec(command);
     const folders = response.split('\n').slice(0, -1);
 
@@ -33,7 +33,7 @@ const { remote } = require(path.join(process.cwd(), 'src/utils/config.js'));
 
           // Move shows from Premiered to Pending
           logger.info(`${anilistName} [anidb-${anidbID}]`);
-          let command = `${Paths.rclonePath} move "${remote.plex}Premiered/${anilistName}"`;
+          let command = `${pathHandler.rcloneBinary} move "${remote.plex}Premiered/${anilistName}"`;
           command += ` "${remote.plex}Pending/${anilistName} [anidb-${anidbID}]"`;
           command += ` ${flags.rclone}`;
           await promisefied.exec(command);

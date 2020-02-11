@@ -11,12 +11,12 @@ const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 
 // Import config
-const Paths = require(path.join(process.cwd(), 'src/utils/paths.js'));
-const { remote } = require(path.join(process.cwd(), 'src/utils/config.js'));
+const pathHandler = require(path.join(process.cwd(), 'src/utils/pathHandler.js'));
+const { remote } = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 
 (async () => {
   try {
-    let command = `${Paths.rclonePath} lsf "${remote.plex}Premiered [Hardsub]" --max-depth=2`;
+    let command = `${pathHandler.rcloneBinary} lsf "${remote.plex}Premiered [Hardsub]" --max-depth=2`;
     command += ` | grep -E ".*\/.*\/.*"`;
     const response = await promisefied.exec(command);
     let folders = response.split('\n').slice(0, -1);
