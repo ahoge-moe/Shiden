@@ -12,21 +12,21 @@ const path = require('path');
 require('toml-require').install({ toml: require('toml') });
 
 // Import helpers
-const Logger = require(path.join(process.cwd(), 'src/shared/utils/logger.js'));
-const Promisefied = require(path.join(process.cwd(), 'src/shared/utils/promisefied.js'));
+const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
+const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 const Anilist = require(path.join(process.cwd(), 'src/shared/automata/anilist.js'));
 const AnimeOfflineDatabase = require(path.join(process.cwd(), 'src/shared/automata/animeOfflineDatabase.js'));
 
 // Import config
-const Paths = require(path.join(process.cwd(), 'src/shared/utils/paths.js'));
-const { flags } = require(path.join(process.cwd(), 'src/shared/utils/config.js'));
-const { remote } = require(path.join(process.cwd(), 'src/shared/utils/config.js'));
+const Paths = require(path.join(process.cwd(), 'src/utils/paths.js'));
+const { flags } = require(path.join(process.cwd(), 'src/utils/config.js'));
+const { remote } = require(path.join(process.cwd(), 'src/utils/config.js'));
 
 (async () => {
   try {
     /** For ALL shows in Airing */
     // let command = `${Paths.rclonePath} lsf "${remote.plex}Airing" --dirs-only -d=false`;
-    // let response = await Promisefied.exec(command);
+    // let response = await promisefied.exec(command);
     // let AIRING_FOLDERS = response.split('\n').slice(0,-1);
 
     /**
@@ -41,26 +41,26 @@ const { remote } = require(path.join(process.cwd(), 'src/shared/utils/config.js'
         if (anilistResponse) {
           const anidbID = await AnimeOfflineDatabase.query(anilistResponse.id);
 
-          if (anidbID === '') Logger.error(`${anilistName} not found in AniDB`);
+          if (anidbID === '') logger.error(`${anilistName} not found in AniDB`);
 
           // Move shows from Airing to Pending
-          Logger.info(`Moving ${anilistName} ~ ${anilistResponse.title.native} [anidb-${anidbID}]`);
+          logger.info(`Moving ${anilistName} ~ ${anilistResponse.title.native} [anidb-${anidbID}]`);
           let command = `${Paths.rclonePath} move "${remote.plex}Airing/${anilistName}"`;
           command += ` "${remote.plex}Pending/${anilistName} ~ ${anilistResponse.title.native} [anidb-${anidbID}]"`;
           command += ` ${flags.rclone}`;
-          const response = await Promisefied.exec(command);
-          Logger.info(response);
+          const response = await promisefied.exec(command);
+          logger.info(response);
         }
         else {
-          Logger.error(`${anilistName} not found in Anilist`);
+          logger.error(`${anilistName} not found in Anilist`);
         }
       }
       catch (e) {
-        Logger.error(e);
+        logger.error(e);
       }
     }
   }
   catch (e) {
-    Logger.error(e);
+    logger.error(e);
   }
 })();

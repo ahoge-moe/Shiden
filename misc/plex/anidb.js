@@ -9,17 +9,17 @@ const path = require('path');
 require('toml-require').install({ toml: require('toml') });
 
 // Import helpers
-const Logger = require(path.join(process.cwd(), 'src/shared/utils/logger.js'));
-const Promisefied = require(path.join(process.cwd(), 'src/shared/utils/promisefied.js'));
+const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
+const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 const Anilist = require(path.join(process.cwd(), 'src/shared/automata/anilist.js'));
 const AnimeOfflineDatabase = require(path.join(process.cwd(), 'src/shared/automata/animeOfflineDatabase.js'));
-const Paths = require(path.join(process.cwd(), 'src/shared/utils/paths.js'));
-const { remote } = require(path.join(process.cwd(), 'src/shared/utils/config.js'));
+const Paths = require(path.join(process.cwd(), 'src/utils/paths.js'));
+const { remote } = require(path.join(process.cwd(), 'src/utils/config.js'));
 
 (async () => {
   try {
     const command = `${Paths.rclonePath} lsf "${remote.plex}Premiered" --dirs-only -d=false --exclude "*\[anidb-*\]/"`;
-    const response = await Promisefied.exec(command);
+    const response = await promisefied.exec(command);
     const folders = response.split('\n').slice(0, -1);
 
     for (anilistName of folders) {
@@ -29,25 +29,25 @@ const { remote } = require(path.join(process.cwd(), 'src/shared/utils/config.js'
         if (anilistResponse) {
           const anidbID = await AnimeOfflineDatabase.query(anilistResponse.id);
 
-          if (anidbID === '') Logger.error(`${anilistName} not found in AniDB`);
+          if (anidbID === '') logger.error(`${anilistName} not found in AniDB`);
 
           // Move shows from Premiered to Pending
-          Logger.info(`${anilistName} [anidb-${anidbID}]`);
+          logger.info(`${anilistName} [anidb-${anidbID}]`);
           let command = `${Paths.rclonePath} move "${remote.plex}Premiered/${anilistName}"`;
           command += ` "${remote.plex}Pending/${anilistName} [anidb-${anidbID}]"`;
           command += ` ${flags.rclone}`;
-          await Promisefied.exec(command);
+          await promisefied.exec(command);
         }
         else {
-          Logger.error(`${anilistName} not found in Anilist`);
+          logger.error(`${anilistName} not found in Anilist`);
         }
       }
       catch (e) {
-        Logger.error(e);
+        logger.error(e);
       }
     }
   }
   catch (e) {
-    Logger.error(e);
+    logger.error(e);
   }
 })();

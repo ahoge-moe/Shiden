@@ -5,12 +5,12 @@ const path = require('path');
 require('toml-require').install({ toml: require('toml') });
 
 // Import helpers
-const Logger = require(path.join(process.cwd(), 'src/shared/utils/logger.js'));
-const Promisefied = require(path.join(process.cwd(), 'src/shared/utils/promisefied.js'));
+const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
+const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 
 // Import config
-const Paths = require(path.join(process.cwd(), 'src/shared/utils/paths.js'));
-const { remote } = require(path.join(process.cwd(), 'src/shared/utils/config.js'));
+const Paths = require(path.join(process.cwd(), 'src/utils/paths.js'));
+const { remote } = require(path.join(process.cwd(), 'src/utils/config.js'));
 
 /**
  * @todo
@@ -20,7 +20,7 @@ const SHOW = 'Beatless ~ ビートレス [anidb-13500]';
 (async () => {
   try {
     const command = `${Paths.rclonePath} lsf "${remote.plex}Premiered/${SHOW}" --files-only --include "*.{mkv,mp4}"`;
-    const response = await Promisefied.exec(command);
+    const response = await promisefied.exec(command);
     const files = response.split('\n').slice(0, -1);
     const regex = /\s\d+\s\[[\d\w]+\]\.[\d\w]+/;
 
@@ -43,7 +43,7 @@ const SHOW = 'Beatless ~ ビートレス [anidb-13500]';
           await rename(file, newName, SHOW);
         }
         catch (e) {
-          Logger.error(e);
+          logger.error(e);
         }
       }
     }
@@ -62,28 +62,28 @@ const SHOW = 'Beatless ~ ビートレス [anidb-13500]';
           await rename(file, newName, SHOW);
         }
         catch (e) {
-          Logger.error(e);
+          logger.error(e);
         }
       }
     }
   }
   catch (e) {
-    Logger.error(e);
+    logger.error(e);
   }
 })();
 
 const rename = (file, newName, SHOW) => {
   return new Promise(async (resolve, reject) => {
     try {
-      Logger.info(`${file} => ${newName}`);
+      logger.info(`${file} => ${newName}`);
       let command = `${Paths.rclonePath} moveto "${remote.plex}Premiered/${SHOW}/${file}"`;
       command += ` "${remote.plex}Premiered/${SHOW}/${newName}" --progress --stats-one-line -v`;
-      const response = await Promisefied.exec(command);
-      Logger.info(response);
+      const response = await promisefied.exec(command);
+      logger.info(response);
       resolve();
     }
     catch (e) {
-      Logger.error(e);
+      logger.error(e);
     }
   });
 };
