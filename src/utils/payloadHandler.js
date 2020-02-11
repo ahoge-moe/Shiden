@@ -1,3 +1,8 @@
+/**
+ * @module payloadHandler
+ * This module handles incoming payloads by providing some functions for it
+ */
+
 module.exports = payloadHandler = {
   /**
    * Checks if payload has all required keys
