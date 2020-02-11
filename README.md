@@ -57,3 +57,12 @@ npm start
 | --- | --- |
 | 600 | Rclone failed to download |
 | 601 | Rclone failed to upload |
+| 700 | FFmpeg failed to prepare |
+| 701 | FFmpeg failed to change container |
+| 702 | FFmpeg failed to extract subtitle file |
+| 703 | FFmpeg failed to hardsub with text-based flags |
+| 704 | FFmpeg failed to hardsub with bitmap-based flags |
+| 800 | FFprobe failed to extract stream info from file |
+| 801 | FFprobe failed to return video flags |
+| 802 | FFprobe failed to return audio flags |
+| 803 | FFprobe failed to return info about subtitle stream |
