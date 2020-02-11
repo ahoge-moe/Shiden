@@ -82,4 +82,14 @@ module.exports = queueHandler = {
     return;
   },
 
+  /**
+   * Get the first job in the queue and return it
+   * @return {{Object}} - Returns the first job in the queue in JSON format
+   */
+  getFirstJob: () => {
+    const data = fs.readFileSync(pathHandler.queueFile, { encoding: 'utf8' });
+    const queue = JSON.parse(data);
+    return queue[0];
+  },
+
 };
