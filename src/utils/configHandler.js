@@ -8,9 +8,6 @@ const path = require('path');
 const fs = require('fs');
 require('toml-require').install({ toml: require('toml') });
 
-// Import custom modules
-const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
-
 // master will be set to TRUE if current git branch name is 'master'
 const master = ('master' === fs.readFileSync(path.join(process.cwd(), '.git/HEAD'), { encoding: 'utf8' }).match(/ref: refs\/heads\/([^\n]+)/)[1]);
 

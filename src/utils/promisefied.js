@@ -22,11 +22,11 @@ module.exports = promisefied = {
       subprocess.stdout.on('data', data => stdoutMessage += data);
       subprocess.stderr.on('data', data => errMessage += data);
       subprocess.on('close', code => {
-        if (code === 0) resolve(stdoutMessage);
+        if (code === 0) return resolve(stdoutMessage);
         else {
           logger.error(code);
           console.log(errMessage);
-          reject('ChildProcessError');
+          return reject('ChildProcessError');
         }
       });
     });
@@ -35,10 +35,10 @@ module.exports = promisefied = {
   request: options => {
     return new Promise((resolve, reject) => {
       request(options, (err, res, body) => {
-        if (!err) resolve({ res, body });
+        if (!err) return resolve({ res, body });
         else {
           console.log(err);
-          reject('RequestError');
+          return reject('RequestError');
         }
       });
     });
@@ -47,10 +47,10 @@ module.exports = promisefied = {
   jsonParse: string => {
     return new Promise((resolve, reject) => {
       try {
-        resolve(JSON.parse(string));
+        return resolve(JSON.parse(string));
       }
       catch (e) {
-        reject('JSONparseSyntaxError');
+        return reject('JSONparseSyntaxError');
       }
     });
   },

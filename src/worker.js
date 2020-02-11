@@ -7,7 +7,6 @@ const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js
 const rclone = require(path.join(process.cwd(), 'src/automata/rclone.js'));
 const tempHandler = require(path.join(process.cwd(), 'src/utils/temp.js'));
 
-
 module.exports = processNextJob = async () => {
   try {
     // Step 0 Retrieve next job
