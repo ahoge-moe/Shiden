@@ -24,8 +24,8 @@ module.exports = promisefied = {
       subprocess.on('close', code => {
         if (code === 0) return resolve(stdoutMessage);
         else {
-          logger.error(code);
-          console.log(errMessage);
+          logger.debug(`Child process exit code: ${code}`);
+          logger.debug(errMessage);
           return reject(900);
         }
       });

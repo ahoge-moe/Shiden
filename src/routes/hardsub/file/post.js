@@ -40,13 +40,14 @@ module.exports = router.post('/hardsub/file', async (req, res) => {
     // Respond with success
     res.status(202).send('Payload accepted');
 
-    logger.success(`*************************`);
+    logger.success(`*************************`, logger.colors.magenta);
     for ([key, value] of Object.entries(payload)) {
       logger.success(`Loaded ${key}: ${value}`);
     }
-    logger.success(`*************************`);
+    logger.success(`*************************`, logger.colors.magenta);
 
     // If queue is empty, push payload onto queue and start processing the job right away
+    logger.debug('Checking if queue is empty');
     if (queueHandler.isEmpty()) {
       queueHandler.push(payload);
       processNextJob();
@@ -57,7 +58,7 @@ module.exports = router.post('/hardsub/file', async (req, res) => {
     }
   }
   catch (errorCode) {
-    if (errorCode === 902) return res.status(400).send(e);
+    if (errorCode === 902) return res.status(400).send(`${errorCode}`);
     return logger.error('Unknown error');
   }
 });
