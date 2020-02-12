@@ -10,7 +10,7 @@ const path = require('path');
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 
-module.exports = Anilist = {
+module.exports = anilist = {
   /**
    * Query by show name and return the response
    * @param {{string}} showName - Name of the show
