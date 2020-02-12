@@ -37,6 +37,7 @@ app.listen(CONFIG.express.port, () => {
     if (process.argv.slice(2).includes('--clean')) queueHandler.wipe();
 
     // If queue has jobs, start processing right away
+    logger.debug('Checking if queue is empty');
     if (!queueHandler.isEmpty()) processNextJob();
   }
   catch (e) {

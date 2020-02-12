@@ -15,10 +15,10 @@ const pipeline = require(path.join(process.cwd(), 'src/pipeline.js'));
 const notification = require(path.join(process.cwd(), 'src/automata/notification.js'));
 
 module.exports = processNextJob = async () => {
-  try {
-    // Step 0 Retrieve next job
-    const job = queueHandler.getFirstJob();
+  // Step 0 Retrieve next job
+  const job = queueHandler.getFirstJob();
 
+  try {
     // Step 1 Download
     logger.info('[1/4] Downloading');
     await rclone.download(job);
@@ -42,6 +42,7 @@ module.exports = processNextJob = async () => {
     queueHandler.removeFirstJobFromQueue();
 
     // Check if queue has jobs and recursively process next job
+    logger.debug('Checking if queue is empty');
     if (!queueHandler.isEmpty()) processNextJob();
   }
   catch (errorCode) {
@@ -59,6 +60,7 @@ module.exports = processNextJob = async () => {
     queueHandler.removeFirstJobFromQueue();
 
     // Check if queue has jobs and recursively process next job
+    logger.debug('Checking if queue is empty');
     if (!queueHandler.isEmpty()) processNextJob();
   }
 };
