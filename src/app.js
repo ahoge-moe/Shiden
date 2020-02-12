@@ -17,6 +17,7 @@ const CONFIG = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 
 // Import routes
 const hardsubFilePost = require(path.join(process.cwd(), 'src/routes/hardsub/file/post.js'));
+const queueGet = require(path.join(process.cwd(), 'src/routes/queue/get.js'));
 
 // Create ExpressJS app
 const app = express();
@@ -28,6 +29,7 @@ app.use(express.text({ type: 'application/json' }));
 
 // Define routes
 app.use(hardsubFilePost);
+app.use(queueGet);
 
 app.listen(CONFIG.express.port, () => {
   try {
