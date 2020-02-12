@@ -92,4 +92,16 @@ module.exports = queueHandler = {
     return queue[0];
   },
 
+  /**
+   * Remove the first element in the queue
+   * @return {{void}}
+   */
+  removeFirstJobFromQueue: () => {
+    const data = fs.readFileSync(pathHandler.queueFile, { encoding: 'utf8' });
+    const queue = JSON.parse(data);
+    queue.shift();
+    fs.writeFileSync(pathHandler.queueFile, JSON.stringify(queue), { encoding: 'utf8' });
+    return;
+  },
+
 };

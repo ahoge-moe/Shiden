@@ -54,5 +54,8 @@ module.exports = processNextJob = async () => {
 
     // Remove current job out of queue
     queueHandler.removeFirstJobFromQueue();
+
+    // Check if queue has jobs and recursively process next job
+    if (!queueHandler.isEmpty()) processNextJob();
   }
 };
