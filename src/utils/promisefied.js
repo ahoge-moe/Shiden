@@ -26,7 +26,7 @@ module.exports = promisefied = {
         else {
           logger.error(code);
           console.log(errMessage);
-          return reject('ChildProcessError');
+          return reject(900);
         }
       });
     });
@@ -38,7 +38,7 @@ module.exports = promisefied = {
         if (!err) return resolve({ res, body });
         else {
           console.log(err);
-          return reject('RequestError');
+          return reject(901);
         }
       });
     });
@@ -50,7 +50,7 @@ module.exports = promisefied = {
         return resolve(JSON.parse(string));
       }
       catch (e) {
-        return reject('JSONparseSyntaxError');
+        return reject(902);
       }
     });
   },

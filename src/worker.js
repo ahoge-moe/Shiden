@@ -10,8 +10,9 @@ const path = require('path');
 const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js'));
 const rclone = require(path.join(process.cwd(), 'src/automata/rclone.js'));
-const tempHandler = require(path.join(process.cwd(), 'src/utils/tempHanlder.js'));
+const tempHandler = require(path.join(process.cwd(), 'src/utils/tempHandler.js'));
 const pipeline = require(path.join(process.cwd(), 'src/pipeline.js'));
+const notification = require(path.join(process.cwd(), 'src/automata/notification.js'));
 
 module.exports = processNextJob = async () => {
   try {
@@ -30,7 +31,7 @@ module.exports = processNextJob = async () => {
     await rclone.upload(job);
 
     // Step 4 Notify
-    await notification.send(job);
+    await notification.send(job, undefined);
 
     // Delete files in folder/
     tempHandler.destroy();
@@ -41,12 +42,12 @@ module.exports = processNextJob = async () => {
     // Check if queue has jobs and recursively process next job
     if (!queueHandler.isEmpty()) processNextJob();
   }
-  catch (e) {
-    if (e === 600) logger.error('Download failed');
-    if (e === 601) logger.error('Upload failed');
+  catch (errorCode) {
+    // Log the error code from step 1, 2 and/or 3
+    logger.error(errorCode);
 
     // Step 4 Notify
-    await notification.send(job);
+    await notification.send(job, errorCode);
 
     // Delete files in folder/
     tempHandler.destroy();

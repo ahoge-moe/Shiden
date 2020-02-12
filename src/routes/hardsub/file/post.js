@@ -56,8 +56,8 @@ module.exports = router.post('/hardsub/file', async (req, res) => {
       queueHandler.push(payload);
     }
   }
-  catch (e) {
-    if (e === 'JSONparseSyntaxError') return res.status(400).send(e);
+  catch (errorCode) {
+    if (errorCode === 902) return res.status(400).send(e);
     return logger.error('Unknown error');
   }
 });

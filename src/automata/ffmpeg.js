@@ -43,8 +43,8 @@ module.exports = FFmpeg = {
         logger.error(e);
         // If error was thrown from FFprobe, reject with their error code
         // and let @worker handle it
-        if (e === 801) return reject(e);
-        if (e === 802) return reject(e);
+        if (errorCode === 801) return reject(e);
+        if (errorCode === 802) return reject(e);
 
         // If error was thrown from running this function
         // Reject with 700
