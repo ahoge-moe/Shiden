@@ -51,6 +51,17 @@ npm start
 | subIndex | No | Number | First available | Stream index that will be used for subtitle |
 | fontStyle | No | String | NotoSansJP-Medium | Font style used for text based hardsub |
 
+Available font styles
+- 02UtsukushiMincho
+- Noto Sans JP Medium
+- Noto Serif JP Medium
+- Open Sans SemiBold
+
+## `/queue`
+
+### GET
+  - Description: gets the queue in an array
+
 # Error codes
 
 | Code | Description |
