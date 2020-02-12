@@ -47,16 +47,18 @@ module.exports = logger = {
   success: (data, color = '') => {
     const timestamp = moment().format('MMMDD|HH:mm:ss');
     const iconColor = logger.colors.bright + logger.colors.green;
-    console.log(`[${timestamp}][${logger.getCallingDetails()}]:${iconColor}✔ ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
+    (master) ? console.log(`[${timestamp}]:${iconColor}✔ ${logger.colors.reset}${color}${data}${logger.colors.reset}`) :
+      console.log(`[${timestamp}][${logger.getCallingDetails()}]:${iconColor}✔ ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
   },
 
   info: (data, color = '') => {
     const timestamp = moment().format('MMMDD|HH:mm:ss');
     const iconColor = logger.colors.bright + logger.colors.cyan;
-    console.log(`[${timestamp}][${logger.getCallingDetails()}]:${iconColor}i ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
+    (master) ? console.log(`[${timestamp}]:${iconColor}i ${logger.colors.reset}${color}${data}${logger.colors.reset}`) :
+      console.log(`[${timestamp}][${logger.getCallingDetails()}]:${iconColor}i ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
   },
 
-  debug: (data, color = '') => {
+  debug: (data, color = logger.colors.dim) => {
     const timestamp = moment().format('MMMDD|HH:mm:ss');
     const iconColor = logger.colors.bright + logger.colors.yellow;
     (master) ? '' :
@@ -66,13 +68,15 @@ module.exports = logger = {
   warning: (data, color = '') => {
     const timestamp = moment().format('MMMDD|HH:mm:ss');
     const iconColor = logger.colors.bright + logger.colors.yellow;
-    console.log(`[${timestamp}][${logger.getCallingDetails()}]:${iconColor}⚠ ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
+    (master) ? console.log(`[${timestamp}]:${iconColor}⚠ ${logger.colors.reset}${color}${data}${logger.colors.reset}`) :
+      console.log(`[${timestamp}][${logger.getCallingDetails()}]:${iconColor}⚠ ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
   },
 
   error: (data, color = '') => {
     const timestamp = moment().format('MMMDD|HH:mm:ss');
     const iconColor = logger.colors.bright + logger.colors.red;
-    console.log(`[${timestamp}][${logger.getCallingDetails()}]:${iconColor}✖ ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
+    (master) ? console.log(`[${timestamp}]:${iconColor}✖ ${logger.colors.reset}${color}${data}${logger.colors.reset}`) :
+      console.log(`[${timestamp}][${logger.getCallingDetails()}]:${iconColor}✖ ${logger.colors.reset}${color}${data}${logger.colors.reset}`);
   },
 
 };

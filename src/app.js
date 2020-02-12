@@ -31,7 +31,7 @@ app.use(hardsubFilePost);
 
 app.listen(CONFIG.express.port, () => {
   try {
-    logger.info(`Running on http://localhost:${CONFIG.express.port}/`);
+    logger.info(`Running on http://localhost:${CONFIG.express.port}/`, logger.colors.underscore + logger.colors.green);
 
     // If "--clean" flag is passed, remove queue file
     if (process.argv.slice(2).includes('--clean')) queueHandler.wipe();

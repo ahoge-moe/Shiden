@@ -31,15 +31,15 @@ module.exports = pipeline = {
         const outputFilePath = path.join(tempFolderPath, originalFileName.replace(ext, '.mp4'));
 
         // Step 1: Rename file to "temp"
-        logger.info(`Renaming ${originalFileName} to ${path.basename(tempFilePath)}`);
+        logger.info(`Renaming ${logger.colors.bright}${originalFileName}${logger.colors.reset} to ${logger.colors.bright}${path.basename(tempFilePath)}`);
         fs.renameSync(originalFilePath, tempFilePath);
 
         // Step 2: FFprobe to extract info from file
-        logger.info(`Probing ${path.basename(tempFilePath)}`);
+        logger.info(`Probing ${logger.colors.bright}${path.basename(tempFilePath)}`);
         const streams = await FFprobe.getStreams(tempFilePath);
 
         // Step 3: Extract video and audio streams into "temp_prepped"
-        logger.info(`Preparing ${path.basename(tempFilePath)}`);
+        logger.info(`Preparing ${logger.colors.bright}${path.basename(tempFilePath)}`);
         await FFmpeg.prepare(tempFilePath, tempPreppedFilePath, streams, job);
 
         if (!FFprobe.hasSub(streams)) {

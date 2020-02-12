@@ -15,26 +15,26 @@ const pipeline = require(path.join(process.cwd(), 'src/pipeline.js'));
 const notification = require(path.join(process.cwd(), 'src/automata/notification.js'));
 
 module.exports = processNextJob = async () => {
-  logger.info(`Processing next job`, logger.colors.cyan);
+  logger.info(`=== Processing next job`, logger.colors.bright + logger.colors.green);
 
   // Step 0 Retrieve next job
   const job = queueHandler.getFirstJob();
 
   try {
     // Step 1 Download
-    logger.info('[1/4] Downloading');
+    logger.info('[1/4] Downloading', logger.colors.green);
     await rclone.download(job);
 
     // Step 2 Hardsub
-    logger.info(['[2/4] Executing pipeline'])
+    logger.info('[2/4] Executing pipeline', logger.colors.green)
     await pipeline.x264(job);
 
     // Step 3 Upload
-    logger.info('[3/4] Uploading');
+    logger.info('[3/4] Uploading', logger.colors.green);
     await rclone.upload(job);
 
     // Step 4 Notify
-    logger.info('[4/4] Notifying');
+    logger.info('[4/4] Notifying', logger.colors.green);
     notification.send(job, undefined);
 
     // Delete files in folder/
@@ -52,7 +52,7 @@ module.exports = processNextJob = async () => {
     logger.error(errorCode);
 
     // Step 4 Notify
-    logger.info('[4/4] Notifying');
+    logger.info('[4/4] Notifying', logger.colors.green);
     notification.send(job, errorCode);
 
     // Delete files in folder/

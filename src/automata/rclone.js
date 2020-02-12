@@ -26,7 +26,7 @@ module.exports = rclone = {
         let validSource = false;
         for (remoteName of CONFIG.remote.downloadSource) {
           if (await rclone.fileExists(remoteName, job.sourceFile)) {
-            logger.success(`Found file in ${remoteName}`);
+            logger.success(`Found file in ${logger.colors.bright}${remoteName}`);
             validSource = remoteName;
             break;
           }
@@ -41,7 +41,7 @@ module.exports = rclone = {
         const jobFile = pathHandler.parseRclonePaths(validSource, job.sourceFile);
         const tempFolderPath = tempHandler.getTempFolderPath();
 
-        logger.info(`Downloading ${jobFile}`);
+        logger.info(`Downloading ${logger.colors.bright}${jobFile}`);
         const command = `${pathHandler.rcloneBinary} copy "${jobFile}" "${tempFolderPath}" ${CONFIG.flags.rclone}`;
         await promisefied.exec(command);
 
@@ -65,7 +65,7 @@ module.exports = rclone = {
   fileExists: (remoteName, sourceFile) => {
     return new Promise(async (resolve, reject) => {
       try {
-        logger.info(`Checking for file in ${remoteName}`);
+        logger.info(`Checking for file in ${logger.colors.bright}${remoteName}`);
 
         const fileName = path.basename(sourceFile);
         const remoteToCheck = pathHandler.parseRclonePaths(remoteName, sourceFile);
@@ -81,7 +81,7 @@ module.exports = rclone = {
         return resolve(false);
       }
       catch (e) {
-        logger.error(`File not found in ${remoteName}`);
+        logger.error(`File not found in ${logger.colors.bright}${remoteName}`);
         return resolve(false);
       }
     });
@@ -101,7 +101,7 @@ module.exports = rclone = {
 
         for (remoteName of CONFIG.remote.uploadDestination) {
           const destination = pathHandler.parseRclonePaths(remoteName, job.destFolder);
-          logger.info(`Uploading to ${destination}`);
+          logger.info(`Uploading to ${logger.colors.bright}${destination}`);
 
           const command = `${pathHandler.rcloneBinary} copy "${transcodedFile}" "${destination}" ${CONFIG.flags.rclone}`;
           await promisefied.exec(command);

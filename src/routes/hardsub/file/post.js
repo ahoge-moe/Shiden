@@ -43,7 +43,7 @@ module.exports = router.post('/hardsub/file', async (req, res) => {
 
     logger.success(`*************************`, logger.colors.magenta);
     for ([key, value] of Object.entries(payload)) {
-      logger.success(`Loaded ${key}: ${value}`);
+      logger.success(`Loaded ${key}: ${logger.colors.bright}${value}`);
     }
     logger.success(`*************************`, logger.colors.magenta);
 

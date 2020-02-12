@@ -36,7 +36,7 @@ module.exports = FFmpeg = {
         command.push(`"${tempPreppedFilePath}"`);
         command = command.join(' ');
         await promisefied.exec(command);
-        logger.success(`File has been prepared in ${path.basename(tempPreppedFilePath)}`);
+        logger.success(`File has been prepared in ${logger.colors.bright}${path.basename(tempPreppedFilePath)}`);
         return resolve();
       }
       catch (e) {
@@ -96,7 +96,7 @@ module.exports = FFmpeg = {
         return resolve();
       }
       catch (e) {
-        logger.error(e);
+        logger.debug(e);
         return reject(702);
       }
     });

@@ -152,10 +152,10 @@ const postToWebhook = async (errorCode, embed) => {
         json: (typeof errorCode === 'undefined') ? embed.success : embed.failed,
       };
 
-      logger.info(`Sending request to ${webhook.name}`);
+      logger.info(`Sending request to ${logger.colors.bright}${webhook.name}`);
       const response = await promisefied.request(options);
       if (response.res.statusCode === 204) {
-        logger.success(`Successful sent with return of ${response.res.statusCode}`);
+        logger.success(`Successful sent with return of ${logger.colors.bright}${response.res.statusCode}`);
       }
       else {
         logger.debug(response.res.statusCode);
