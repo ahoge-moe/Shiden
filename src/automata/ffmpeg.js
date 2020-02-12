@@ -108,13 +108,13 @@ module.exports = FFmpeg = {
    * @param {{string}} assFilePath - Path to ass file
    * @param {{string}} assetsFolder - Path to assets folder
    * @param {{string}} outputFilePath - Path to output file
-   * @param {{Object}} job - Incoming payload in JSON format
+   * @param {{Object}} job - Current job
    * @return {{void}}
    */
   hardsubText: (tempPreppedFilePath, assFilePath, assetsFolder, outputFilePath, job) => {
     return new Promise(async (resolve, reject) => {
       try {
-        // Defaults to NotoSansJP-Medium fontstyle if not provided in payload
+        // Defaults to NotoSansJP-Medium fontstyle if not provided in job
         const fontName = (job.fontStyle) ? job.fontStyle : 'NotoSansJP-Medium';
 
         let command = [`${pathHandler.ffmpegBinary} -i "${tempPreppedFilePath}"`];

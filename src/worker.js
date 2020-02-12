@@ -15,6 +15,8 @@ const pipeline = require(path.join(process.cwd(), 'src/pipeline.js'));
 const notification = require(path.join(process.cwd(), 'src/automata/notification.js'));
 
 module.exports = processNextJob = async () => {
+  logger.info(`Processing next job`, logger.colors.cyan);
+
   // Step 0 Retrieve next job
   const job = queueHandler.getFirstJob();
 

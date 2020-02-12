@@ -30,6 +30,7 @@ module.exports = router.post('/hardsub/file', async (req, res) => {
     const schema = {
       sourceFile: 'string',
       destFolder: 'string',
+      showName: 'string',
       videoIndex: 'number',
       audioIndex: 'number',
       subIndex: 'number',
