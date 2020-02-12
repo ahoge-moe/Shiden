@@ -17,6 +17,12 @@ const kitsu = require(path.join(process.cwd(), 'src/utils/kitsu.js'));
 const animeOfflineDatabase = require(path.join(process.cwd(), 'src/utils/animeOfflineDatabase.js'));
 const CONFIG = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 
+/**
+ * Fetches metadata of the show and sends it to discord webhooks
+ * @param {{Object}} job - Current job
+ * @param {{number}} errorCode - error code from @worker
+ * @return {{void}}
+ */
 const send = async (job, errorCode) => {
   try {
     if (job.showName) {
@@ -24,11 +30,11 @@ const send = async (job, errorCode) => {
       const kitsuResponse = await kitsu.query(job.showName);
       const aniDBID = await animeOfflineDatabase.query(anilistResponse);
       const embed = buildEmbeds(anilistResponse, kitsuResponse, aniDBID, errorCode, job);
-      await postToWebhook(errorCode, embed);
+      postToWebhook(errorCode, embed);
     }
     else {
       const embed = buildEmbeds(undefined, undefined, undefined, errorCode, job);
-      await postToWebhook(errorCode, embed);
+      postToWebhook(errorCode, embed);
     }
     return;
   }
@@ -38,6 +44,15 @@ const send = async (job, errorCode) => {
   }
 };
 
+/**
+ * Takes metadata and builds an embed for discord webhooks
+ * @param {{Object}} anilistResponse 
+ * @param {{string}} kitsuResponse 
+ * @param {{string}} aniDBID 
+ * @param {{number}} errorCode 
+ * @param {{Object}} job 
+ * @return {{Object}} - Returns an embed for successful job completion and one for failed job completion
+ */
 const buildEmbeds = (anilistResponse, kitsuResponse, aniDBID, errorCode, job) => {
   // Color
   const purple = 8978687;
@@ -121,35 +136,39 @@ const buildEmbeds = (anilistResponse, kitsuResponse, aniDBID, errorCode, job) =>
   return { success: successEmbedNoMetadata, failed: failedEmbed };
 };
 
-const postToWebhook = (errorCode, embed) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      for (webhook of CONFIG.notification.discordWebhooks) {
-        const options = {
-          url: webhook.url,
-          method: 'POST',
-          json: (typeof errorCode === 'undefined') ? embed.success : embed.failed,
-        };
+/**
+ * Takes the embed and sends it to discord webhooks
+ * @param {{number}} errorCode 
+ * @param {{Object}} embed 
+ * @return {{void}}
+ */
+const postToWebhook = async (errorCode, embed) => {
+  try {
+    for (webhook of CONFIG.notification.discordWebhooks) {
+      const options = {
+        url: webhook.url,
+        method: 'POST',
+        json: (typeof errorCode === 'undefined') ? embed.success : embed.failed,
+      };
 
-        logger.info(`Sending request to ${webhook.name}`);
-        const response = await promisefied.request(options);
-        if (response.res.errorCode === 204) {
-          logger.success(`Successful sent with return of ${response.res.errorCode}`);
-        }
-        else {
-          logger.debug(response.res.errorCode);
-          logger.debug(util.inspect(response.body));
-          console.log(util.inspect(anilistResponse, { depth: null, colors: true }));
-        }
+      logger.info(`Sending request to ${webhook.name}`);
+      const response = await promisefied.request(options);
+      if (response.res.errorCode === 204) {
+        logger.success(`Successful sent with return of ${response.res.errorCode}`);
       }
+      else {
+        logger.debug(response.res.errorCode);
+        logger.debug(util.inspect(response.body));
+        console.log(util.inspect(anilistResponse, { depth: null, colors: true }));
+      }
+    }
 
-      resolve();
-    }
-    catch (e) {
-      logger.error(e);
-      resolve();
-    }
-  });
+    return;
+  }
+  catch (e) {
+    logger.error(e);
+    return;
+  }
 };
 
 module.exports = {

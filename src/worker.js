@@ -31,7 +31,7 @@ module.exports = processNextJob = async () => {
     await rclone.upload(job);
 
     // Step 4 Notify
-    await notification.send(job, undefined);
+    notification.send(job, undefined);
 
     // Delete files in folder/
     tempHandler.destroy();
@@ -47,7 +47,7 @@ module.exports = processNextJob = async () => {
     logger.error(errorCode);
 
     // Step 4 Notify
-    await notification.send(job, errorCode);
+    notification.send(job, errorCode);
 
     // Delete files in folder/
     tempHandler.destroy();
