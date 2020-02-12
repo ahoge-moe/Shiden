@@ -9,7 +9,7 @@ const path = require('path');
 // Import custom modules
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 
-module.exports = Kitsu = {
+module.exports = kitsu = {
   query: showName => {
     return new Promise(async (resolve, reject) => {
       try {
