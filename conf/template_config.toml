@@ -22,7 +22,7 @@ discordWebhooks = [
 
 # Flags when running child processes
 [flags]
-rclone = "--progress --stats-one-line --stats 1s --bwlimit 20M -v --config conf/rclone.conf"
+rclone = "--bwlimit 20M --config conf/rclone.conf"
 
 # ExpressJS settings
 [express]

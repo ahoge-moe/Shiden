@@ -68,6 +68,7 @@ const buildEmbeds = (anilistResponse, kitsuResponse, aniDBID, errorCode, job) =>
     embeds: [
       {
         title: `Error code: ${errorCode}`,
+        url: 'https://github.com/wizo06/Shiden#error-codes',
         timestamp: (new Date()).toISOString(),
         color: red,
         image: {
@@ -151,15 +152,14 @@ const postToWebhook = async (errorCode, embed) => {
         json: (typeof errorCode === 'undefined') ? embed.success : embed.failed,
       };
 
-      logger.info(`Sending request to ${webhook.name}`);
+      logger.info(`Sending request to ${logger.colors.bright}${webhook.name}`);
       const response = await promisefied.request(options);
-      if (response.res.errorCode === 204) {
-        logger.success(`Successful sent with return of ${response.res.errorCode}`);
+      if (response.res.statusCode === 204) {
+        logger.success(`Successful sent with return of ${logger.colors.bright}${response.res.statusCode}`);
       }
       else {
-        logger.debug(response.res.errorCode);
+        logger.debug(response.res.statusCode);
         logger.debug(util.inspect(response.body));
-        console.log(util.inspect(anilistResponse, { depth: null, colors: true }));
       }
     }
 

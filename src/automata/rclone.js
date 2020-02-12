@@ -26,8 +26,8 @@ module.exports = rclone = {
         let validSource = false;
         for (remoteName of CONFIG.remote.downloadSource) {
           if (await rclone.fileExists(remoteName, job.sourceFile)) {
-            Logger.success(`Found file in ${remoteName}`);
-            validSource = src;
+            logger.success(`Found file in ${logger.colors.bright}${remoteName}`);
+            validSource = remoteName;
             break;
           }
         }
@@ -41,9 +41,9 @@ module.exports = rclone = {
         const jobFile = pathHandler.parseRclonePaths(validSource, job.sourceFile);
         const tempFolderPath = tempHandler.getTempFolderPath();
 
-        logger.info(`Downloading ${jobFile}`);
+        logger.info(`Downloading ${logger.colors.bright}${jobFile}`);
         const command = `${pathHandler.rcloneBinary} copy "${jobFile}" "${tempFolderPath}" ${CONFIG.flags.rclone}`;
-        await Promisefied.exec(command);
+        await promisefied.exec(command);
 
         logger.success(`Download completed`);
         return resolve();
@@ -65,18 +65,23 @@ module.exports = rclone = {
   fileExists: (remoteName, sourceFile) => {
     return new Promise(async (resolve, reject) => {
       try {
-        logger.info(`Checking for file in ${remoteName}`);
+        logger.info(`Checking for file in ${logger.colors.bright}${remoteName}`);
 
-        remoteName = pathHandler.parseRclonePaths(remoteName, sourceFile);
+        const fileName = path.basename(sourceFile);
+        const remoteToCheck = pathHandler.parseRclonePaths(remoteName, sourceFile);
 
-        const command = `${pathHandler.rcloneBinary} lsf "${remoteName}" --files-only ${CONFIG.flags.rclone.match(/--config \w+\/\w+\.conf/)}`;
-        await promisefied.exec(command);
+        const command = `${pathHandler.rcloneBinary} lsf "${remoteToCheck}" --files-only ${CONFIG.flags.rclone.match(/--config \w+\/\w+\.conf/)}`;
+        const response = await promisefied.exec(command);
 
-        // If rclone exited with code 0, then it means file was found
-        return resolve(true);
+        // If first file in lsf is the same as fileName, then assume file is found
+        if (fileName === response.split('\n')[0]) {
+          return resolve(true);
+        }
+
+        return resolve(false);
       }
       catch (e) {
-        logger.error(`File not found in ${remoteName}`);
+        logger.error(`File not found in ${logger.colors.bright}${remoteName}`);
         return resolve(false);
       }
     });
@@ -96,16 +101,16 @@ module.exports = rclone = {
 
         for (remoteName of CONFIG.remote.uploadDestination) {
           const destination = pathHandler.parseRclonePaths(remoteName, job.destFolder);
-          Logger.info(`Uploading to ${destination}`);
+          logger.info(`Uploading to ${logger.colors.bright}${destination}`);
 
           const command = `${pathHandler.rcloneBinary} copy "${transcodedFile}" "${destination}" ${CONFIG.flags.rclone}`;
-          await Promisefied.exec(command);
+          await promisefied.exec(command);
           logger.success(`Upload completed`);
         }
         return resolve();
       }
       catch (e) {
-        Logger.error(e);
+        logger.error(e);
         logger.error(`rclone failed during upload`);
         return reject(601);
       }

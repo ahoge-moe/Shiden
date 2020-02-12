@@ -16,7 +16,7 @@ try {
   else module.exports = require(path.join(process.cwd(), 'conf/dev_config.toml'));
 }
 catch (e) {
-  Logger.error(e);
-  Logger.critical(`"conf/user_config.toml" not found`);
+  logger.error(e);
+  logger.critical(`"conf/user_config.toml" not found`);
   process.kill(process.pid);
 }

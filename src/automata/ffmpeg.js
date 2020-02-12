@@ -36,7 +36,7 @@ module.exports = FFmpeg = {
         command.push(`"${tempPreppedFilePath}"`);
         command = command.join(' ');
         await promisefied.exec(command);
-        logger.success(`File has been prepared in ${path.basename(tempPreppedFilePath)}`);
+        logger.success(`File has been prepared in ${logger.colors.bright}${path.basename(tempPreppedFilePath)}`);
         return resolve();
       }
       catch (e) {
@@ -96,7 +96,7 @@ module.exports = FFmpeg = {
         return resolve();
       }
       catch (e) {
-        logger.error(e);
+        logger.debug(e);
         return reject(702);
       }
     });
@@ -108,13 +108,13 @@ module.exports = FFmpeg = {
    * @param {{string}} assFilePath - Path to ass file
    * @param {{string}} assetsFolder - Path to assets folder
    * @param {{string}} outputFilePath - Path to output file
-   * @param {{Object}} job - Incoming payload in JSON format
+   * @param {{Object}} job - Current job
    * @return {{void}}
    */
   hardsubText: (tempPreppedFilePath, assFilePath, assetsFolder, outputFilePath, job) => {
     return new Promise(async (resolve, reject) => {
       try {
-        // Defaults to NotoSansJP-Medium fontstyle if not provided in payload
+        // Defaults to NotoSansJP-Medium fontstyle if not provided in job
         const fontName = (job.fontStyle) ? job.fontStyle : 'NotoSansJP-Medium';
 
         let command = [`${pathHandler.ffmpegBinary} -i "${tempPreppedFilePath}"`];
