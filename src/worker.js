@@ -24,13 +24,15 @@ module.exports = processNextJob = async () => {
     await rclone.download(job);
 
     // Step 2 Hardsub
-    logger.info(['[2/4] Transcoding'])
+    logger.info(['[2/4] Executing pipeline'])
     await pipeline.x264(job);
 
     // Step 3 Upload
+    logger.info('[3/4] Uploading');
     await rclone.upload(job);
 
     // Step 4 Notify
+    logger.info('[4/4] Notifying');
     notification.send(job, undefined);
 
     // Delete files in folder/
@@ -47,6 +49,7 @@ module.exports = processNextJob = async () => {
     logger.error(errorCode);
 
     // Step 4 Notify
+    logger.info('[4/4] Notifying');
     notification.send(job, errorCode);
 
     // Delete files in folder/
