@@ -24,8 +24,8 @@ module.exports = payloadHandler = {
   payloadHasValidSchema: (payload, schema) => {
     const payloadKeys = Object.keys(payload);
     return payloadKeys.every(key => {
-      if (schema[key] === 'array') return Array.isArray(payload[key]);
-      if (schema[key] === 'object') return typeof payload[key] === 'object' && !!payload[key];
+      if (schema[key] === 'Array') return Array.isArray(payload[key]);
+      if (schema[key] === 'Object') return typeof payload[key] === 'object' && !!payload[key];
       return schema[key] === typeof payload[key];
     });
   },
