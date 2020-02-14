@@ -18,7 +18,7 @@ module.exports = animeOfflineDatabase = {
   /**
    * Query AOD with Anilist ID and return AniDB ID
    * @param {{Object}} anilistResponse - Response from querying Anilist API
-   * @return {{string}} - AniDB ID
+   * @return {{Promise<string>}} - AniDB ID
    */
   query: anilistResponse => {
     return new Promise(async (resolve, reject) => {

@@ -17,7 +17,7 @@ module.exports = FFprobe = {
   /**
    * FFprobe the temp file and return stream info in an array
    * @param {{string}} tempFilePath - Path to temp file
-   * @return {{Array}} - Return the stream info in an array
+   * @return {{Array<Object>}} - Return the stream info in an array
    */
   getStreams: tempFilePath => {
     return new Promise(async (resolve, reject) => {
@@ -35,9 +35,9 @@ module.exports = FFprobe = {
 
   /**
   * Determines which video flag to use for FFmpeg.prepare()
-  * @param {{Array}} streams - Array of streams from temp file
+  * @param {{Array<Object>}} streams - Array of streams from temp file
   * @param {{Object}} job - Current job
-  * @return {{string}} - Returns the video flag to be used in FFmpeg.prepare()
+  * @return {{Promise<string>}} - Returns the video flag to be used in FFmpeg.prepare()
   */
   getVideoFlags: (streams, job) => {
     return new Promise((resolve, reject) => {
@@ -60,9 +60,9 @@ module.exports = FFprobe = {
 
   /**
    * Determines which audio flag to use for FFmpeg.prepare()
-   * @param {{Array}} streams - Array of streams from temp file
+   * @param {{Array<Object>}} streams - Array of streams from temp file
    * @param {{Object}} job - Current job
-   * @return {{string}} - Returns the audio flag to be used in FFmpeg.prepare()
+   * @return {{Promise<string>}} - Returns the audio flag to be used in FFmpeg.prepare()
    */
   getAudioFlags: (streams, job) => {
     return new Promise((resolve, reject) => {
@@ -93,7 +93,7 @@ module.exports = FFprobe = {
 
   /**
    * Determines if temp file has subtitle stream or not
-   * @param {{Array}} streams - Array of streams from temp file
+   * @param {{Array<Object>}} streams - Array of streams from temp file
    * @return {{boolean}}
    */
   hasSub: streams => {
@@ -111,9 +111,9 @@ module.exports = FFprobe = {
   /**
    * Returns info about the subtitle stream specified in job.
    * Otherwise returns info about first available subtitle stream.
-   * @param {{Array}} streams - Array of streams from temp file
+   * @param {{Array<Object>}} streams - Array of streams from temp file
    * @param {{Object}} job - Current job
-   * @return {{Object}} - Returns subtitle stream info
+   * @return {{Promise<Object>}} - Returns subtitle stream info
    */
   getSubStreamInfo: (streams, job) => {
     return new Promise((resolve, reject) => {

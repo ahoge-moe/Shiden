@@ -13,7 +13,7 @@ module.exports = kitsu = {
   /**
    * Query Kitsu by show name and return the kitsu slug
    * @param {{string}} showName - Name of the shoe
-   * @return {{string}} - Returns the kitsu slug
+   * @return {{Promise<string>}} - Returns the kitsu slug
    */
   query: showName => {
     return new Promise(async (resolve, reject) => {

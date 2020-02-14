@@ -105,7 +105,7 @@ module.exports = queueHandler = {
   },
 
   /**
-   * @return {{Array}} - Returns the entire queue
+   * @return {{Array<Object>}} - Returns the entire queue
    */
   getEntireQueue: () => {
     const data = fs.readFileSync(pathHandler.queueFile, { encoding: 'utf8' });

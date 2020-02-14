@@ -14,7 +14,7 @@ module.exports = anilist = {
   /**
    * Query by show name and return the response
    * @param {{string}} showName - Name of the show
-   * @return {{Object}} - Returns the response from Anilist, otherwise return undefined
+   * @return {{Promise<Object>}} - Returns the response from Anilist, otherwise return undefined
    */
   query: showName => {
     return new Promise(async (resolve, reject) => {

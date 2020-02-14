@@ -38,6 +38,9 @@ app.listen(CONFIG.express.port, () => {
     // If "--clean" flag is passed, remove queue file
     if (process.argv.slice(2).includes('--clean')) queueHandler.wipe();
 
+    // Delete files in folder/
+    tempHandler.destroy();
+
     // If queue has jobs, start processing right away
     logger.debug('Checking if queue is empty');
     if (!queueHandler.isEmpty()) processNextJob();
