@@ -60,7 +60,7 @@ module.exports = rclone = {
    * Check if a file exist in a remote storage
    * @param {{string}} remoteName - remote storage name from rclone config
    * @param {{string}} sourceFile - file name to be checked
-   * @return {{boolean}}
+   * @return {{Promise<boolean>}}
    */
   fileExists: (remoteName, sourceFile) => {
     return new Promise(async (resolve, reject) => {

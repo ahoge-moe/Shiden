@@ -26,7 +26,7 @@ module.exports = pathHandler = {
    */
   parseRclonePaths: (arg1, arg2) => {
     if (arg1.endsWith(':')) return arg1 += arg2.startsWith('/') ? arg2.slice(1) : arg2;
-    else return arg1 = path.join(arg1, arg2);
+    else return path.join(arg1, arg2);
   },
 
 };

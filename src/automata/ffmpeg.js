@@ -22,7 +22,7 @@ module.exports = FFmpeg = {
    * Extract video and audio streams into temp_prepped
    * @param {{string}} tempFilePath - Path to temp file
    * @param {{string}} tempPreppedFilePath - Path to temp_prepped file
-   * @param {{Array}} streams - Array of streams from temp file, extracted with FFprobe
+   * @param {{Array<Object>}} streams - Array of streams from temp file, extracted with FFprobe
    * @param {{Object}} job - Current job
    * @return {{void}}
    */

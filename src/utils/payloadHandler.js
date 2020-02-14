@@ -7,7 +7,7 @@ module.exports = payloadHandler = {
   /**
    * Checks if payload has all required keys
    * @param {{Object}} payload
-   * @param {{Array}} requiredKeys
+   * @param {{Array<string>}} requiredKeys
    * @param {{boolean}}
    */
   payloadHasAllRequiredKeys: (payload, requiredKeys) => {
