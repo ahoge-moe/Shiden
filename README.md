@@ -41,16 +41,17 @@ npm start
   }
   ``` 
 
-| Field | Required | Type | Default | Description |
-| --- | --- | --- | --- | --- |
-| sourceFile | Yes | String | | Full path to the source file in the rclone remote |
-| destFolder | Yes | String | | Full path to the destination folder in the rclone remote |
-| showName | No | String | | Name of the show used for fetching metadata |
-| videoIndex | No | Number | First available | Stream index that will be used for video |
-| audioIndex | No | Number | First available | Stream index that will be used for audio |
-| subIndex | No | Number | First available | Stream index that will be used for subtitle |
-| fontStyle | No | String | NotoSansJP-Medium | Font style used for text based hardsub |
-| fontSize | No | Number | 24 | Font size used for text based hardsub |
+Field | Required | Description | Type | Default 
+--- | --- | --- | --- | --- |
+sourceFile | Yes | Full path to the source file in the rclone remote | String |
+destFolder | Yes | Full path to the destination folder in the rclone remote | String | 
+showName | No | Name of the show used for fetching metadata | String |
+subtitleFile | No | Full path to an external subtitle file | String | Subtitle stream embedded in video file 
+videoIndex | No | Stream index that will be used for video | Number | First available 
+audioIndex | No | Stream index that will be used for audio | Number | First available 
+subIndex | No | Stream index that will be used for subtitle | Number | First available 
+fontStyle | No | Font style used for text based hardsub | String | NotoSansJP-Medium 
+fontSize | No | Font size used for text based hardsub | Number | 24
 
 Available font styles
 - 02UtsukushiMincho

@@ -31,6 +31,7 @@ module.exports = router.post('/hardsub/file', async (req, res) => {
       sourceFile: 'string',
       destFolder: 'string',
       showName: 'string',
+      subtitleFile: 'string',
       videoIndex: 'number',
       audioIndex: 'number',
       subIndex: 'number',
