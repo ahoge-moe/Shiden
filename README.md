@@ -50,6 +50,7 @@ npm start
 | audioIndex | No | Number | First available | Stream index that will be used for audio |
 | subIndex | No | Number | First available | Stream index that will be used for subtitle |
 | fontStyle | No | String | NotoSansJP-Medium | Font style used for text based hardsub |
+| fontSize | No | Number | 24 | Font size used for text based hardsub |
 
 Available font styles
 - 02UtsukushiMincho
