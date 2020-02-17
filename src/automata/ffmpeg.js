@@ -116,9 +116,10 @@ module.exports = FFmpeg = {
       try {
         // Defaults to NotoSansJP-Medium fontstyle if not provided in job
         const fontName = (job.fontStyle) ? job.fontStyle : 'NotoSansJP-Medium';
+        const fontSize = (job.fontSize) ? job.fontSize : 24;
 
         let command = [`${pathHandler.ffmpegBinary} -i "${tempPreppedFilePath}"`];
-        command.push(`-vf subtitles=${assFilePath}:force_style='FontName=${fontName}:fontsdir=${assetsFolder}'`);
+        command.push(`-vf "subtitles=${assFilePath}:force_style='FontName=${fontName},Fontsize=${fontSize}:fontsdir=${assetsFolder}'"`);
         command.push(`-strict -2 -y`);
         command.push(master ? '' : '-t 300');
         command.push(`"${outputFilePath}"`);

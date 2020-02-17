@@ -35,6 +35,7 @@ module.exports = router.post('/hardsub/file', async (req, res) => {
       audioIndex: 'number',
       subIndex: 'number',
       fontStyle: 'string',
+      fontSize: 'number',
     }
     if (!payloadHandler.payloadHasValidSchema(payload, schema)) return res.status(400).send('Invalid schema');
 
