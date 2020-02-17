@@ -26,7 +26,7 @@ module.exports = rclone = {
         let validSource = false;
         for (remoteName of CONFIG.remote.downloadSource) {
           if (await rclone.fileExists(remoteName, job.sourceFile)) {
-            logger.success(`Found file in ${logger.colors.bright}${remoteName}`);
+            logger.success(`Found video file in ${logger.colors.bright}${remoteName}`);
             validSource = remoteName;
             break;
           }
@@ -34,7 +34,7 @@ module.exports = rclone = {
 
         // If file not found in any source, reject
         if (!validSource) {
-          logger.error(`No sources contained the file, cancelling operation`);
+          logger.error(`No sources contained the video file, cancelling operation.`);
           return reject(600);
         }
 
@@ -113,6 +113,52 @@ module.exports = rclone = {
         logger.error(e);
         logger.error(`rclone failed during upload`);
         return reject(601);
+      }
+    });
+  },
+
+  /**
+   * Downloads the subtitle file from remote to temp folder
+   * Returns true or false for succeeding in downloading the file
+   * @param {{Object}} job
+   * @return {{Promise<boolean>}}
+   */
+  downloadSubtitleFile: job => {
+    return new Promise((resolve, reject) => {
+      try {
+        if (job.subtitleFile) {
+          logger.info('Job has specified subtitle file. Downloading subtitle file...', logger.colors.green);
+          let validSource = false;
+          for (remoteName of CONFIG.remote.downloadSource) {
+            if (await rclone.fileExists(remoteName, job.subtitleFile)) {
+              logger.success(`Found subtitle file in ${logger.colors.bright}${remoteName}`);
+              validSource = remoteName;
+              break;
+            }
+          }
+
+          // If file not found in any source, reject
+          if (!validSource) {
+            logger.error(`No sources contained the subtitle file, skipping this download.`);
+            return resolve(false);
+          }
+
+          const subtitleFile = pathHandler.parseRclonePaths(validSource, job.subtitleFile);
+          const tempFolderPath = tempHandler.getTempFolderPath();
+
+          logger.info(`Downloading ${logger.colors.bright}${subtitleFile}`);
+          const command = `${pathHandler.rcloneBinary} copy "${subtitleFile}" "${tempFolderPath}" ${CONFIG.flags.rclone}`;
+          await promisefied.exec(command);
+
+          logger.success(`Download completed`);
+          return resolve(true);
+        }
+        else {
+          return resolve(false);
+        }
+      }
+      catch (e) {
+        return resolve(false);
       }
     });
   },
