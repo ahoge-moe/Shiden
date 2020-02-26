@@ -84,7 +84,7 @@ const buildEmbeds = (anilistResponse, kitsuResponse, aniDBID, errorCode, job) =>
     const successEmbed = {
       embeds: [
         {
-          title: path.basename(job.sourceFile),
+          title: path.basename(job.inputFile),
           timestamp: (new Date()).toISOString(),
           color: purple,
           footer: {
@@ -117,7 +117,7 @@ const buildEmbeds = (anilistResponse, kitsuResponse, aniDBID, errorCode, job) =>
   const successEmbedNoMetadata = {
     embeds: [
       {
-        title: path.basename(job.sourceFile),
+        title: path.basename(job.inputFile),
         timestamp: (new Date()).toISOString(),
         color: purple,
         image: {

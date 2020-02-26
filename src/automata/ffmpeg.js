@@ -103,7 +103,7 @@ module.exports = FFmpeg = {
   },
 
   /**
-   * Hardsub tempPreppedFilePath with assFile while forcing fontstyle inside assetsFolder
+   * Hardsub preppedInputFile with assFile while forcing fontstyle inside assetsFolder
    * @param {{string}} inputFile - Path to input file
    * @param {{string}} subtitleFile - Path to subtitle file
    * @param {{string}} assetsFolder - Path to assets folder
@@ -135,7 +135,7 @@ module.exports = FFmpeg = {
   },
 
   /**
-   * Hardsub tempPreppedFile with bitmap based subtitle stream
+   * Hardsub preppedInputFile with bitmap based subtitle stream
    * @param {{string}} inputFileOne - Path to first input file
    * @param {{string}} inputFileTwo - Path to second input file
    * @param {{number}} index - Index of the subtitle stream

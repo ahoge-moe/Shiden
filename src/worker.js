@@ -26,11 +26,11 @@ module.exports = processNextJob = async () => {
     await rclone.download(job);
 
     // Download subtitle file if job has specified it
-    const downloadSubtitleFileSuccess = await rclone.downloadSubtitleFile(job);
+    await rclone.downloadSubtitleFile(job);
 
     // Step 2 Hardsub
     logger.info('[2/4] Executing pipeline...', logger.colors.green)
-    await pipeline.x264(job, downloadSubtitleFileSuccess);
+    await pipeline.x264(job);
 
     // Step 3 Upload
     logger.info('[3/4] Uploading...', logger.colors.green);

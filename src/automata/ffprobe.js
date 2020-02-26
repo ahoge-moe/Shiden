@@ -16,13 +16,13 @@ const pathHandler = require(path.join(process.cwd(), 'src/utils/pathHandler.js')
 module.exports = FFprobe = {
   /**
    * FFprobe the temp file and return stream info in an array
-   * @param {{string}} tempFilePath - Path to temp file
+   * @param {{string}} inputFile - Path to temp file
    * @return {{Promise<Array<Object>>}} - Return the stream info in an array
    */
-  getStreams: tempFilePath => {
+  getStreams: inputFile => {
     return new Promise(async (resolve, reject) => {
       try {
-        const command = `${pathHandler.ffprobeBinary} -print_format json -show_streams -v quiet -i "${tempFilePath}"`;
+        const command = `${pathHandler.ffprobeBinary} -print_format json -show_streams -v quiet -i "${inputFile}"`;
         const response = await promisefied.exec(command);
         return resolve(JSON.parse(response).streams);
       }
@@ -115,7 +115,7 @@ module.exports = FFprobe = {
    * @param {{Object}} job - Current job
    * @return {{Promise<Object>}} - Returns subtitle stream info
    */
-  getSubStreamInfo: (streams, job) => {
+  determineSubStream: (streams, job) => {
     return new Promise((resolve, reject) => {
       if (job.subIndex) {
         logger.info(`Payload has specified subtitle index: ${logger.colors.cyan}${job.subIndex}`);
@@ -133,24 +133,6 @@ module.exports = FFprobe = {
       const firstAvailableSubtitleStream = streams.filter(stream => stream.codec_type === 'subtitle')[0];
       return resolve(firstAvailableSubtitleStream);
     });
-  },
-
-  /**
-   * Determines if provided subtitle file is video file or not
-   * @param {{string}} subtitleFile - Path to subtitle file
-   * @return {{boolean}}
-   */
-  subtitleFileIsVideo: async subtitleFile => {
-    const streams = await FFprobe.getStreams(subtitleFile);
-    const videoStream = streams.filter(stream => stream.codec_type === 'video')[0];
-    if (videoStream) {
-      logger.info(`Provided subtitle file is a video file.`);
-      return true;
-    }
-    else {
-      logger.info(`Provided subtitle file is not a video file.`);
-      return false;
-    }
   },
 
 };

@@ -36,17 +36,17 @@ npm start
   - Body:
    ```json
   {
-      "sourceFile": "TODO/FILE NAME.MKV",
-      "destFolder": "DONE",
+      "inputFile": "TODO/FILE NAME.MKV",
+      "outputFolder": "DONE",
   }
   ``` 
 
 Field | Required | Description | Type | Default 
 --- | --- | --- | --- | --- |
-sourceFile | Yes | Full path to the source file in the rclone remote | String |
-destFolder | Yes | Full path to the destination folder in the rclone remote | String | 
+inputFile | Yes | Full path to the source video file in the rclone remote | String |
+outputFolder | Yes | Full path to the destination folder in the rclone remote | String | 
 showName | No | Name of the show used for fetching metadata | String |
-subtitleFile | No | Full path to an external subtitle file | String | Subtitle stream embedded in video file 
+subtitleFile | No | Full path to a subtitle file | String | Subtitle stream embedded in video file 
 videoIndex | No | Stream index that will be used for video | Number | First available 
 audioIndex | No | Stream index that will be used for audio | Number | First available 
 subIndex | No | Stream index that will be used for subtitle | Number | First available 
