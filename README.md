@@ -46,12 +46,12 @@ Field | Required | Description | Type | Default
 inputFile | Yes | Full path to the source video file in the rclone remote | String |
 outputFolder | Yes | Full path to the destination folder in the rclone remote | String | 
 showName | No | Name of the show used for fetching metadata | String |
-subtitleFile | No | Full path to a subtitle file | String | Subtitle stream embedded in video file 
-videoIndex | No | Stream index that will be used for video | Number | First available 
-audioIndex | No | Stream index that will be used for audio | Number | First available 
-subIndex | No | Stream index that will be used for subtitle | Number | First available 
+subtitleFile | No | Full path to a subtitle file | String | Subtitle stream embedded in inputFile 
+videoIndex | No | Video stream index that will be used from inputFile | Number | First available video stream
+audioIndex | No | Audio stream index that will be used from inputFile | Number | First available audio stream
+subIndex | No | Subtitle stream index that will be used from inputFile (will be used from subtitleFile instead if specified) | Number | First available subtitle stream
 fontStyle | No | Font style used for text based hardsub | String | NotoSansJP-Medium 
-fontSize | No | Font size used for text based hardsub | Number | 24
+fontSize | No | Font size used for text based hardsub | Number | 36
 
 Available font styles
 - 02UtsukushiMincho
