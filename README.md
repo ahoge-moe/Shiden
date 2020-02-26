@@ -49,7 +49,7 @@ showName | No | Name of the show used for fetching metadata | String |
 subtitleFile | No | Full path to a subtitle file | String | Subtitle stream embedded in inputFile 
 videoIndex | No | Video stream index that will be used from inputFile | Number | First available video stream
 audioIndex | No | Audio stream index that will be used from inputFile | Number | First available audio stream
-subIndex | No | Subtitle stream index that will be used from inputFile (will be used from subtitleFile instead if specified) | Number | First available subtitle stream
+subIndex | No | Subtitle stream index that will be used from inputFile (will be used from subtitleFile instead if provided) | Number | First available subtitle stream
 fontStyle | No | Font style used for text based hardsub | String | NotoSansJP-Medium 
 fontSize | No | Font size used for text based hardsub | Number | 36
 
