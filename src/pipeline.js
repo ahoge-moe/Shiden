@@ -1,7 +1,7 @@
 /**
  * @module pipeline
- * This module handles the logic of choosing which FFmpeg command to use
- * for the current job. It uses FFprobe to probe the info of the video file.
+ * This module handles the logic flow of choosing which 
+ * FFmpeg command to use for the current job.
  */
 
 // Import node modules
@@ -21,47 +21,67 @@ module.exports = pipeline = {
     return new Promise(async (resolve, reject) => {
       try {
         // Declare some variables
-        const tempFolderPath = tempHandler.getTempFolderPath();
-        const originalFileName = path.basename(job.sourceFile);
-        const ext = path.extname(originalFileName);
-        const originalFilePath = path.join(tempFolderPath, originalFileName);
-        const tempFilePath = path.join(tempFolderPath, `temp${ext}`);
-        const tempPreppedFilePath = path.join(tempFolderPath, `temp_prepped${ext}`);
-        const assFilePath = path.join(tempFolderPath, `sub.ass`);
-        const outputFilePath = path.join(tempFolderPath, originalFileName.replace(ext, '.mp4'));
+        const tempFolder = tempHandler.getTempFolderPath();
 
-        // Step 1: Rename file to "temp"
-        logger.info(`Renaming ${logger.colors.bright}${originalFileName}${logger.colors.reset} to ${logger.colors.bright}${path.basename(tempFilePath)}`);
-        fs.renameSync(originalFilePath, tempFilePath);
+        const inputFileName = path.basename(job.inputFile);
+        const inputFile = path.join(tempFolder, inputFileName);
 
-        // Step 2: FFprobe to extract info from file
-        logger.info(`Probing ${logger.colors.bright}${path.basename(tempFilePath)}`);
-        const streams = await FFprobe.getStreams(tempFilePath);
+        const ext = path.extname(inputFileName);
+        const tempInputFile = path.join(tempFolder, `temp_input${ext}`);
+        const preppedInputFile = path.join(tempFolder, `prepped_input${ext}`);
+        const assFile = path.join(tempFolder, `sub.ass`);
+        const outputFile = path.join(tempFolder, inputFileName.replace(ext, '.mp4'));
+        const outputFileName = path.basename(outputFile);
 
-        // Step 3: Extract video and audio streams into "temp_prepped"
-        logger.info(`Preparing ${logger.colors.bright}${path.basename(tempFilePath)}`);
-        await FFmpeg.prepare(tempFilePath, tempPreppedFilePath, streams, job);
+        // Step 1: Rename input file
+        logger.info(`Renaming ${inputFileName} to ${path.basename(tempInputFile)}`);
+        fs.renameSync(inputFile, tempInputFile);
 
-        if (!FFprobe.hasSub(streams)) {
-          // Step 4: If no subtitle stream, simply change container
-          logger.info(`Changing container`);
-          await FFmpeg.changeContainer(tempPreppedFilePath, outputFilePath);
-        }
-        else {
-          const subStream = await FFprobe.getSubStreamInfo(streams, job);
-          logger.info(`Codec name: ${subStream.codec_name}`);
+        // Step 2: Extract streams info from input file
+        logger.info(`Probing ${path.basename(tempInputFile)}`);
+        const inputFileStreams = await FFprobe.getStreams(tempInputFile);
+
+        // Step 3: Prepare a file that only has 1 video stream and 1 audio stream
+        logger.info(`Preparing ${path.basename(preppedInputFile)}`);
+        await FFmpeg.prepare(tempInputFile, preppedInputFile, inputFileStreams, job);
+
+        // If job has specified subtitle file
+        if (job.subtitleFile) {
+          const subtitleFileName = path.basename(job.subtitleFile);
+          const subtitleFile = path.join(tempFolder, subtitleFileName);
+          const subFileExt = path.extname(subtitleFileName);
+          const tempSubFile = path.join(tempFolder, `temp_sub${subFileExt}`);
+
+          // Rename subtitle file
+          logger.info(`Renaming ${subtitleFile} to ${path.basename(tempSubFile)}`);
+          fs.renameSync(subtitleFile, tempSubFile);
+
+          // Extract streams info from subtitle file
+          logger.info(`Probing ${path.basename(tempSubFile)}`);
+          const subtitleFileStreams = await FFprobe.getStreams(tempSubFile);
+
+          if (!FFprobe.hasSub(subtitleFileStreams)) {
+            logger.error(`The job specified subtitle file has no subtitle stream`);
+            return reject(804);
+          }
+
+          // Determine which sub stream to use
+          const subStream = await FFprobe.determineSubStream(subtitleFileStreams, job);
 
           try {
             // First attempt with text based hardsub
             logger.info(`Trying with text based hardsub`);
 
-            // Step 4.1: Extract subtitle stream into sub.ass
+            // Extract subtitle stream
             logger.info(`Extracting subtitle file`);
-            await FFmpeg.extractSubFile(tempFilePath, subStream.index, assFilePath);
+            await FFmpeg.extractSubFile(tempSubFile, subStream.index, assFile);
 
-            // Step 4.2: Hardsub temp_prepped with -vf subtitles=sub.ass
+            // Hardsub with text based
             logger.info(`Hardsubbing with text based subtitle`);
-            await FFmpeg.hardsubText(tempPreppedFilePath, assFilePath, pathHandler.assetsFolder, outputFilePath, job);
+            await FFmpeg.hardsubText(preppedInputFile, assFile, pathHandler.assetsFolder, outputFile, job);
+
+            logger.success(`Hardsubbing completed`);
+            return resolve(outputFileName);
           }
           catch (e) {
             // If text based hardsub failed, attempt again with bitmap based hardsub
@@ -69,9 +89,11 @@ module.exports = pipeline = {
               logger.error(`Failed with text based hardsub`);
               logger.info(`Trying with bitmap based hardsub`);
 
-              // Step 4.1: Hardsub temp_prepped with -filter_complex overlay
               logger.info(`Hardsubbing with bitmap based subtitle`);
-              await FFmpeg.hardsubBitmap(tempPreppedFilePath, tempFilePath, subStream.index, outputFilePath);
+              await FFmpeg.hardsubBitmap(preppedInputFile, tempSubFile, subStream.index, outputFile);
+
+              logger.success(`Hardsubbing completed`);
+              return resolve(outputFileName);
             }
             catch (e) {
               // If bitmap based hardsub failed, reject with its error code
@@ -82,8 +104,55 @@ module.exports = pipeline = {
           }
         }
 
-        logger.success(`Hardsubbing completed`);
-        return resolve();
+        // If job did not specify subtitle file
+        if (!FFprobe.hasSub(inputFileStreams)) {
+          // Step 4: If no subtitle stream, simply change container
+          logger.info(`Changing container`);
+          await FFmpeg.changeContainer(preppedInputFile, outputFile);
+
+          logger.success(`Hardsubbing completed`);
+          return resolve(outputFileName);
+        }
+        else {
+          const subStream = await FFprobe.determineSubStream(inputFileStreams, job);
+          logger.info(`Codec name: ${subStream.codec_name}`);
+
+          try {
+            // First attempt with text based hardsub
+            logger.info(`Trying with text based hardsub`);
+
+            // Step 4.1: Extract subtitle stream into sub.ass
+            logger.info(`Extracting subtitle file`);
+            await FFmpeg.extractSubFile(tempInputFile, subStream.index, assFile);
+
+            // Step 4.2: Hardsub temp_prepped with -vf subtitles=sub.ass
+            logger.info(`Hardsubbing with text based subtitle`);
+            await FFmpeg.hardsubText(preppedInputFile, assFile, pathHandler.assetsFolder, outputFile, job);
+
+            logger.success(`Hardsubbing completed`);
+            return resolve(outputFileName);
+          }
+          catch (e) {
+            // If text based hardsub failed, attempt again with bitmap based hardsub
+            try {
+              logger.error(`Failed with text based hardsub`);
+              logger.info(`Trying with bitmap based hardsub`);
+
+              // Step 4.1: Hardsub temp_prepped with -filter_complex overlay
+              logger.info(`Hardsubbing with bitmap based subtitle`);
+              await FFmpeg.hardsubBitmap(preppedInputFile, tempInputFile, subStream.index, outputFile);
+
+              logger.success(`Hardsubbing completed`);
+              return resolve(outputFileName);
+            }
+            catch (e) {
+              // If bitmap based hardsub failed, reject with its error code
+              // and let @worker handle it
+              logger.error(e);
+              return reject(e);
+            }
+          }
+        }
       }
       catch (e) {
         // Reject with the error code from FFmpeg or FFprobe

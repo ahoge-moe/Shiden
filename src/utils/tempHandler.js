@@ -30,10 +30,10 @@ module.exports = tempHandler = {
    */
   destroy: () => {
     logger.debug(`Emptying temp/`);
-    const tempFolderPath = tempHandler.getTempFolderPath();
-    const files = fs.readdirSync(tempFolderPath);
+    const tempFolder = tempHandler.getTempFolderPath();
+    const files = fs.readdirSync(tempFolder);
     for (file of files) {
-      fs.unlinkSync(path.join(tempFolderPath, file));
+      fs.unlinkSync(path.join(tempFolder, file));
     }
     return;
   },

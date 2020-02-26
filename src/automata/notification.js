@@ -20,20 +20,21 @@ const CONFIG = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 /**
  * Fetches metadata of the show and sends it to discord webhooks
  * @param {{Object}} job - Current job
+ * @param {{string}} outputFileName - Name of outputFile
  * @param {{number}} errorCode - error code from @worker
  * @return {{void}}
  */
-const send = async (job, errorCode) => {
+const send = async (job, outputFileName, errorCode) => {
   try {
     if (job.showName) {
       const anilistResponse = await anilist.query(job.showName);
       const kitsuResponse = await kitsu.query(job.showName);
       const aniDBID = await animeOfflineDatabase.query(anilistResponse);
-      const embed = buildEmbeds(anilistResponse, kitsuResponse, aniDBID, errorCode, job);
+      const embed = buildEmbeds(anilistResponse, kitsuResponse, aniDBID, errorCode, job, outputFileName);
       postToWebhook(errorCode, embed);
     }
     else {
-      const embed = buildEmbeds(undefined, undefined, undefined, errorCode, job);
+      const embed = buildEmbeds(undefined, undefined, undefined, errorCode, job, outputFileName);
       postToWebhook(errorCode, embed);
     }
     return;
@@ -53,7 +54,7 @@ const send = async (job, errorCode) => {
  * @param {{Object}} job 
  * @return {{Object}} - Returns an embed for successful job completion and one for failed job completion
  */
-const buildEmbeds = (anilistResponse, kitsuResponse, aniDBID, errorCode, job) => {
+const buildEmbeds = (anilistResponse, kitsuResponse, aniDBID, errorCode, job, outputFileName) => {
   // Color
   const purple = 8978687;
   const red = 16711680;
@@ -84,7 +85,7 @@ const buildEmbeds = (anilistResponse, kitsuResponse, aniDBID, errorCode, job) =>
     const successEmbed = {
       embeds: [
         {
-          title: path.basename(job.sourceFile),
+          title: outputFileName,
           timestamp: (new Date()).toISOString(),
           color: purple,
           footer: {
@@ -117,7 +118,7 @@ const buildEmbeds = (anilistResponse, kitsuResponse, aniDBID, errorCode, job) =>
   const successEmbedNoMetadata = {
     embeds: [
       {
-        title: path.basename(job.sourceFile),
+        title: outputFileName,
         timestamp: (new Date()).toISOString(),
         color: purple,
         image: {

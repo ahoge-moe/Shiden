@@ -16,13 +16,13 @@ const pathHandler = require(path.join(process.cwd(), 'src/utils/pathHandler.js')
 module.exports = FFprobe = {
   /**
    * FFprobe the temp file and return stream info in an array
-   * @param {{string}} tempFilePath - Path to temp file
-   * @return {{Array<Object>}} - Return the stream info in an array
+   * @param {{string}} inputFile - Path to temp file
+   * @return {{Promise<Array<Object>>}} - Return the stream info in an array
    */
-  getStreams: tempFilePath => {
+  getStreams: inputFile => {
     return new Promise(async (resolve, reject) => {
       try {
-        const command = `${pathHandler.ffprobeBinary} -print_format json -show_streams -v quiet -i "${tempFilePath}"`;
+        const command = `${pathHandler.ffprobeBinary} -print_format json -show_streams -v quiet -i "${inputFile}"`;
         const response = await promisefied.exec(command);
         return resolve(JSON.parse(response).streams);
       }
@@ -42,7 +42,7 @@ module.exports = FFprobe = {
   getVideoFlags: (streams, job) => {
     return new Promise((resolve, reject) => {
       if (job.videoIndex) {
-        logger.info(`Payload has specified video index: ${logger.colors.cyan}${job.videoIndex}`);
+        logger.info(`Payload has provided video index: ${logger.colors.cyan}${job.videoIndex}`);
         const videoStream = streams.filter(stream => stream.index == job.videoIndex)[0];
         if (videoStream && videoStream.codec_type === 'video') {
           return resolve(`-map 0:${job.videoIndex} -c:v copy`);
@@ -53,7 +53,7 @@ module.exports = FFprobe = {
         }
       }
 
-      logger.info(`Video index not specified in job. Using first available video stream.`);
+      logger.info(`Video index not provided in job. Using first available video stream.`);
       return resolve(`-map 0:v -c:v copy`);
     });
   },
@@ -67,7 +67,7 @@ module.exports = FFprobe = {
   getAudioFlags: (streams, job) => {
     return new Promise((resolve, reject) => {
       if (job.audioIndex) {
-        logger.info(`Payload has specified audio index: ${logger.colors.cyan}${job.audioIndex}`);
+        logger.info(`Payload has provided audio index: ${logger.colors.cyan}${job.audioIndex}`);
         const audioStream = streams.filter(stream => stream.index == job.audioIndex)[0];
         if (audioStream && audioStream.codec_type === 'audio') {
           return resolve(`-map 0:${job.audioIndex} -acodec aac -ab 320k`);
@@ -78,14 +78,14 @@ module.exports = FFprobe = {
         }
       }
 
-      logger.info(`Audio index not specified in job. Looking for stereo audio stream.`);
+      logger.info(`Audio index not provided in job. Looking for stereo audio stream.`);
       const stereoAudioStream = streams.filter(stream => stream.channels === 2)[0];
       if (stereoAudioStream) {
         logger.success(`Stereo audio stream found.`);
         return resolve(`-map 0:${stereoAudioStream.index} -acodec aac -ab 320k`);
       }
       else {
-        logger.error(`Stereo audio stream not found. Using first available audio strema.`);
+        logger.error(`Stereo audio stream not found. Using first available audio stream.`);
         return resolve(`-map 0:a -acodec aac -ab 320k`);
       }
     });
@@ -109,16 +109,16 @@ module.exports = FFprobe = {
   },
 
   /**
-   * Returns info about the subtitle stream specified in job.
+   * Returns info about the subtitle stream provided in job.
    * Otherwise returns info about first available subtitle stream.
    * @param {{Array<Object>}} streams - Array of streams from temp file
    * @param {{Object}} job - Current job
    * @return {{Promise<Object>}} - Returns subtitle stream info
    */
-  getSubStreamInfo: (streams, job) => {
+  determineSubStream: (streams, job) => {
     return new Promise((resolve, reject) => {
       if (job.subIndex) {
-        logger.info(`Payload has specified subtitle index: ${logger.colors.cyan}${job.subIndex}`);
+        logger.info(`Payload has provided subtitle index: ${logger.colors.cyan}${job.subIndex}`);
         const jobSpecifiedSubStream = streams.filter(stream => stream.index == job.subIndex)[0];
         if (jobSpecifiedSubStream && jobSpecifiedSubStream.codec_type === 'subtitle') {
           return resolve(jobSpecifiedSubStream);
@@ -129,7 +129,7 @@ module.exports = FFprobe = {
         }
       }
 
-      logger.info(`Subtitle index not specified in job. Using first available subtitle stream.`);
+      logger.info(`Subtitle index not provided in job. Using first available subtitle stream.`);
       const firstAvailableSubtitleStream = streams.filter(stream => stream.codec_type === 'subtitle')[0];
       return resolve(firstAvailableSubtitleStream);
     });

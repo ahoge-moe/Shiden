@@ -23,14 +23,15 @@ module.exports = router.post('/hardsub/file', async (req, res) => {
     const payload = await promisefied.jsonParse(req.body);
 
     // Check for required keys
-    const requiredKeys = ['sourceFile', 'destFolder'];
+    const requiredKeys = ['inputFile', 'outputFolder'];
     if (!payloadHandler.payloadHasAllRequiredKeys(payload, requiredKeys)) return res.status(400).send('Missing required key');
 
     // Check for schema
     const schema = {
-      sourceFile: 'string',
-      destFolder: 'string',
+      inputFile: 'string',
+      outputFolder: 'string',
       showName: 'string',
+      subtitleFile: 'string',
       videoIndex: 'number',
       audioIndex: 'number',
       subIndex: 'number',

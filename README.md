@@ -14,6 +14,14 @@ It downloads from and uploads to remote/local storages using **rclone**.
 ```bash
 git clone https://github.com/wizo06/Shiden.git
 ```
+ Select build
+```bash
+# For stable build
+git checkout master
+
+# For nightly build
+git checkout nightly
+```
 2. Download binaries, configure rclone, and install Nodejs dependencies
 ```bash
 ./prepare.sh
@@ -36,21 +44,22 @@ npm start
   - Body:
    ```json
   {
-      "sourceFile": "TODO/FILE NAME.MKV",
-      "destFolder": "DONE",
+      "inputFile": "TODO/FILE NAME.MKV",
+      "outputFolder": "DONE",
   }
   ``` 
 
-| Field | Required | Type | Default | Description |
-| --- | --- | --- | --- | --- |
-| sourceFile | Yes | String | | Full path to the source file in the rclone remote |
-| destFolder | Yes | String | | Full path to the destination folder in the rclone remote |
-| showName | No | String | | Name of the show used for fetching metadata |
-| videoIndex | No | Number | First available | Stream index that will be used for video |
-| audioIndex | No | Number | First available | Stream index that will be used for audio |
-| subIndex | No | Number | First available | Stream index that will be used for subtitle |
-| fontStyle | No | String | NotoSansJP-Medium | Font style used for text based hardsub |
-| fontSize | No | Number | 24 | Font size used for text based hardsub |
+Field | Required | Description | Type | Default 
+--- | --- | --- | --- | --- |
+inputFile | Yes | Full path to the source video file in the rclone remote | String |
+outputFolder | Yes | Full path to the destination folder in the rclone remote | String | 
+showName | No | Name of the show used for fetching metadata | String |
+subtitleFile | No | Full path to a subtitle file | String | Subtitle stream embedded in inputFile 
+videoIndex | No | Video stream index that will be used from inputFile | Number | First available video stream
+audioIndex | No | Audio stream index that will be used from inputFile | Number | First available audio stream
+subIndex | No | Subtitle stream index that will be used from inputFile (will be used from subtitleFile instead if provided) | Number | First available subtitle stream
+fontStyle | No | Font style used for text based hardsub | String | NotoSansJP-Medium 
+fontSize | No | Font size used for text based hardsub | Number | 36
 
 Available font styles
 - 02UtsukushiMincho
@@ -67,8 +76,9 @@ Available font styles
 
 | Code | Description |
 | --- | --- |
-| 600 | Rclone failed to download |
+| 600 | Rclone failed to download input file |
 | 601 | Rclone failed to upload |
+| 602 | Rclone failed to download subtitle file |
 | 700 | FFmpeg failed to prepare |
 | 701 | FFmpeg failed to change container |
 | 702 | FFmpeg failed to extract subtitle file |
@@ -78,6 +88,7 @@ Available font styles
 | 801 | FFprobe failed to return video flags |
 | 802 | FFprobe failed to return audio flags |
 | 803 | FFprobe failed to return info about subtitle stream |
+| 804 | FFprobe failed to detect subtitle stream in subtitle file |
 | 900 | promisefied.exec() exited with non-0 code |
 | 901 | promisefied.request() returned with error |
 | 902 | promisefied.jsonParse() failed to parse string because of SyntaxError |
