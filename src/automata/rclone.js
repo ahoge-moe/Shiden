@@ -20,7 +20,7 @@ module.exports = rclone = {
    * @param {{Object}} job - Current processing job
    * @return {{void}}
    */
-  download: job => {
+  downloadInputFile: job => {
     return new Promise(async (resolve, reject) => {
       try {
         let validSource = false;
@@ -92,12 +92,11 @@ module.exports = rclone = {
    * @param {{Object}} job - Current processing job
    * @return {{void}}
    */
-  upload: job => {
+  upload: (job, outputFileName) => {
     return new Promise(async (resolve, reject) => {
       try {
         const tempFolder = tempHandler.getTempFolderPath();
-        const ext = path.extname(job.inputFile);
-        const transcodedFile = path.join(tempFolder, path.basename(job.inputFile.replace(ext, '.mp4')));
+        const transcodedFile = path.join(tempFolder, outputFileName);
 
         for (remoteName of CONFIG.remote.uploadDestination) {
           const destination = pathHandler.parseRclonePaths(remoteName, job.outputFolder);

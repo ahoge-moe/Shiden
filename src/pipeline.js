@@ -31,6 +31,7 @@ module.exports = pipeline = {
         const preppedInputFile = path.join(tempFolder, `prepped_input${ext}`);
         const assFile = path.join(tempFolder, `sub.ass`);
         const outputFile = path.join(tempFolder, inputFileName.replace(ext, '.mp4'));
+        const outputFileName = path.basename(outputFile);
 
         // Step 1: Rename input file
         logger.info(`Renaming ${inputFileName} to ${path.basename(tempInputFile)}`);
@@ -80,7 +81,7 @@ module.exports = pipeline = {
             await FFmpeg.hardsubText(preppedInputFile, assFile, pathHandler.assetsFolder, outputFile, job);
 
             logger.success(`Hardsubbing completed`);
-            return resolve();
+            return resolve(outputFileName);
           }
           catch (e) {
             // If text based hardsub failed, attempt again with bitmap based hardsub
@@ -92,7 +93,7 @@ module.exports = pipeline = {
               await FFmpeg.hardsubBitmap(preppedInputFile, tempSubFile, subStream.index, outputFile);
 
               logger.success(`Hardsubbing completed`);
-              return resolve();
+              return resolve(outputFileName);
             }
             catch (e) {
               // If bitmap based hardsub failed, reject with its error code
@@ -110,7 +111,7 @@ module.exports = pipeline = {
           await FFmpeg.changeContainer(preppedInputFile, outputFile);
 
           logger.success(`Hardsubbing completed`);
-          return resolve();
+          return resolve(outputFileName);
         }
         else {
           const subStream = await FFprobe.determineSubStream(inputFileStreams, job);
@@ -129,7 +130,7 @@ module.exports = pipeline = {
             await FFmpeg.hardsubText(preppedInputFile, assFile, pathHandler.assetsFolder, outputFile, job);
 
             logger.success(`Hardsubbing completed`);
-            return resolve();
+            return resolve(outputFileName);
           }
           catch (e) {
             // If text based hardsub failed, attempt again with bitmap based hardsub
@@ -142,7 +143,7 @@ module.exports = pipeline = {
               await FFmpeg.hardsubBitmap(preppedInputFile, tempInputFile, subStream.index, outputFile);
 
               logger.success(`Hardsubbing completed`);
-              return resolve();
+              return resolve(outputFileName);
             }
             catch (e) {
               // If bitmap based hardsub failed, reject with its error code

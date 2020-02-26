@@ -14,6 +14,14 @@ It downloads from and uploads to remote/local storages using **rclone**.
 ```bash
 git clone https://github.com/wizo06/Shiden.git
 ```
+ Select build
+```bash
+# For stable build
+git checkout master
+
+# For nightly build
+git checkout nightly
+```
 2. Download binaries, configure rclone, and install Nodejs dependencies
 ```bash
 ./prepare.sh

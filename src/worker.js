@@ -23,22 +23,22 @@ module.exports = processNextJob = async () => {
   try {
     // Step 1 Download
     logger.info('[1/4] Downloading input file...', logger.colors.green);
-    await rclone.download(job);
+    await rclone.downloadInputFile(job);
 
     // Download subtitle file if job has specified it
     await rclone.downloadSubtitleFile(job);
 
     // Step 2 Hardsub
     logger.info('[2/4] Executing pipeline...', logger.colors.green)
-    await pipeline.x264(job);
+    const outputFileName = await pipeline.x264(job);
 
     // Step 3 Upload
     logger.info('[3/4] Uploading...', logger.colors.green);
-    await rclone.upload(job);
+    await rclone.upload(job, outputFileName);
 
     // Step 4 Notify
     logger.info('[4/4] Notifying...', logger.colors.green);
-    notification.send(job, undefined);
+    notification.send(job, outputFileName, undefined);
 
     // Delete files in folder/
     tempHandler.destroy();
@@ -56,7 +56,7 @@ module.exports = processNextJob = async () => {
 
     // Step 4 Notify
     logger.info('[4/4] Notifying...', logger.colors.green);
-    notification.send(job, errorCode);
+    notification.send(job, undefined, errorCode);
 
     // Delete files in folder/
     tempHandler.destroy();
