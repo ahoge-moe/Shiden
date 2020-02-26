@@ -121,7 +121,7 @@ module.exports = rclone = {
    * Downloads the subtitle file from remote to temp folder
    * Returns true or false for succeeding in downloading the file
    * @param {{Object}} job
-   * @return {{Promise<boolean>}}
+   * @return {{void}}
    */
   downloadSubtitleFile: job => {
     return new Promise((resolve, reject) => {
@@ -140,7 +140,7 @@ module.exports = rclone = {
           // If file not found in any source, reject
           if (!validSource) {
             logger.error(`No sources contained the subtitle file, skipping this download.`);
-            return resolve(false);
+            return reject(602);
           }
 
           const subtitleFile = pathHandler.parseRclonePaths(validSource, job.subtitleFile);
@@ -151,14 +151,14 @@ module.exports = rclone = {
           await promisefied.exec(command);
 
           logger.success(`Download completed`);
-          return resolve(true);
+          return resolve();
         }
         else {
-          return resolve(false);
+          return resolve();
         }
       }
       catch (e) {
-        return resolve(false);
+        return reject(602);
       }
     });
   },

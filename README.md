@@ -68,8 +68,9 @@ Available font styles
 
 | Code | Description |
 | --- | --- |
-| 600 | Rclone failed to download |
+| 600 | Rclone failed to download video file |
 | 601 | Rclone failed to upload |
+| 602 | Rclone failed to download subtitle file |
 | 700 | FFmpeg failed to prepare |
 | 701 | FFmpeg failed to change container |
 | 702 | FFmpeg failed to extract subtitle file |
