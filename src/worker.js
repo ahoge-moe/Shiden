@@ -22,7 +22,7 @@ module.exports = processNextJob = async () => {
 
   try {
     // Step 1 Download
-    logger.info('[1/4] Downloading video file...', logger.colors.green);
+    logger.info('[1/4] Downloading input file...', logger.colors.green);
     await rclone.download(job);
 
     // Download subtitle file if job has specified it

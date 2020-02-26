@@ -26,7 +26,7 @@ module.exports = rclone = {
         let validSource = false;
         for (remoteName of CONFIG.remote.downloadSource) {
           if (await rclone.fileExists(remoteName, job.inputFile)) {
-            logger.success(`Found video file in ${logger.colors.bright}${remoteName}`);
+            logger.success(`Found input file in ${logger.colors.bright}${remoteName}`);
             validSource = remoteName;
             break;
           }
@@ -34,7 +34,7 @@ module.exports = rclone = {
 
         // If file not found in any source, reject
         if (!validSource) {
-          logger.error(`No sources contained the video file, cancelling operation.`);
+          logger.error(`No sources contained the input file, cancelling operation.`);
           return reject(600);
         }
 
@@ -124,7 +124,7 @@ module.exports = rclone = {
    * @return {{void}}
    */
   downloadSubtitleFile: job => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       if (job.subtitleFile) {
         try {
           logger.info('Job has specified subtitle file. Downloading subtitle file...', logger.colors.green);
@@ -139,7 +139,7 @@ module.exports = rclone = {
 
           // If file not found in any source, reject
           if (!validSource) {
-            logger.error(`No sources contained the subtitle file, skipping this download.`);
+            logger.error(`No sources contained the subtitle file, cancelling operation.`);
             return reject(602);
           }
 

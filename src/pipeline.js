@@ -27,7 +27,7 @@ module.exports = pipeline = {
         const inputFile = path.join(tempFolder, inputFileName);
 
         const ext = path.extname(inputFileName);
-        const tempInputFile = path.join(tempFolder, `temp_input`);
+        const tempInputFile = path.join(tempFolder, `temp_input${ext}`);
         const preppedInputFile = path.join(tempFolder, `prepped_input${ext}`);
         const assFile = path.join(tempFolder, `sub.ass`);
         const outputFile = path.join(tempFolder, inputFileName.replace(ext, '.mp4'));
@@ -48,20 +48,26 @@ module.exports = pipeline = {
         if (job.subtitleFile) {
           const subtitleFileName = path.basename(job.subtitleFile);
           const subtitleFile = path.join(tempFolder, subtitleFileName);
-          const tempSubFile = path.join(tempFolder, 'temp_sub');
+          const subFileExt = path.extname(subtitleFileName);
+          const tempSubFile = path.join(tempFolder, `temp_sub${subFileExt}`);
+
+          // Rename subtitle file
+          logger.info(`Renaming ${subtitleFile} to ${path.basename(tempSubFile)}`);
+          fs.renameSync(subtitleFile, tempSubFile);
+
+          // Extract streams info from subtitle file
+          logger.info(`Probing ${path.basename(tempSubFile)}`);
+          const subtitleFileStreams = await FFprobe.getStreams(tempSubFile);
+
+          if (!FFprobe.hasSub(subtitleFileStreams)) {
+            logger.error(`The job specified subtitle file has no subtitle stream`);
+            return reject(804);
+          }
+
+          // Determine which sub stream to use
+          const subStream = await FFprobe.determineSubStream(subtitleFileStreams, job);
 
           try {
-            // Rename subtitle file
-            logger.info(`Renaming ${subtitleFile} to ${path.basename(tempSubFile)}`);
-            fs.renameSync(subtitleFile, tempSubFile);
-
-            // Extract streams info from subtitle file
-            logger.info(`Probing ${path.basename(tempSubFile)}`);
-            const subtitleFileStreams = await FFprobe.getStreams(tempSubFile);
-
-            // Determine which sub stream to use
-            const subStream = await FFprobe.determineSubStream(subtitleFileStreams, job);
-
             // First attempt with text based hardsub
             logger.info(`Trying with text based hardsub`);
 

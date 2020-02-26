@@ -68,7 +68,7 @@ Available font styles
 
 | Code | Description |
 | --- | --- |
-| 600 | Rclone failed to download video file |
+| 600 | Rclone failed to download input file |
 | 601 | Rclone failed to upload |
 | 602 | Rclone failed to download subtitle file |
 | 700 | FFmpeg failed to prepare |
@@ -80,6 +80,7 @@ Available font styles
 | 801 | FFprobe failed to return video flags |
 | 802 | FFprobe failed to return audio flags |
 | 803 | FFprobe failed to return info about subtitle stream |
+| 804 | FFprobe failed to detect subtitle stream in subtitle file |
 | 900 | promisefied.exec() exited with non-0 code |
 | 901 | promisefied.request() returned with error |
 | 902 | promisefied.jsonParse() failed to parse string because of SyntaxError |
