@@ -1,6 +1,6 @@
 /**
  * @module pipeline
- * This module handles the logic flow of choosing which 
+ * This module handles the logic flow of choosing which
  * FFmpeg command to use for the current job.
  */
 
@@ -90,7 +90,7 @@ module.exports = pipeline = {
               logger.info(`Trying with bitmap based hardsub`);
 
               logger.info(`Hardsubbing with bitmap based subtitle`);
-              await FFmpeg.hardsubBitmap(preppedInputFile, tempSubFile, subStream.index, outputFile);
+              await FFmpeg.hardsubBitmap(preppedInputFile, tempSubFile, subStream.index, outputFile, job);
 
               logger.success(`Hardsubbing completed`);
               return resolve(outputFileName);
@@ -140,7 +140,7 @@ module.exports = pipeline = {
 
               // Step 4.1: Hardsub temp_prepped with -filter_complex overlay
               logger.info(`Hardsubbing with bitmap based subtitle`);
-              await FFmpeg.hardsubBitmap(preppedInputFile, tempInputFile, subStream.index, outputFile);
+              await FFmpeg.hardsubBitmap(preppedInputFile, tempInputFile, subStream.index, outputFile, job);
 
               logger.success(`Hardsubbing completed`);
               return resolve(outputFileName);

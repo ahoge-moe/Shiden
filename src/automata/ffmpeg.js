@@ -118,6 +118,22 @@ module.exports = FFmpeg = {
         const fontName = (job.fontStyle) ? job.fontStyle : 'NotoSansJP-Medium';
         const fontSize = (job.fontSize) ? job.fontSize : 36;
 
+        // If job specified subtitle offset
+        if (job.subtitleOffset) {
+          logger.info(`Payload has provided offset number: ${logger.colors.cyan}${job.subtitleOffset}`);
+          const subFileExt = path.extname(subtitleFile);
+
+          let command = [`${pathHandler.ffmpegBinary} -itsoffset ${job.subtitleOffset} -i "${subtitleFile}"`];
+          command.push(`-c copy`);
+          command.push(`"offset${subFileExt}"`);
+          command = command.join(' ');
+          await promisefied.exec(command);
+
+          // Rename subtitle file
+          logger.info(`Renaming offset${subFileExt} to ${path.basename(subtitleFile)}`);
+          fs.renameSync(`offset${subFileExt}`, subtitleFile);
+        }
+
         let command = [`${pathHandler.ffmpegBinary} -i "${inputFile}"`];
         command.push(`-vf "subtitles=${subtitleFile}:force_style='FontName=${fontName},Fontsize=${fontSize}:fontsdir=${assetsFolder}'"`);
         command.push(`-strict -2 -y`);
@@ -142,10 +158,10 @@ module.exports = FFmpeg = {
    * @param {{string}} outputFile - Path to output file
    * @return {{void}}
    */
-  hardsubBitmap: (inputFileOne, inputFileTwo, index, outputFile) => {
+  hardsubBitmap: (inputFileOne, inputFileTwo, index, outputFile, job) => {
     return new Promise(async (resolve, reject) => {
       try {
-        let command = [`${pathHandler.ffmpegBinary} -i "${inputFileOne}" -i "${inputFileTwo}"`];
+        let command = [`${pathHandler.ffmpegBinary} -i "${inputFileOne}" -itsoffset ${job.subtitleOffset ? job.subtitleOffset : 0} -i "${inputFileTwo}"`];
         command.push(`-filter_complex "[0:v][1:${index}]overlay[v]"`);
         command.push(`-map "[v]"`);
         command.push(`-map 0:a -acodec aac -ab 320k`);
