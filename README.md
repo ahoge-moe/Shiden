@@ -14,14 +14,6 @@ It downloads from and uploads to remote/local storages using **rclone**.
 ```bash
 git clone https://github.com/wizo06/Shiden.git
 ```
- Select build
-```bash
-# For stable build
-git checkout master
-
-# For nightly build
-git checkout nightly
-```
 2. Download binaries, configure rclone, and install Nodejs dependencies
 ```bash
 ./prepare.sh
@@ -47,18 +39,19 @@ npm start
       "inputFile": "TODO/FILE NAME.MKV",
       "outputFolder": "DONE",
   }
-  ``` 
+  ```
 
-Field | Required | Description | Type | Default 
+Field | Required | Description | Type | Default
 --- | --- | --- | --- | --- |
 inputFile | Yes | Full path to the source video file in the rclone remote | String |
-outputFolder | Yes | Full path to the destination folder in the rclone remote | String | 
+outputFolder | Yes | Full path to the destination folder in the rclone remote | String |
 showName | No | Name of the show used for fetching metadata | String |
-subtitleFile | No | Full path to a subtitle file | String | Subtitle stream embedded in inputFile 
+subtitleFile | No | Full path to a subtitle file | String | Subtitle stream embedded in inputFile
+subtitleOffset | No | Number of seconds to offset the subtitle | Number | 0
 videoIndex | No | Video stream index that will be used from inputFile | Number | First available video stream
 audioIndex | No | Audio stream index that will be used from inputFile | Number | First available audio stream
 subIndex | No | Subtitle stream index that will be used from inputFile (will be used from subtitleFile instead if provided) | Number | First available subtitle stream
-fontStyle | No | Font style used for text based hardsub | String | NotoSansJP-Medium 
+fontStyle | No | Font style used for text based hardsub | String | NotoSansJP-Medium
 fontSize | No | Font size used for text based hardsub | Number | 36
 
 Available font styles
@@ -84,6 +77,7 @@ Available font styles
 | 702 | FFmpeg failed to extract subtitle file |
 | 703 | FFmpeg failed to hardsub with text-based flags |
 | 704 | FFmpeg failed to hardsub with bitmap-based flags |
+| 705 | FFmpeg failed to offset subtitle file |
 | 800 | FFprobe failed to extract stream info from file |
 | 801 | FFprobe failed to return video flags |
 | 802 | FFprobe failed to return audio flags |
