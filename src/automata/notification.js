@@ -7,10 +7,10 @@
 // Import node modules
 const path = require('path');
 const util = require('util');
+const logger = require('logger');
 require('toml-require').install({ toml: require('toml') });
 
 // Import custom modules
-const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 const anilist = require(path.join(process.cwd(), 'src/utils/anilist.js'));
 const kitsu = require(path.join(process.cwd(), 'src/utils/kitsu.js'));

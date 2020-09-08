@@ -7,10 +7,10 @@
 // Import node modules
 const express = require('express');
 const path = require('path');
+const logger = require('logger');
 require('toml-require').install({ toml: require('toml') });
 
 // Import custom modules
-const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js'));
 const processNextJob = require(path.join(process.cwd(), 'src/worker.js'));
 const CONFIG = require(path.join(process.cwd(), 'src/utils/configHandler.js'));

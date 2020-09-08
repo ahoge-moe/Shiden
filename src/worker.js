@@ -5,9 +5,9 @@
 
 // Import node modules
 const path = require('path');
+const logger = require('logger');
 
 // Import custom modules
-const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js'));
 const rclone = require(path.join(process.cwd(), 'src/automata/rclone.js'));
 const tempHandler = require(path.join(process.cwd(), 'src/utils/tempHandler.js'));

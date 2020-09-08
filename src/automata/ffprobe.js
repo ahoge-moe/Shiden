@@ -6,11 +6,11 @@
 
 // Import node modules
 const path = require('path');
+const logger = require('logger');
 require('toml-require').install({ toml: require('toml') });
 
 // Import custom modules
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
-const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const pathHandler = require(path.join(process.cwd(), 'src/utils/pathHandler.js'));
 
 module.exports = FFprobe = {

@@ -20,6 +20,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "js-yaml": "^3.13.1",
+    "logger": "github:wizo06/logger",
     "moment": "^2.24.0",
     "request": "^2.88.0",
     "toml-require": "^1.2.0"

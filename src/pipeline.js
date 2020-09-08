@@ -7,10 +7,10 @@
 // Import node modules
 const fs = require('fs');
 const path = require('path');
+const logger = require('logger');
 require('toml-require').install({ toml: require('toml') });
 
 // Import custom modules
-const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const tempHandler = require(path.join(process.cwd(), 'src/utils/tempHandler.js'));
 const FFprobe = require(path.join(process.cwd(), 'src/automata/ffprobe.js'));
 const FFmpeg = require(path.join(process.cwd(), 'src/automata/ffmpeg.js'));

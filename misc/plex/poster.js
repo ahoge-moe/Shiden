@@ -7,13 +7,13 @@
 // Import node modules
 const fs = require('fs');
 const path = require('path');
+const logger = require('logger');
 require('toml-require').install({ toml: require('toml') });
 
 // Import custom modules
 const Anilist = require(path.join(process.cwd(), 'src/shared/automata/anilist.js'));
 
 // Import utils
-const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 const Temp = require(path.join(process.cwd(), 'src/utils/temp.js'));
 const pathHandler = require(path.join(process.cwd(), 'src/utils/pathHandler.js'));

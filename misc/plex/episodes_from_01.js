@@ -2,10 +2,10 @@
  * @fileoverview Rename files of a specific show to start from episode 01
  */
 const path = require('path');
+const logger = require('logger');
 require('toml-require').install({ toml: require('toml') });
 
 // Import helpers
-const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 
 // Import config

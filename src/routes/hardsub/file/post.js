@@ -1,11 +1,11 @@
 // Import node modules
 const path = require('path');
+const logger = require('logger');
 const express = require('express');
 const router = new express.Router();
 
 // Import custom modules
 const authHandler = require(path.join(process.cwd(), 'src/utils/authHandler.js'));
-const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js'));
 const payloadHandler = require(path.join(process.cwd(), 'src/utils/payloadHandler.js'));
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));

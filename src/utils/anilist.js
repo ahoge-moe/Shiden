@@ -5,10 +5,10 @@
 
 // Import node modules
 const path = require('path');
+const logger = require('logger');
 
 // Import custom modules
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
-const logger = require(path.join(process.cwd(), 'src/utils/logger.js'));
 
 module.exports = anilist = {
   /**
