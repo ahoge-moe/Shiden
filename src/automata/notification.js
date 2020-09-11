@@ -16,6 +16,7 @@ const anilist = require(path.join(process.cwd(), 'src/utils/anilist.js'));
 const kitsu = require(path.join(process.cwd(), 'src/utils/kitsu.js'));
 const animeOfflineDatabase = require(path.join(process.cwd(), 'src/utils/animeOfflineDatabase.js'));
 const CONFIG = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
+const version = require(path.join(process.cwd(), 'package.json')).version;
 
 /**
  * Fetches metadata of the show and sends it to discord webhooks
@@ -72,8 +73,8 @@ const buildEmbeds = (anilistResponse, kitsuResponse, aniDBID, errorCode, job, ou
         url: 'https://github.com/wizo06/Shiden#error-codes',
         timestamp: (new Date()).toISOString(),
         color: red,
-        image: {
-          url: 'https://firebasestorage.googleapis.com/v0/b/shiden-e263a.appspot.com/o/Untitled-1-01.png?alt=media&token=ca800898-a8a4-4544-b5c2-52158026753f',
+        footer: {
+          text: `Shiden v${version}`,
         },
         fields: arrOfFields,
       },
@@ -89,16 +90,13 @@ const buildEmbeds = (anilistResponse, kitsuResponse, aniDBID, errorCode, job, ou
           timestamp: (new Date()).toISOString(),
           color: purple,
           footer: {
-            text: anilistResponse.title.romaji,
-          },
-          image: {
-            url: 'https://firebasestorage.googleapis.com/v0/b/shiden-e263a.appspot.com/o/Untitled-1-01.png?alt=media&token=ca800898-a8a4-4544-b5c2-52158026753f',
+            text: `Shiden v${version}`,
           },
           thumbnail: {
             url: anilistResponse.coverImage.extraLarge,
           },
           author: {
-            name: `Available now`,
+            name: anilistResponse.title.romaji,
           },
           fields: [
             {
@@ -121,14 +119,14 @@ const buildEmbeds = (anilistResponse, kitsuResponse, aniDBID, errorCode, job, ou
         title: outputFileName,
         timestamp: (new Date()).toISOString(),
         color: purple,
-        image: {
-          url: 'https://firebasestorage.googleapis.com/v0/b/shiden-e263a.appspot.com/o/Untitled-1-01.png?alt=media&token=ca800898-a8a4-4544-b5c2-52158026753f',
+        footer: {
+          text: `Shiden v${version}`,
         },
         thumbnail: {
           url: 'https://discordapp.com/assets/f8389ca1a741a115313bede9ac02e2c0.svg',
         },
         author: {
-          name: `Available now`,
+          name: anilistResponse.title.romaji,
         },
       },
     ],
