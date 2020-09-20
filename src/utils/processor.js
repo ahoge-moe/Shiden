@@ -1,5 +1,5 @@
 /**
- * @module worker
+ * @module processor
  * This module handles processing jobs from the queue
  */
 

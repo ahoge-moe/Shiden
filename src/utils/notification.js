@@ -25,25 +25,27 @@ const version = require(path.join(process.cwd(), 'package.json')).version;
  * @param {{number}} errorCode - error code from @worker
  * @return {{void}}
  */
-const send = async (job, outputFileName, errorCode) => {
-  try {
-    if (job.showName) {
-      const anilistResponse = await anilist.query(job.showName);
-      const kitsuResponse = await kitsu.query(job.showName);
-      const aniDBID = await animeOfflineDatabase.query(anilistResponse);
-      const embed = buildEmbeds(anilistResponse, kitsuResponse, aniDBID, errorCode, job, outputFileName);
-      postToWebhook(errorCode, embed);
+const send = (job, outputFileName, errorCode) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (job.showName) {
+        const anilistResponse = await anilist.query(job.showName);
+        const kitsuResponse = await kitsu.query(job.showName);
+        const aniDBID = await animeOfflineDatabase.query(anilistResponse);
+        const embed = buildEmbeds(anilistResponse, kitsuResponse, aniDBID, errorCode, job, outputFileName);
+        postToWebhook(errorCode, embed);
+      }
+      else {
+        const embed = buildEmbeds(undefined, undefined, undefined, errorCode, job, outputFileName);
+        postToWebhook(errorCode, embed);
+      }
+      resolve();
     }
-    else {
-      const embed = buildEmbeds(undefined, undefined, undefined, errorCode, job, outputFileName);
-      postToWebhook(errorCode, embed);
+    catch (e) {
+      logger.error(e);
+      resolve();
     }
-    return;
-  }
-  catch (e) {
-    logger.error(e);
-    return;
-  }
+  });
 };
 
 /**
