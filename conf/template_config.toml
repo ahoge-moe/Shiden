@@ -28,3 +28,9 @@ rclone = "--bwlimit 20M --config conf/rclone.conf"
 # ExpressJS settings
 [express]
 port = 64000
+
+# RabbitMQ settings
+[rabbitmq]
+host = "localhost"
+port = "5672"
+queue = ""
