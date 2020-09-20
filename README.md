@@ -1,12 +1,15 @@
 # About
-Shiden (紫電), meaning "purple lightning" in Japanese, is a web server (built with **ExpressJS**) that facilitates the automation of hardsubbing video files using **ffmpeg**.
-It downloads from and uploads to remote/local storages using **rclone**.
+Shiden (紫電), meaning "purple lightning" in Japanese, is an application for hardsubbing video files.
+
+# Features
+- Can be used as a web server to receive jobs via HTTP endpoints
+- Can be used as a *worker* that connects to a message broker
 
 # Requirements
 - x86_64 CPU architecture
 - Ubuntu
 - Node.js
-- npm
+- npm (comes with Node.js)
 
 # Getting Started
 
@@ -14,24 +17,35 @@ It downloads from and uploads to remote/local storages using **rclone**.
 ```bash
 git clone https://github.com/wizo06/Shiden.git
 ```
-2. Download binaries, configure rclone, and install Nodejs dependencies
+2. Download binaries and install Node.js dependencies
 ```bash
 ./prepare.sh
 ```
-3. Edit `conf/user_config.toml` and `conf/user_auth.yml`
-4. Run Shiden
+3. Configure rclone
 ```bash
-npm run express
+bin/rclone config --config conf/rclone.conf
+```
+4. Edit this file
+```bash
+nano conf/user_config.toml
+```
+5. Run as web server (option 1)
+```bash
+npm run web
+```
+5. Run as worker(option 2)
+```bash
+npm run worker
 ```
 
-# Routes
+# Endpoints
 
 ## `/hardsub/file`
 
 ### POST
   - Description: creates a job for one file
   - Headers:
-    - `Authorization: authorization_key_1`
+    - `Authorization: key_1`
     - `Content-Type: application/json`
   - Body:
    ```json
@@ -40,6 +54,7 @@ npm run express
       "outputFolder": "DONE",
   }
   ```
+  **NOte**: Shiden still expects these fields even when running as a *worker* of a message broker.
 
 Field | Required | Description | Type | Default
 --- | --- | --- | --- | --- |
@@ -86,29 +101,3 @@ Available font styles
 | 900 | promisefied.exec() exited with non-0 code |
 | 901 | promisefied.request() returned with error |
 | 902 | promisefied.jsonParse() failed to parse string because of SyntaxError |
-
-# Contribute
-
-## Run Shiden with Express
-1. Clone repo
-```bash
-git clone https://github.com/wizo06/Shiden.git
-```
-2. Download binaries, configure rclone, and install Nodejs dependencies
-```bash
-./prepare.sh
-```
-3. Checkout new branch
-```bash
-git checkout -b <new_branch>
-```
-4. Edit `conf/dev_config.toml` and `conf/dev_auth.yml`
-4. Run Shiden
-```bash
-npm run express
-```
-
-## Run tests
-```bash
-./test/express.sh
-```

@@ -97,14 +97,6 @@ else
   _success "Installed rclone"
 fi
 
-# Rclone config
-if [ -f conf/rclone.conf ]; then
-  _success "Found rclone.conf"
-else
-  _info "Configuring rclone ..."
-  bin/rclone config --config conf/rclone.conf
-fi
-
 # node_modules
 if [ -d node_modules ]; then
   _success "Found node modules/"
@@ -126,15 +118,6 @@ if [ "${branch_name}" == "master" ]; then
     _info "Please make the necessary changes in conf/user_config.toml"
   fi
 
-  if [ -f conf/user_auth.yml ]; then
-    _success "Found user_auth.yml"
-  else
-    _info "Creating user_auth.yml ..."
-    cp conf/template_auth.yml conf/user_auth.yml
-    _success "Created user_auth.yml"
-    _info "Please make the necessary changes in conf/user_auth.yml"
-  fi
-
 else
 
   if [ -f conf/dev_config.toml ]; then
@@ -144,15 +127,6 @@ else
     cp conf/template_config.toml conf/dev_config.toml
     _success "Created dev_config.toml"
     _info "Please make the necessary changes in conf/dev_config.toml"
-  fi
-
-  if [ -f conf/dev_auth.yml ]; then
-    _success "Found dev_auth.yml"
-  else
-    _info "Creating dev_auth.yml ..."
-    cp conf/template_auth.yml conf/dev_auth.yml
-    _success "Created dev_auth.yml"
-    _info "Please make the necessary changes in conf/dev_auth.yml"
   fi
 
 fi

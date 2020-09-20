@@ -15,7 +15,7 @@ const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js')
 const anilist = require(path.join(process.cwd(), 'src/utils/anilist.js'));
 const kitsu = require(path.join(process.cwd(), 'src/utils/kitsu.js'));
 const animeOfflineDatabase = require(path.join(process.cwd(), 'src/utils/animeOfflineDatabase.js'));
-const CONFIG = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
+const configHandler = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 const version = require(path.join(process.cwd(), 'package.json')).version;
 
 /**
@@ -146,7 +146,7 @@ const buildEmbeds = (anilistResponse, kitsuResponse, aniDBID, errorCode, job, ou
  */
 const postToWebhook = async (errorCode, embed) => {
   try {
-    for (webhook of CONFIG.notification.discordWebhooks) {
+    for (webhook of configHandler.loadConfigFile().notification.discordWebhooks) {
       const options = {
         url: webhook.url,
         method: 'POST',

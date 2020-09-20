@@ -69,7 +69,7 @@ module.exports = processNextJob = () => {
       // Check if queue has jobs and recursively process next job
       logger.debug('Checking if queue is empty');
       if (!queueHandler.isEmpty()) processNextJob();
-      resolve(); // TODO
+      reject();
     }
   });
 };

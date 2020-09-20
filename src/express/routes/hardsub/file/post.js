@@ -5,7 +5,7 @@ const express = require('express');
 const router = new express.Router();
 
 // Import custom modules
-const authHandler = require(path.join(process.cwd(), 'src/utils/authHandler.js'));
+const configHandler = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js'));
 const payloadHandler = require(path.join(process.cwd(), 'src/utils/payloadHandler.js'));
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
@@ -14,7 +14,7 @@ const processNextJob = require(path.join(process.cwd(), 'src/utils/processor.js'
 module.exports = router.post('/hardsub/file', async (req, res) => {
   try {
     // Check for authorization
-    if (!authHandler.isAuthorized(req.get('Authorization'))) return res.status(401).send('Not authorized');
+    if (!configHandler.isAuthorized(req.get('Authorization'))) return res.status(401).send('Not authorized');
 
     // Check for content type
     if (req.get('Content-Type') !== 'application/json') return res.status(415).send('Content-Type must be application/json');

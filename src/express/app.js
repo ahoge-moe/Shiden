@@ -13,7 +13,7 @@ require('toml-require').install({ toml: require('toml') });
 // Import custom modules
 const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js'));
 const processNextJob = require(path.join(process.cwd(), 'src/utils/processor.js'));
-const CONFIG = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
+const configHandler = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 
 // Import routes
 const hardsubFilePost = require(path.join(process.cwd(), 'src/express/routes/hardsub/file/post.js'));
@@ -31,9 +31,9 @@ app.use(express.text({ type: 'application/json' }));
 app.use(hardsubFilePost);
 app.use(queueGet);
 
-app.listen(CONFIG.express.port, () => {
+app.listen(configHandler.loadConfigFile().express.port, () => {
   try {
-    logger.info(`Running on http://localhost:${CONFIG.express.port}/`, logger.colors.underscore + logger.colors.green);
+    logger.info(`Running on http://localhost:${configHandler.loadConfigFile().express.port}/`, logger.colors.underscore + logger.colors.green);
 
     // If "--clean" flag is passed, remove queue file
     if (process.argv.slice(2).includes('--clean')) queueHandler.wipe();
