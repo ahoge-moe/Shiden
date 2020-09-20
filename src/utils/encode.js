@@ -1,5 +1,5 @@
 /**
- * @module pipeline
+ * @module encode
  * This module handles the logic flow of choosing which
  * FFmpeg command to use for the current job.
  */
@@ -16,7 +16,7 @@ const FFprobe = require(path.join(process.cwd(), 'src/automata/ffprobe.js'));
 const FFmpeg = require(path.join(process.cwd(), 'src/automata/ffmpeg.js'));
 const pathHandler = require(path.join(process.cwd(), 'src/utils/pathHandler.js'));
 
-module.exports = pipeline = {
+module.exports = encode = {
   x264: job => {
     return new Promise(async (resolve, reject) => {
       try {

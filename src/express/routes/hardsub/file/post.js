@@ -9,7 +9,7 @@ const authHandler = require(path.join(process.cwd(), 'src/utils/authHandler.js')
 const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js'));
 const payloadHandler = require(path.join(process.cwd(), 'src/utils/payloadHandler.js'));
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
-const processNextJob = require(path.join(process.cwd(), 'src/worker.js'));
+const processNextJob = require(path.join(process.cwd(), 'src/express/expressWorker.js'));
 
 module.exports = router.post('/hardsub/file', async (req, res) => {
   try {

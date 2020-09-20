@@ -21,7 +21,7 @@ git clone https://github.com/wizo06/Shiden.git
 3. Edit `conf/user_config.toml` and `conf/user_auth.yml`
 4. Run Shiden
 ```bash
-npm start
+npm run express
 ```
 
 # Routes
@@ -86,3 +86,29 @@ Available font styles
 | 900 | promisefied.exec() exited with non-0 code |
 | 901 | promisefied.request() returned with error |
 | 902 | promisefied.jsonParse() failed to parse string because of SyntaxError |
+
+# Contribute
+
+## Run Shiden with Express
+1. Clone repo
+```bash
+git clone https://github.com/wizo06/Shiden.git
+```
+2. Download binaries, configure rclone, and install Nodejs dependencies
+```bash
+./prepare.sh
+```
+3. Checkout new branch
+```bash
+git checkout -b <new_branch>
+```
+4. Edit `conf/dev_config.toml` and `conf/dev_auth.yml`
+4. Run Shiden
+```bash
+npm run express
+```
+
+## Run tests
+```bash
+./test/express.sh
+```

@@ -2,10 +2,9 @@
   "name": "shiden",
   "version": "1.3.0",
   "description": "",
-  "main": "src/app.js",
   "scripts": {
-    "start": "node src/app.js",
-    "test": "test/test.suite.sh"
+    "express": "node src/express/app.js",
+    "rabbitmq": "node src/rabbitmq/rabbitWorker.js"
   },
   "repository": {
     "type": "git",

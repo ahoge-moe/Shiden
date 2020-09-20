@@ -12,12 +12,12 @@ require('toml-require').install({ toml: require('toml') });
 
 // Import custom modules
 const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js'));
-const processNextJob = require(path.join(process.cwd(), 'src/worker.js'));
+const processNextJob = require(path.join(process.cwd(), 'src/express/expressWorker.js'));
 const CONFIG = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 
 // Import routes
-const hardsubFilePost = require(path.join(process.cwd(), 'src/routes/hardsub/file/post.js'));
-const queueGet = require(path.join(process.cwd(), 'src/routes/queue/get.js'));
+const hardsubFilePost = require(path.join(process.cwd(), 'src/express/routes/hardsub/file/post.js'));
+const queueGet = require(path.join(process.cwd(), 'src/express/routes/queue/get.js'));
 
 // Create ExpressJS app
 const app = express();

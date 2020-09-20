@@ -11,8 +11,8 @@ const logger = require('logger');
 const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js'));
 const rclone = require(path.join(process.cwd(), 'src/automata/rclone.js'));
 const tempHandler = require(path.join(process.cwd(), 'src/utils/tempHandler.js'));
-const pipeline = require(path.join(process.cwd(), 'src/pipeline.js'));
-const notification = require(path.join(process.cwd(), 'src/automata/notification.js'));
+const encode = require(path.join(process.cwd(), 'src/utils/encode.js'));
+const notification = require(path.join(process.cwd(), 'src/utils/notification.js'));
 
 module.exports = processNextJob = async () => {
   logger.info(`=== Processing next job`, logger.colors.bright + logger.colors.green);
@@ -29,8 +29,8 @@ module.exports = processNextJob = async () => {
     await rclone.downloadSubtitleFile(job);
 
     // Step 2 Hardsub
-    logger.info('[2/4] Executing pipeline...', logger.colors.yellow)
-    const outputFileName = await pipeline.x264(job);
+    logger.info('[2/4] Executing encode...', logger.colors.yellow)
+    const outputFileName = await encode.x264(job);
 
     // Step 3 Upload
     logger.info('[3/4] Uploading...', logger.colors.yellow);
