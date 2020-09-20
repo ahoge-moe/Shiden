@@ -98,7 +98,7 @@ module.exports = anilist = {
           }
         }
         else {
-          console.log(response.body);
+          logger.error(response.body);
           return resolve(undefined);
         }
       }

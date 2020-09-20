@@ -35,7 +35,7 @@ module.exports = promisefied = {
       request(options, (err, res, body) => {
         if (!err) return resolve({ res, body });
         else {
-          console.log(err);
+          logger.debug(err);
           return reject(901);
         }
       });
