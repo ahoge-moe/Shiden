@@ -12,7 +12,7 @@ require('toml-require').install({ toml: require('toml') });
 
 // Import custom modules
 const queueHandler = require(path.join(process.cwd(), 'src/utils/queueHandler.js'));
-const processNextJob = require(path.join(process.cwd(), 'src/express/expressWorker.js'));
+const processNextJob = require(path.join(process.cwd(), 'src/utils/processor.js'));
 const CONFIG = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 
 // Import routes
