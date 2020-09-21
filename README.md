@@ -1,9 +1,5 @@
 # About
-Shiden (紫電), meaning "purple lightning" in Japanese, is an application for hardsubbing video files.
-
-# Features
-- Can be used as a web server to receive jobs via HTTP endpoints
-- Can be used as a *worker* that connects to a message broker
+Shiden (紫電), meaning "purple lightning" in Japanese, is an application for hardsubbing video files. It connects to a message-broker and receives *jobs* from it.
 
 # Requirements
 - x86_64 CPU architecture
@@ -29,32 +25,15 @@ bin/rclone config --config conf/rclone.conf
 ```bash
 nano conf/user_config.toml
 ```
-5. Run as web server (option 1)
+5. Start Shiden
 ```bash
-npm run web
-```
-5. Run as worker(option 2)
-```bash
-npm run worker
+npm start
 ```
 
-# Endpoints
+# Usage
+Messages from the broker are expected to be in a format such that `JSON.parse(msg)` will return a valid JSON object. 
 
-## `/hardsub/file`
-
-### POST
-  - Description: creates a job for one file
-  - Headers:
-    - `Authorization: key_1`
-    - `Content-Type: application/json`
-  - Body:
-   ```json
-  {
-      "inputFile": "TODO/FILE NAME.MKV",
-      "outputFolder": "DONE",
-  }
-  ```
-  **NOte**: Shiden still expects these fields even when running as a *worker* of a message broker.
+This JSON object is expected to follow this schema:
 
 Field | Required | Description | Type | Default
 --- | --- | --- | --- | --- |
@@ -74,11 +53,6 @@ Available font styles
 - Noto Sans JP Medium
 - Noto Serif JP Medium
 - Open Sans SemiBold
-
-## `/queue`
-
-### GET
-  - Description: gets the queue in an array
 
 # Error codes
 
@@ -101,8 +75,3 @@ Available font styles
 | 900 | promisefied.exec() exited with non-0 code |
 | 901 | promisefied.request() returned with error |
 | 902 | promisefied.jsonParse() failed to parse string because of SyntaxError |
-
-# Contribute
-## Required installations
-- Erlang
-- RabbitMQ
