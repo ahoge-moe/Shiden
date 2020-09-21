@@ -73,5 +73,4 @@ Available font styles
 | 803 | FFprobe failed to return info about subtitle stream |
 | 804 | FFprobe failed to detect subtitle stream in subtitle file |
 | 900 | promisefied.exec() exited with non-0 code |
-| 901 | promisefied.request() returned with error |
 | 902 | promisefied.jsonParse() failed to parse string because of SyntaxError |

@@ -7,7 +7,6 @@
 // Import node modules
 const path = require('path');
 const { exec } = require('child_process');
-const request = require('request');
 const logger = require('logger');
 
 module.exports = promisefied = {
@@ -25,18 +24,6 @@ module.exports = promisefied = {
           logger.debug(`Child process exit code: ${code}`);
           logger.debug(errMessage);
           return reject(900);
-        }
-      });
-    });
-  },
-
-  request: options => {
-    return new Promise((resolve, reject) => {
-      request(options, (err, res, body) => {
-        if (!err) return resolve({ res, body });
-        else {
-          logger.debug(err);
-          return reject(901);
         }
       });
     });

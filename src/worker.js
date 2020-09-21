@@ -32,7 +32,7 @@ const payloadHandler = require(path.join(process.cwd(), 'src/utils/payloadHandle
     await channel.checkQueue(configHandler.loadConfigFile().broker.queue);
 
     await channel.consume(configHandler.loadConfigFile().broker.queue, async (msg) => {
-      if (msg == null) return;
+      if (msg == null) return channel.nack(msg, false, false); // reject
       
       try {
         // Check for JSON syntax. If it has wrong syntax, catch() will handle the error
@@ -67,7 +67,6 @@ const payloadHandler = require(path.join(process.cwd(), 'src/utils/payloadHandle
           queueHandler.push(payload);
           await processNextJob();
           channel.ack(msg);
-
         }
         catch (e) {
           logger.error(e);
