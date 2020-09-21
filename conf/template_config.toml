@@ -1,29 +1,9 @@
-### Changes are required ###
-
 # Rclone remotes
 [remote]
 # List of remote storages that rclone will check if the file exists before downloading the file
-downloadSource = ["source1:", "source2:", "source3:"]
-
+downloadSource = ["source1:", "source2:"]
 # List of remote storages that rclone will upload the hardsubbed file to
-uploadDestination = ["destination1:", "destination2:", "destination3:"]
-
-########################################################################
-
-### Changes are optional ###
-
-# For notification module
-[notification]
-# List of discord webhooks to send notifications to
-discordWebhooks = [
-  { name = "", url = "https://discordapp.com/..." },
-  { name = "", url = "https://discordapp.com/..." },
-  { name = "", url = "https://discordapp.com/..." },
-]
-
-# Flags when running child processes
-[flags]
-rclone = "--bwlimit 20M --config conf/rclone.conf"
+uploadDestination = ["destination1:", "destination2:"]
 
 # RabbitMQ settings
 [rabbitmq]
@@ -34,3 +14,15 @@ username = ""
 password = ""
 heartbeat = 5
 queue = ""
+
+# For notification module
+[notification]
+# List of discord webhooks to send notifications to
+discordWebhooks = [
+  { name = "", url = "https://discordapp.com/..." },
+  { name = "", url = "https://discordapp.com/..." },
+]
+
+# Flags when running child processes
+[flags]
+rclone = "--bwlimit 20M --config conf/rclone.conf"
