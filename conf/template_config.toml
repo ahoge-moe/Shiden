@@ -13,6 +13,7 @@ port = "5672"
 username = ""
 password = ""
 heartbeat = 5
+prefetch = 1
 queue = ""
 
 # For notification module

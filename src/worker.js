@@ -23,11 +23,14 @@ const payloadHandler = require(path.join(process.cwd(), 'src/utils/payloadHandle
 
     const connection = await amqp.connect(url);
     const channel = await connection.createChannel();
+
     channel.on('close', () => { logger.error('Close event emitted!') });
     channel.on('error', err => { logger.error('Error event emitted!') });
-    await channel.prefetch(1);
-    const ok = await channel.checkQueue(configHandler.loadConfigFile().rabbitmq.queue);
-    console.log(ok)
+
+    await channel.prefetch(configHandler.loadConfigFile().rabbitmq.prefetch);
+
+    await channel.checkQueue(configHandler.loadConfigFile().rabbitmq.queue);
+
     await channel.consume(configHandler.loadConfigFile().rabbitmq.queue, async (msg) => {
       if (msg == null) return;
       
