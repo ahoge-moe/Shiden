@@ -15,7 +15,8 @@ const FFprobe = require(path.join(process.cwd(), 'src/automata/ffprobe.js'));
 const pathHandler = require(path.join(process.cwd(), 'src/utils/pathHandler.js'));
 
 // master will be set to TRUE if current git branch name is 'master'
-const master = ('master' === fs.readFileSync(path.join(process.cwd(), '.git/HEAD'), { encoding: 'utf8' }).match(/ref: refs\/heads\/([^\n]+)/)[1]);
+// const master = ('master' === fs.readFileSync(path.join(process.cwd(), '.git/HEAD'), { encoding: 'utf8' }).match(/ref: refs\/heads\/([^\n]+)/)[1]);
+const master = true;
 
 module.exports = FFmpeg = {
   /**
@@ -43,8 +44,7 @@ module.exports = FFmpeg = {
         logger.error(e);
         // If error was thrown from FFprobe, reject with their error code
         // and let @worker handle it
-        if (errorCode === 801) return reject(e);
-        if (errorCode === 802) return reject(e);
+        if (e === 801 || 802) return reject(e);
 
         // If error was thrown from running this function
         // Reject with 700

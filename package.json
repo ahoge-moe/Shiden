@@ -3,8 +3,7 @@
   "version": "1.3.0",
   "description": "",
   "scripts": {
-    "web": "node src/express/app.js",
-    "worker": "node src/rabbitmq/rabbitWorker.js"
+    "start": "node src/worker.js"
   },
   "repository": {
     "type": "git",
@@ -18,9 +17,7 @@
   "homepage": "https://github.com/wizo06/Shiden#readme",
   "dependencies": {
     "amqplib": "^0.6.0",
-    "express": "^4.17.1",
     "logger": "github:wizo06/logger",
-    "moment": "^2.24.0",
     "request": "^2.88.0",
     "toml-require": "^1.2.0"
   }

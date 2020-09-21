@@ -101,3 +101,8 @@ Available font styles
 | 900 | promisefied.exec() exited with non-0 code |
 | 901 | promisefied.request() returned with error |
 | 902 | promisefied.jsonParse() failed to parse string because of SyntaxError |
+
+# Contribute
+## Required installations
+- Erlang
+- RabbitMQ

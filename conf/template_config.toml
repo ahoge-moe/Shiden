@@ -25,17 +25,6 @@ discordWebhooks = [
 [flags]
 rclone = "--bwlimit 20M --config conf/rclone.conf"
 
-# ExpressJS settings
-[express]
-port = 64000
-# Authorization keys used in "Authorization" header of the HTTP request
-# "name" is just an identifier to recognize which key belongs to whom
-authorization = [
-  { name = "name_1", key = "key_1" },
-  { name = "name_2", key = "key_2" },
-  { name = "name_3", key = "key_3" },
-]
-
 # RabbitMQ settings
 [rabbitmq]
 protocol = "amqp"
@@ -43,5 +32,5 @@ host = "localhost"
 port = "5672"
 username = ""
 password = ""
-heartbeat = 1
+heartbeat = 5
 queue = ""
