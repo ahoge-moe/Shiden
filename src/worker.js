@@ -13,12 +13,12 @@ const payloadHandler = require(path.join(process.cwd(), 'src/utils/payloadHandle
     tempHandler.destroy();
     
     const url = {
-      protocol: configHandler.loadConfigFile().rabbitmq.protocol,
-      hostname: configHandler.loadConfigFile().rabbitmq.host,
-      port: configHandler.loadConfigFile().rabbitmq.port,
-      // username: configHandler.loadConfigFile().rabbitmq.username,
-      // password: configHandler.loadConfigFile().rabbitmq.password,
-      heartbeat: configHandler.loadConfigFile().rabbitmq.heartbeat,
+      protocol: configHandler.loadConfigFile().broker.protocol,
+      hostname: configHandler.loadConfigFile().broker.host,
+      port: configHandler.loadConfigFile().broker.port,
+      // username: configHandler.loadConfigFile().broker.username,
+      // password: configHandler.loadConfigFile().broker.password,
+      heartbeat: configHandler.loadConfigFile().broker.heartbeat,
     };
 
     const connection = await amqp.connect(url);
@@ -27,11 +27,11 @@ const payloadHandler = require(path.join(process.cwd(), 'src/utils/payloadHandle
     channel.on('close', () => { logger.error('Close event emitted!') });
     channel.on('error', err => { logger.error('Error event emitted!') });
 
-    await channel.prefetch(configHandler.loadConfigFile().rabbitmq.prefetch);
+    await channel.prefetch(configHandler.loadConfigFile().broker.prefetch);
 
-    await channel.checkQueue(configHandler.loadConfigFile().rabbitmq.queue);
+    await channel.checkQueue(configHandler.loadConfigFile().broker.queue);
 
-    await channel.consume(configHandler.loadConfigFile().rabbitmq.queue, async (msg) => {
+    await channel.consume(configHandler.loadConfigFile().broker.queue, async (msg) => {
       if (msg == null) return;
       
       try {

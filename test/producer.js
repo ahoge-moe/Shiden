@@ -1,6 +1,6 @@
 /**
  * @overview
- * This test assumes RabbitMQ is installed and running on localhost 
+ * This test assumes the broker is installed and running on localhost 
  * on standard port (5672). In case you use a different host, port 
  * or credentials, connections settings would require adjusting.
  */
@@ -14,19 +14,19 @@ const configHandler = require(path.join(process.cwd(), 'src/utils/configHandler.
 (async () => {
   try {
     const url = {
-      protocol: configHandler.loadConfigFile().rabbitmq.protocol,
-      hostname: configHandler.loadConfigFile().rabbitmq.host,
-      port: configHandler.loadConfigFile().rabbitmq.port,
-      // username: configHandler.loadConfigFile().rabbitmq.username,
-      // password: configHandler.loadConfigFile().rabbitmq.password,
-      heartbeat: configHandler.loadConfigFile().rabbitmq.heartbeat,
+      protocol: configHandler.loadConfigFile().broker.protocol,
+      hostname: configHandler.loadConfigFile().broker.host,
+      port: configHandler.loadConfigFile().broker.port,
+      // username: configHandler.loadConfigFile().broker.username,
+      // password: configHandler.loadConfigFile().broker.password,
+      heartbeat: configHandler.loadConfigFile().broker.heartbeat,
     };
 
     const connection = await amqp.connect(url);
     const channel = await connection.createChannel();
     channel.on('close', () => { logger.error('Close event emitted!') });
     channel.on('error', err => { logger.error('Error event emitted!') });
-    await channel.checkQueue(configHandler.loadConfigFile().rabbitmq.queue);
+    await channel.checkQueue(configHandler.loadConfigFile().broker.queue);
 
     const msg = {
       "inputFile": "Premiered/Grand Blue/Grand Blue - 01 [1080p].mkv",
@@ -34,7 +34,7 @@ const configHandler = require(path.join(process.cwd(), 'src/utils/configHandler.
       "showName": "Grand Blue"
     };
 
-    await channel.sendToQueue(configHandler.loadConfigFile().rabbitmq.queue, Buffer.from(JSON.stringify(msg)), { persistent: false });
+    await channel.sendToQueue(configHandler.loadConfigFile().broker.queue, Buffer.from(JSON.stringify(msg)), { persistent: false });
     setTimeout(function () {
       connection.close();
       process.exit(0);

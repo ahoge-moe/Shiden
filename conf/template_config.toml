@@ -5,8 +5,8 @@ downloadSource = ["source1:", "source2:"]
 # List of remote storages that rclone will upload the hardsubbed file to
 uploadDestination = ["destination1:", "destination2:"]
 
-# RabbitMQ settings
-[rabbitmq]
+# broker settings
+[broker]
 protocol = "amqp"
 host = "localhost"
 port = "5672"
