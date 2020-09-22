@@ -17,8 +17,8 @@ const configHandler = require(path.join(process.cwd(), 'src/utils/configHandler.
       protocol: configHandler.loadConfigFile().broker.protocol,
       hostname: configHandler.loadConfigFile().broker.host,
       port: configHandler.loadConfigFile().broker.port,
-      // username: configHandler.loadConfigFile().broker.username,
-      // password: configHandler.loadConfigFile().broker.password,
+      username: configHandler.loadConfigFile().broker.username,
+      password: configHandler.loadConfigFile().broker.password,
       heartbeat: configHandler.loadConfigFile().broker.heartbeat,
     };
 
@@ -26,7 +26,7 @@ const configHandler = require(path.join(process.cwd(), 'src/utils/configHandler.
     const channel = await connection.createChannel();
     channel.on('close', () => { logger.error('Close event emitted!') });
     channel.on('error', err => { logger.error('Error event emitted!') });
-    await channel.checkQueue(configHandler.loadConfigFile().broker.queue);
+    await channel.assertQueue(configHandler.loadConfigFile().broker.queue, { durable: false });
 
     const msg = {
       "inputFile": "Premiered/Grand Blue/Grand Blue - 01 [1080p].mkv",
@@ -37,6 +37,7 @@ const configHandler = require(path.join(process.cwd(), 'src/utils/configHandler.
     await channel.sendToQueue(configHandler.loadConfigFile().broker.queue, Buffer.from(JSON.stringify(msg)), { persistent: false });
     setTimeout(function () {
       connection.close();
+      logger.info(`Exiting producer.js`);
       process.exit(0);
     }, 500);
   }

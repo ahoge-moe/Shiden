@@ -5,16 +5,31 @@ downloadSource = ["source1:", "source2:"]
 # List of remote storages that rclone will upload the hardsubbed file to
 uploadDestination = ["destination1:", "destination2:"]
 
-# broker settings
+# Broker settings
 [broker]
 protocol = "amqp"
 host = "localhost"
 port = "5672"
 username = ""
 password = ""
-heartbeat = 5
-prefetch = 1
+heartbeat = 60
+vhost = "/"
 queue = ""
+closeMessage = "Closed via management plugin"
+
+# Settings for retry attempts when failed to connect to broker.
+# However, if the connection was closed by an operator, these settings 
+# will be irrelevant and no retry attempts will be made. More specifically,
+# if the message sent by the operator is equals to "closeMessage".
+[retry]
+retries = 10 # Keep this number low. Might run out of memory if too high.
+factor = 2
+minTimeout = 60000 # in milliseconds. Can NOT be less than 1 (min setTimeout limit)
+maxTimeout = 3600000 # in milliseconds. Can NOT be larger than 2147483647 (max setTimeout limit)
+randomize = false
+forever = true # if true, "retries" is ignored
+unref = false
+maxRetryTime = "Infinity"
 
 # For notification module
 [notification]

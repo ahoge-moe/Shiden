@@ -25,21 +25,4 @@ module.exports = configHandler = {
       process.kill(process.pid);
     }
   },
-
-  /**
-     * Checks if token from incoming request is authorized
-     * @param {{string}} keyFromRequest
-     * @return {{boolean}}
-     */
-  isAuthorized: keyFromRequest => {
-    for (auth of configHandler.loadConfigFile().express.authorization) {
-      if (auth.key === keyFromRequest) {
-        logger.success(`Request authorized. Matching key was sent from ${logger.colors.green}${auth.name}`);
-        return true;
-      }
-    }
-    logger.error(`Request denied`);
-    return false;
-  },
-
 }

@@ -26,7 +26,7 @@ module.exports = rclone = {
         let validSource = false;
         for (remoteName of configHandler.loadConfigFile().remote.downloadSource) {
           if (await rclone.fileExists(remoteName, job.inputFile)) {
-            logger.success(`Found input file in ${logger.colors.bright}${remoteName}`);
+            logger.success(`Found input file in ${remoteName}`);
             validSource = remoteName;
             break;
           }
@@ -41,7 +41,7 @@ module.exports = rclone = {
         const jobFile = pathHandler.parseRclonePaths(validSource, job.inputFile);
         const tempFolder = tempHandler.getTempFolderPath();
 
-        logger.info(`Downloading ${logger.colors.bright}${jobFile}`);
+        logger.info(`Downloading ${jobFile}`);
         const command = `${pathHandler.rcloneBinary} copy "${jobFile}" "${tempFolder}" ${configHandler.loadConfigFile().flags.rclone}`;
         await promisefied.exec(command);
 
@@ -65,7 +65,7 @@ module.exports = rclone = {
   fileExists: (remoteName, inputFile) => {
     return new Promise(async (resolve, reject) => {
       try {
-        logger.info(`Checking for file in ${logger.colors.bright}${remoteName}`);
+        logger.info(`Checking for file in ${remoteName}`);
 
         const fileName = path.basename(inputFile);
         const remoteToCheck = pathHandler.parseRclonePaths(remoteName, inputFile);
@@ -81,7 +81,7 @@ module.exports = rclone = {
         return resolve(false);
       }
       catch (e) {
-        logger.error(`File not found in ${logger.colors.bright}${remoteName}`);
+        logger.warning(`File not found in ${remoteName}`);
         return resolve(false);
       }
     });
@@ -100,7 +100,7 @@ module.exports = rclone = {
 
         for (remoteName of configHandler.loadConfigFile().remote.uploadDestination) {
           const destination = pathHandler.parseRclonePaths(remoteName, job.outputFolder);
-          logger.info(`Uploading to ${logger.colors.bright}${destination}`);
+          logger.info(`Uploading to ${destination}`);
 
           const command = `${pathHandler.rcloneBinary} copy "${transcodedFile}" "${destination}" ${configHandler.loadConfigFile().flags.rclone}`;
           await promisefied.exec(command);
@@ -130,7 +130,7 @@ module.exports = rclone = {
           let validSource = false;
           for (remoteName of configHandler.loadConfigFile().remote.downloadSource) {
             if (await rclone.fileExists(remoteName, job.subtitleFile)) {
-              logger.success(`Found subtitle file in ${logger.colors.bright}${remoteName}`);
+              logger.success(`Found subtitle file in ${remoteName}`);
               validSource = remoteName;
               break;
             }
@@ -145,7 +145,7 @@ module.exports = rclone = {
           const subtitleFile = pathHandler.parseRclonePaths(validSource, job.subtitleFile);
           const tempFolder = tempHandler.getTempFolderPath();
 
-          logger.info(`Downloading ${logger.colors.bright}${subtitleFile}`);
+          logger.info(`Downloading ${subtitleFile}`);
           const command = `${pathHandler.rcloneBinary} copy "${subtitleFile}" "${tempFolder}" ${configHandler.loadConfigFile().flags.rclone}`;
           await promisefied.exec(command);
 

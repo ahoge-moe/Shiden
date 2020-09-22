@@ -15,8 +15,7 @@ const FFprobe = require(path.join(process.cwd(), 'src/automata/ffprobe.js'));
 const pathHandler = require(path.join(process.cwd(), 'src/utils/pathHandler.js'));
 
 // master will be set to TRUE if current git branch name is 'master'
-// const master = ('master' === fs.readFileSync(path.join(process.cwd(), '.git/HEAD'), { encoding: 'utf8' }).match(/ref: refs\/heads\/([^\n]+)/)[1]);
-const master = true;
+const master = ('master' === fs.readFileSync(path.join(process.cwd(), '.git/HEAD'), { encoding: 'utf8' }).match(/ref: refs\/heads\/([^\n]+)/)[1]);
 
 module.exports = FFmpeg = {
   /**
@@ -37,7 +36,7 @@ module.exports = FFmpeg = {
         command.push(`"${outputFile}"`);
         command = command.join(' ');
         await promisefied.exec(command);
-        logger.success(`File has been prepared in ${logger.colors.bright}${path.basename(outputFile)}`);
+        logger.success(`File has been prepared in ${path.basename(outputFile)}`);
         return resolve();
       }
       catch (e) {
@@ -120,7 +119,7 @@ module.exports = FFmpeg = {
 
         // If job specified subtitle offset
         if (job.subtitleOffset) {
-          logger.info(`Payload has provided offset number: ${logger.colors.cyan}${job.subtitleOffset}`);
+          logger.info(`Job has provided offset number: ${logger.colors.cyan}${job.subtitleOffset}`);
           const subFileExt = path.extname(subtitleFile);
 
           let command = [`${pathHandler.ffmpegBinary} -itsoffset ${job.subtitleOffset} -i "${subtitleFile}"`];

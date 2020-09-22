@@ -42,7 +42,7 @@ module.exports = FFprobe = {
   getVideoFlags: (streams, job) => {
     return new Promise((resolve, reject) => {
       if (job.videoIndex) {
-        logger.info(`Payload has provided video index: ${logger.colors.cyan}${job.videoIndex}`);
+        logger.info(`Job has provided video index: ${logger.colors.cyan}${job.videoIndex}`);
         const videoStream = streams.filter(stream => stream.index == job.videoIndex)[0];
         if (videoStream && videoStream.codec_type === 'video') {
           return resolve(`-map 0:${job.videoIndex} -c:v copy`);
@@ -67,7 +67,7 @@ module.exports = FFprobe = {
   getAudioFlags: (streams, job) => {
     return new Promise((resolve, reject) => {
       if (job.audioIndex) {
-        logger.info(`Payload has provided audio index: ${logger.colors.cyan}${job.audioIndex}`);
+        logger.info(`Job has provided audio index: ${logger.colors.cyan}${job.audioIndex}`);
         const audioStream = streams.filter(stream => stream.index == job.audioIndex)[0];
         if (audioStream && audioStream.codec_type === 'audio') {
           return resolve(`-map 0:${job.audioIndex} -acodec aac -ab 320k`);
@@ -85,7 +85,7 @@ module.exports = FFprobe = {
         return resolve(`-map 0:${stereoAudioStream.index} -acodec aac -ab 320k`);
       }
       else {
-        logger.error(`Stereo audio stream not found. Using first available audio stream.`);
+        logger.info(`Stereo audio stream not found. Using first available audio stream.`);
         return resolve(`-map 0:a -acodec aac -ab 320k`);
       }
     });
@@ -118,7 +118,7 @@ module.exports = FFprobe = {
   determineSubStream: (streams, job) => {
     return new Promise((resolve, reject) => {
       if (job.subIndex) {
-        logger.info(`Payload has provided subtitle index: ${logger.colors.cyan}${job.subIndex}`);
+        logger.info(`Job has provided subtitle index: ${logger.colors.cyan}${job.subIndex}`);
         const jobSpecifiedSubStream = streams.filter(stream => stream.index == job.subIndex)[0];
         if (jobSpecifiedSubStream && jobSpecifiedSubStream.codec_type === 'subtitle') {
           return resolve(jobSpecifiedSubStream);

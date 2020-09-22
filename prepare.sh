@@ -97,14 +97,6 @@ else
   _success "Installed rclone"
 fi
 
-# node_modules
-if [ -d node_modules ]; then
-  _success "Found node modules/"
-else
-  _info "Installing node modules"
-  npm i
-fi
-
 # Config files
 branch_name=$(cat .git/HEAD | cut -d "/" -f 3)
 if [ "${branch_name}" == "master" ]; then
@@ -129,4 +121,17 @@ else
     _info "Please make the necessary changes in conf/dev_config.toml"
   fi
 
+fi
+
+# node_modules
+if [ -d node_modules ]; then
+  _success "Found node modules/"
+else
+  _info "Installing node modules"
+  npm i
+
+  # manually install node-retry because npm does not
+  # download all files for some reason
+  cd node_modules
+  git clone https://github.com/wizo06/node-retry.git
 fi

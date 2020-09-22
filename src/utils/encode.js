@@ -42,7 +42,7 @@ module.exports = encode = {
         const inputFileStreams = await FFprobe.getStreams(tempInputFile);
 
         // Step 3: Prepare a file that only has 1 video stream and 1 audio stream
-        logger.info(`Preparing ${path.basename(preppedInputFile)}`);
+        logger.info(`Extracting video and audio stream into ${path.basename(preppedInputFile)}`);
         await FFmpeg.prepare(tempInputFile, preppedInputFile, inputFileStreams, job);
 
         // If job has specified subtitle file
@@ -51,9 +51,11 @@ module.exports = encode = {
           const subtitleFile = path.join(tempFolder, subtitleFileName);
           const subFileExt = path.extname(subtitleFileName);
           const tempSubFile = path.join(tempFolder, `temp_sub${subFileExt}`);
+          
+          logger.info(`Subtitle file provided: ${subtitleFileName}`);
 
           // Rename subtitle file
-          logger.info(`Renaming ${subtitleFile} to ${path.basename(tempSubFile)}`);
+          logger.info(`Renaming ${subtitleFileName} to ${path.basename(tempSubFile)}`);
           fs.renameSync(subtitleFile, tempSubFile);
 
           // Extract streams info from subtitle file
@@ -61,7 +63,7 @@ module.exports = encode = {
           const subtitleFileStreams = await FFprobe.getStreams(tempSubFile);
 
           if (!FFprobe.hasSub(subtitleFileStreams)) {
-            logger.error(`The job specified subtitle file has no subtitle stream`);
+            logger.error(`Subtitle file has no subtitle stream`);
             return reject(804);
           }
 
@@ -104,6 +106,7 @@ module.exports = encode = {
           }
         }
 
+        logger.info(`Subtitle file not provided in job. Probing ${path.basename(tempInputFile)}`);
         // If job did not specify subtitle file
         if (!FFprobe.hasSub(inputFileStreams)) {
           // Step 4: If no subtitle stream, simply change container
@@ -115,14 +118,14 @@ module.exports = encode = {
         }
         else {
           const subStream = await FFprobe.determineSubStream(inputFileStreams, job);
-          logger.info(`Codec name: ${subStream.codec_name}`);
+          logger.debug(`Codec name: ${subStream.codec_name}`);
 
           try {
             // First attempt with text based hardsub
             logger.info(`Trying with text based hardsub`);
 
             // Step 4.1: Extract subtitle stream into sub.ass
-            logger.info(`Extracting subtitle file`);
+            logger.info(`Extracting subtitle stream into ${path.basename(assFile)}`);
             await FFmpeg.extractSubFile(tempInputFile, subStream.index, assFile);
 
             // Step 4.2: Hardsub temp_prepped with -vf subtitles=sub.ass
