@@ -14,9 +14,11 @@ const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHan
 (async () => {
   try {
     const connection = await amqp.connect(loadConfigFile().broker.inbound);
+    connection.on('close', (err) => { logger.error(`Connection close: ${err}`) });
+    connection.on('error', (err) => { logger.error(`Connection error: ${err}`) });
     const channel = await connection.createChannel();
-    channel.on('close', () => { logger.error('Close event emitted!') });
-    channel.on('error', err => { logger.error('Error event emitted!') });
+    channel.on('close', (err) => { logger.error(`Channel close: ${err}`) });
+    channel.on('error', (err) => { logger.error(`Channel error: ${err}`) });
     await channel.assertQueue(loadConfigFile().broker.inbound.queue, { durable: false });
 
     const msg = {
@@ -31,6 +33,7 @@ const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHan
       Buffer.from(JSON.stringify(msg)), 
       { persistent: false }
     );
+    
     setTimeout(function () {
       connection.close();
       logger.info(`Exiting producer.js`);

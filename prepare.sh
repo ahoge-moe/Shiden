@@ -25,27 +25,6 @@ _info () {
   echo -e "${FG_CYAN}i ${FG_WHITE}${1}${DEFAULT}"
 }
 
-if dpkg --get-selections | grep -q "^unzip[[:space:]]*install$" >/dev/null; then
-  _success "unzip installed"
-else
-  _info "installing unzip"
-  sudo apt install unzip
-fi
-
-if dpkg --get-selections | grep -q "^tar[[:space:]]*install$" >/dev/null; then
-  _success "tar installed"
-else
-  _info "installing tar"
-  sudo apt install tar
-fi
-
-if dpkg --get-selections | grep -q "^curl[[:space:]]*install$" >/dev/null; then
-  _success "curl installed"
-else
-  _info "installing curl"
-  sudo apt install curl
-fi
-
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "${script_path}"
 mkdir -p bin

@@ -23,7 +23,7 @@ module.exports = rclone = {
     return new Promise(async (resolve, reject) => {
       try {
         let validSource = false;
-        for (remoteName of loadConfigFile().remote.downloadSource) {
+        for (remoteName of loadConfigFile().rclone.downloadSource) {
           if (await rclone.fileExists(remoteName, job.inputFile)) {
             logger.success(`Found input file in ${remoteName}`);
             validSource = remoteName;
@@ -99,7 +99,7 @@ module.exports = rclone = {
         const tempFolder = tempHandler.getTempFolderPath();
         const transcodedFile = path.join(tempFolder, outputFileName);
 
-        for (remoteName of loadConfigFile().remote.uploadDestination) {
+        for (remoteName of loadConfigFile().rclone.uploadDestination) {
           const destination = pathHandler.parseRclonePaths(remoteName, job.outputFolder);
           logger.info(`Uploading to ${destination}`);
 
@@ -130,7 +130,7 @@ module.exports = rclone = {
         try {
           logger.info('Job has specified subtitle file. Downloading subtitle file...', logger.colors.green);
           let validSource = false;
-          for (remoteName of loadConfigFile().remote.downloadSource) {
+          for (remoteName of loadConfigFile().rclone.downloadSource) {
             if (await rclone.fileExists(remoteName, job.subtitleFile)) {
               logger.success(`Found subtitle file in ${remoteName}`);
               validSource = remoteName;

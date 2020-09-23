@@ -1,11 +1,18 @@
 # About
-Shiden (紫電), meaning "purple lightning" in Japanese, is an application for hardsubbing video files. It connects to a message-broker and receives *jobs* from it.
+Shiden (紫電), meaning "purple lightning" in Japanese, is an application for hardsubbing video files. 
+
+# Features
+- Connect to and receive *jobs* from an **inbound** message-broker, and then proceed to hardsub.
+- Connect to and send *messages* to an **outbound** message-broker, after hardsubbing is done.
+- Video files are downloaded and uploaded using [rclone](https://rclone.org/).
+- Unopinionated. Read [Usage](#usage) below.
+- Optionally, a message-broker (e.g. [RabbitMQ](https://www.rabbitmq.com/)) can be installed on the same machine as Shiden, and have an instance of [Raikiri](https://github.com/wizo06/Raikiri) running on the same machine. This will effectively expose Shiden to HTTP endpoints, and can be used as a microservice through HTTP endpoints instead.
 
 # Requirements
 - x86_64 CPU architecture
-- Ubuntu
+- Linux
 - Node.js
-- npm (comes with Node.js)
+- unzip, tar, curl
 
 # Getting Started
 
@@ -21,7 +28,7 @@ git clone https://github.com/wizo06/Shiden.git
 ```bash
 bin/rclone config --config conf/rclone.conf
 ```
-4. Edit this file
+4. Edit this file as necessary
 ```bash
 nano conf/user_config.toml
 ```
@@ -31,6 +38,8 @@ npm start
 ```
 
 # Usage
+Shiden is meant to be unopinionated when hardsubbing files. This means that the first available stream will be chosen if it's not specified in the message from the broker.
+
 Messages from the broker are expected to be in a format such that `JSON.parse(msg)` will return a valid JSON object. 
 
 This JSON object is expected to follow this schema:

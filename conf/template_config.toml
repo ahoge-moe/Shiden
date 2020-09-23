@@ -1,10 +1,7 @@
-# List of remote storages that rclone will use.
-# Rclone will only download from one source
-# but upload to all destination
-[remote]
+# Download from one, upload to all.
+[rclone]
 downloadSource = ["source1:", "source2:"]
 uploadDestination = ["destination1:", "destination2:"]
-
 
 [broker]
 
@@ -16,7 +13,7 @@ uploadDestination = ["destination1:", "destination2:"]
   port = "5672"
   username = ""
   password = ""
-  heartbeat = 60
+  heartbeat = 60 # seconds
   vhost = "/"
   queue = ""
   closeMessage = "Closed via management plugin"
@@ -29,7 +26,7 @@ uploadDestination = ["destination1:", "destination2:"]
   port = "5672"
   username = ""
   password = ""
-  heartbeat = 60
+  heartbeat = 60 # seconds
   vhost = "/"
   queue = ""
   closeMessage = "Closed via management plugin"
@@ -38,15 +35,18 @@ uploadDestination = ["destination1:", "destination2:"]
 # However, if the connection was closed by an operator, these settings 
 # will be irrelevant and no retry attempts will be made. More specifically,
 # if the message sent by the operator is equals to "closeMessage".
+# The following formula is used to calculate interval in-between retries
+# Math.min(random * minTimeout * Math.pow(factor, attempt), maxTimeout)
+# Read more about Math.min() and Math.pow() here https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math
 [retry]
-retries = 10 # Keep this number low. Might run out of memory if too high.
-factor = 2
-minTimeout = 60000 # in milliseconds. Can NOT be less than 1 (min setTimeout limit)
-maxTimeout = 3600000 # in milliseconds. Can NOT be larger than 2147483647 (max setTimeout limit)
+retries = 10 # Max number of retry attempts. Keep this number low or might run out of memory.
+factor = 2 # Exponential back-off factor.
+minTimeout = 60000 # milliseconds. Can NOT be less than 1 (min setTimeout limit).
+maxTimeout = 3600000 # milliseconds. Can NOT be larger than 2147483647 (max setTimeout limit).
 randomize = false
-forever = true # if true, "retries" is ignored
-unref = false
-maxRetryTime = 0 # in milliseconds. 0 means Infinity
+forever = true # if true, "retries" is ignored.
+unref = false # Whether to unref the setTimeout's. Read more about it here https://nodejs.org/api/timers.html#timers_timeout_unref
+maxRetryTime = 0 # milliseconds. 0 means Infinity.
 
 # Flags when running child processes
 [flags]

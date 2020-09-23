@@ -8,7 +8,7 @@ const amqp = require('amqplib');
 const path = require('path');
 const logger = require('logger');
 const fs = require('fs');
-const retry = require('retry');
+const retry = require('retry'); // retry yes or no?
 
 // Import custom modules
 const tempHandler = require(path.join(process.cwd(), 'src/utils/tempHandler.js'));
@@ -48,8 +48,7 @@ const sendToBroker = (job, outputFileName) => {
       );
       setTimeout(function () {
         connection.close();
-        logger.info(`Exiting producer.js`);
-        process.exit(0);
+        resolve();
       }, 500);
     }
     catch (e) {
