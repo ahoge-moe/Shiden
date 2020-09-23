@@ -27,6 +27,7 @@ module.exports = FFprobe = {
       }
       catch (e) {
         logger.error(e);
+        if (e === 'childProcessKilled') return reject(e);
         return reject(800);
       }
     });

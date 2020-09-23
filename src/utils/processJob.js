@@ -49,7 +49,7 @@ module.exports = processJob = (job) => {
       // Delete files in folder/
       tempHandler.destroy();
 
-      reject();
+      reject(errorCode);
     }
   });
 };

@@ -51,6 +51,7 @@ module.exports = rclone = {
       catch (e) {
         logger.error(e);
         logger.error(`rclone failed during download`);
+        if (e === 'childProcessKilled') return reject(e);
         return reject(600);
       }
     });
@@ -82,6 +83,7 @@ module.exports = rclone = {
       }
       catch (e) {
         logger.warning(`File not found in ${remoteName}`);
+        if (e === 'childProcessKilled') return reject(e);
         return resolve(false);
       }
     });
@@ -111,6 +113,7 @@ module.exports = rclone = {
       catch (e) {
         logger.error(e);
         logger.error(`rclone failed during upload`);
+        if (e === 'childProcessKilled') return reject(e);
         return reject(601);
       }
     });
@@ -153,6 +156,7 @@ module.exports = rclone = {
           return resolve();
         }
         catch (e) {
+          if (e === 'childProcessKilled') return reject(e);
           return reject(602);
         }
       }

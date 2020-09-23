@@ -129,9 +129,4 @@ if [ -d node_modules ]; then
 else
   _info "Installing node modules"
   npm i
-
-  # manually install node-retry because npm does not
-  # download all files for some reason
-  cd node_modules
-  git clone https://github.com/wizo06/node-retry.git
 fi

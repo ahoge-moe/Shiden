@@ -1,11 +1,9 @@
-# Rclone remotes
 [remote]
-# List of remote storages that rclone will check if the file exists before downloading the file
+# List of remote storages that rclone will check if the file exists and then download the input file
 downloadSource = ["source1:", "source2:"]
 # List of remote storages that rclone will upload the hardsubbed file to
 uploadDestination = ["destination1:", "destination2:"]
 
-# Broker settings
 [broker]
 protocol = "amqp"
 host = "localhost"
@@ -41,4 +39,4 @@ discordWebhooks = [
 
 # Flags when running child processes
 [flags]
-rclone = "--bwlimit 20M --config conf/rclone.conf"
+rclone = "--bwlimit 40M --config conf/rclone.conf"

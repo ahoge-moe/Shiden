@@ -44,7 +44,7 @@ module.exports = FFmpeg = {
         // If error was thrown from FFprobe, reject with their error code
         // and let @encode handle it
         if (e === 801 || 802) return reject(e);
-
+        if (e === 'childProcessKilled') return reject(e);
         // If error was thrown from running this function
         // Reject with 700
         return reject(700);
@@ -72,6 +72,7 @@ module.exports = FFmpeg = {
       }
       catch (e) {
         logger.error(e);
+        if (e === 'childProcessKilled') return reject(e);
         return reject(701);
       }
     });
@@ -96,6 +97,7 @@ module.exports = FFmpeg = {
       }
       catch (e) {
         logger.debug(e);
+        if (e === 'childProcessKilled') return reject(e);
         return reject(702);
       }
     });
@@ -144,6 +146,7 @@ module.exports = FFmpeg = {
       }
       catch (e) {
         logger.error(e);
+        if (e === 'childProcessKilled') return reject(e);
         return reject(703);
       }
     });
@@ -173,6 +176,7 @@ module.exports = FFmpeg = {
       }
       catch (e) {
         logger.error(e);
+        if (e === 'childProcessKilled') return reject(e);
         return reject(704);
       }
     });

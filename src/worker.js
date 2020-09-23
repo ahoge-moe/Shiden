@@ -30,20 +30,29 @@ const processJob = require(path.join(process.cwd(), 'src/utils/processJob.js'));
       operation.reset();
 
       await channel.consume(loadConfigFile().broker.queue, async (msg) => {
-        if (msg == null) return channel.nack(msg, false, false); // reject
+        // msg is null when queue is deleted OR if channel.cancenl() is called
+        if (msg == null) {
+          logger.error(`Queue has been deleted`);
+          // TODO kill child process from processJob
+          process.env.killChildProcess = 'true';
+          const interval = operation._timeouts[0];
+          if (operation.retry(new Error)) return logger.warning(`Attempt to reconnect in ${interval / 1000} seconds`);
+          workerHelper.bail(); // "retries" has been reached. Exit.
+        }
 
         try {
-          const msg = workerHelper.validateMessage(msg);
+          const msgParsed = await workerHelper.validateMessage(msg);
 
           logger.success(`Job received from broker`);
-          workerHelper.printMessageAsTable(msg);
+          workerHelper.printMessageAsTable(msgParsed);
 
           try {
-            await processJob(msg);
+            await processJob(msgParsed); // download, hardsub, upload. takes like 10 minutes
             channel.ack(msg);
           }
           catch (e) {
             logger.error(e);
+            if (e === 'childProcessKilled') return; // fix this string
             channel.nack(msg, false, true); // nack
           }
         }
@@ -56,8 +65,10 @@ const processJob = require(path.join(process.cwd(), 'src/utils/processJob.js'));
       });
     }
     catch (e) {
-      if (operation.retry(new Error)) return logger.error(e);
-      workerHelper.bail();
+      logger.error(e);
+      const interval = operation._timeouts[0];
+      if (operation.retry(new Error)) return logger.warning(`Attempt to reconnect in ${interval / 1000} seconds`);
+      workerHelper.bail(); // "retries" has been reached. Exit.
     }
   })
 })();
