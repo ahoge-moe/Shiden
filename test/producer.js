@@ -13,20 +13,11 @@ const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHan
 
 (async () => {
   try {
-    const url = {
-      protocol: loadConfigFile().broker.protocol,
-      hostname: loadConfigFile().broker.host,
-      port: loadConfigFile().broker.port,
-      username: loadConfigFile().broker.username,
-      password: loadConfigFile().broker.password,
-      heartbeat: loadConfigFile().broker.heartbeat,
-    };
-
-    const connection = await amqp.connect(url);
+    const connection = await amqp.connect(loadConfigFile().broker.inbound);
     const channel = await connection.createChannel();
     channel.on('close', () => { logger.error('Close event emitted!') });
     channel.on('error', err => { logger.error('Error event emitted!') });
-    await channel.assertQueue(loadConfigFile().broker.queue, { durable: false });
+    await channel.assertQueue(loadConfigFile().broker.inbound.queue, { durable: false });
 
     const msg = {
       "inputFile": "Premiered/Grand Blue/Grand Blue - 01 [1080p].mkv",
@@ -36,7 +27,7 @@ const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHan
 
     logger.info(`Sending message to queue`);
     await channel.sendToQueue(
-      loadConfigFile().broker.queue, 
+      loadConfigFile().broker.inbound.queue, 
       Buffer.from(JSON.stringify(msg)), 
       { persistent: false }
     );

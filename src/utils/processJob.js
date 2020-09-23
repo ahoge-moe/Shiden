@@ -34,9 +34,9 @@ module.exports = processJob = (job) => {
       logger.info('[3/4] Uploading encoded file...', logger.colors.yellow);
       await rclone.upload(job, outputFileName);
   
-      // Step 4 Notify
+      // Step 4 Send message to broker
       logger.info('[4/4] Sending message to broker...', logger.colors.yellow);
-      await notification.send(job, outputFileName, undefined);
+      await notification.sendToBroker(job, outputFileName);
   
       // Delete files in folder/
       tempHandler.destroy();

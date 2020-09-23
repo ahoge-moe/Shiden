@@ -35,10 +35,9 @@ const validateMessage = (msg) => {
 
 const setupEventsForConnection = (connection, operation) => {
   connection.on('close', (err) => {
-    // TODO kill child process from processJob
     process.env.killChildProcess = 'true';
     logger.error(`Connection close: ${err}`);
-    const closedByOperatorMessage = `Error: Connection closed: 320 (CONNECTION-FORCED) with message "CONNECTION_FORCED - ${loadConfigFile().broker.closeMessage}"`;
+    const closedByOperatorMessage = `Error: Connection closed: 320 (CONNECTION-FORCED) with message "CONNECTION_FORCED - ${loadConfigFile().broker.inbound.closeMessage}"`;
     if (`${err}` === closedByOperatorMessage) return bail(); // Stop retry
     const interval = operation._timeouts[0];
     if (operation.retry(new Error)) return logger.warning(`Attempt to reconnect in ${interval / 1000} seconds`); // Keep retrying until "retries" has been reached OR until forever

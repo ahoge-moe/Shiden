@@ -6,13 +6,12 @@
 // Import node modules
 const path = require('path');
 const logger = require('logger');
-require('toml-require').install({ toml: require('toml') });
 
 // Import custom modules
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 const pathHandler = require(path.join(process.cwd(), 'src/utils/pathHandler.js'));
 const tempHandler = require(path.join(process.cwd(), 'src/utils/tempHandler.js'));
-const configHandler = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
+const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 
 module.exports = rclone = {
   /**
@@ -24,7 +23,7 @@ module.exports = rclone = {
     return new Promise(async (resolve, reject) => {
       try {
         let validSource = false;
-        for (remoteName of configHandler.loadConfigFile().remote.downloadSource) {
+        for (remoteName of loadConfigFile().remote.downloadSource) {
           if (await rclone.fileExists(remoteName, job.inputFile)) {
             logger.success(`Found input file in ${remoteName}`);
             validSource = remoteName;
@@ -42,7 +41,7 @@ module.exports = rclone = {
         const tempFolder = tempHandler.getTempFolderPath();
 
         logger.info(`Downloading ${jobFile}`);
-        const command = `${pathHandler.rcloneBinary} copy "${jobFile}" "${tempFolder}" ${configHandler.loadConfigFile().flags.rclone}`;
+        const command = `${pathHandler.rcloneBinary} copy "${jobFile}" "${tempFolder}" ${loadConfigFile().flags.rclone}`;
         await promisefied.exec(command);
 
         logger.success(`Download completed`);
@@ -71,7 +70,7 @@ module.exports = rclone = {
         const fileName = path.basename(inputFile);
         const remoteToCheck = pathHandler.parseRclonePaths(remoteName, inputFile);
 
-        const command = `${pathHandler.rcloneBinary} lsf "${remoteToCheck}" --files-only ${configHandler.loadConfigFile().flags.rclone.match(/--config \w+\/\w+\.conf/)}`;
+        const command = `${pathHandler.rcloneBinary} lsf "${remoteToCheck}" --files-only ${loadConfigFile().flags.rclone.match(/--config \w+\/\w+\.conf/)}`;
         const response = await promisefied.exec(command);
 
         // If first file in lsf is the same as fileName, then assume file is found
@@ -100,11 +99,11 @@ module.exports = rclone = {
         const tempFolder = tempHandler.getTempFolderPath();
         const transcodedFile = path.join(tempFolder, outputFileName);
 
-        for (remoteName of configHandler.loadConfigFile().remote.uploadDestination) {
+        for (remoteName of loadConfigFile().remote.uploadDestination) {
           const destination = pathHandler.parseRclonePaths(remoteName, job.outputFolder);
           logger.info(`Uploading to ${destination}`);
 
-          const command = `${pathHandler.rcloneBinary} copy "${transcodedFile}" "${destination}" ${configHandler.loadConfigFile().flags.rclone}`;
+          const command = `${pathHandler.rcloneBinary} copy "${transcodedFile}" "${destination}" ${loadConfigFile().flags.rclone}`;
           await promisefied.exec(command);
           logger.success(`Upload completed`);
         }
@@ -131,7 +130,7 @@ module.exports = rclone = {
         try {
           logger.info('Job has specified subtitle file. Downloading subtitle file...', logger.colors.green);
           let validSource = false;
-          for (remoteName of configHandler.loadConfigFile().remote.downloadSource) {
+          for (remoteName of loadConfigFile().remote.downloadSource) {
             if (await rclone.fileExists(remoteName, job.subtitleFile)) {
               logger.success(`Found subtitle file in ${remoteName}`);
               validSource = remoteName;
@@ -149,7 +148,7 @@ module.exports = rclone = {
           const tempFolder = tempHandler.getTempFolderPath();
 
           logger.info(`Downloading ${subtitleFile}`);
-          const command = `${pathHandler.rcloneBinary} copy "${subtitleFile}" "${tempFolder}" ${configHandler.loadConfigFile().flags.rclone}`;
+          const command = `${pathHandler.rcloneBinary} copy "${subtitleFile}" "${tempFolder}" ${loadConfigFile().flags.rclone}`;
           await promisefied.exec(command);
 
           logger.success(`Download completed`);

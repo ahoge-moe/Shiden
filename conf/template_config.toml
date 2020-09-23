@@ -1,19 +1,38 @@
+# List of remote storages that rclone will use.
+# Rclone will only download from one source
+# but upload to all destination
 [remote]
-# List of remote storages that rclone will check if the file exists and then download the input file
 downloadSource = ["source1:", "source2:"]
-# List of remote storages that rclone will upload the hardsubbed file to
 uploadDestination = ["destination1:", "destination2:"]
 
+
 [broker]
-protocol = "amqp"
-host = "localhost"
-port = "5672"
-username = ""
-password = ""
-heartbeat = 60
-vhost = "/"
-queue = ""
-closeMessage = "Closed via management plugin"
+
+  # Settings for the broker to listen messages from
+  # Used in @worker
+  [broker.inbound]
+  protocol = "amqp"
+  host = "localhost"
+  port = "5672"
+  username = ""
+  password = ""
+  heartbeat = 60
+  vhost = "/"
+  queue = ""
+  closeMessage = "Closed via management plugin"
+
+  # Settings for the broker to send messages to
+  # Used in @notification
+  [broker.outbound]
+  protocol = "amqp"
+  host = "localhost"
+  port = "5672"
+  username = ""
+  password = ""
+  heartbeat = 60
+  vhost = "/"
+  queue = ""
+  closeMessage = "Closed via management plugin"
 
 # Settings for retry attempts when failed to connect to broker.
 # However, if the connection was closed by an operator, these settings 
@@ -28,14 +47,6 @@ randomize = false
 forever = true # if true, "retries" is ignored
 unref = false
 maxRetryTime = 0 # in milliseconds. 0 means Infinity
-
-# For notification module
-[notification]
-# List of discord webhooks to send notifications to
-discordWebhooks = [
-  { name = "", url = "https://discordapp.com/..." },
-  { name = "", url = "https://discordapp.com/..." },
-]
 
 # Flags when running child processes
 [flags]

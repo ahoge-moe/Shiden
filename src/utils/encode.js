@@ -7,7 +7,6 @@
 const fs = require('fs');
 const path = require('path');
 const logger = require('logger');
-require('toml-require').install({ toml: require('toml') });
 
 // Import custom modules
 const tempHandler = require(path.join(process.cwd(), 'src/utils/tempHandler.js'));

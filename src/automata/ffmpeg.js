@@ -7,7 +7,6 @@
 const path = require('path');
 const fs = require('fs');
 const logger = require('logger');
-require('toml-require').install({ toml: require('toml') });
 
 // Import custom modules
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));

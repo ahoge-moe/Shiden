@@ -20,20 +20,21 @@ const processJob = require(path.join(process.cwd(), 'src/utils/processJob.js'));
     if (currentAttempt !== 1) logger.info(`Current retry: #${currentAttempt - 1}`);
 
     try {
-      const connection = await amqp.connect(loadConfigFile().broker);
+      const connection = await amqp.connect(loadConfigFile().broker.inbound);
       workerHelper.setupEventsForConnection(connection, operation);
       const channel = await connection.createChannel();
       workerHelper.setupEventsForChannel(channel, operation);
       await channel.prefetch(1);
-      const ok = await channel.checkQueue(loadConfigFile().broker.queue);
+      const ok = await channel.checkQueue(loadConfigFile().broker.inbound.queue);
       if (ok) logger.success(`Connection successful`);
       operation.reset();
 
-      await channel.consume(loadConfigFile().broker.queue, async (msg) => {
+      await channel.consume(loadConfigFile().broker.inbound.queue, async (msg) => {
         // msg is null when queue is deleted OR if channel.cancenl() is called
         if (msg == null) {
           logger.error(`Queue has been deleted`);
-          // TODO kill child process from processJob
+          // Also kill the current connection to avoid creating new connections to the broker
+          connection.close();
           process.env.killChildProcess = 'true';
           const interval = operation._timeouts[0];
           if (operation.retry(new Error)) return logger.warning(`Attempt to reconnect in ${interval / 1000} seconds`);
