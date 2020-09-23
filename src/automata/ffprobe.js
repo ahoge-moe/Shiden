@@ -1,7 +1,6 @@
 /**
  * @module ffprobe
  * This module handles the execution of FFprobe commands
- * and provides functions to determine which stream to use
  */
 
 // Import node modules

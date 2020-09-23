@@ -42,7 +42,7 @@ module.exports = FFmpeg = {
       catch (e) {
         logger.error(e);
         // If error was thrown from FFprobe, reject with their error code
-        // and let @worker handle it
+        // and let @encode handle it
         if (e === 801 || 802) return reject(e);
 
         // If error was thrown from running this function

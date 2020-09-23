@@ -1,7 +1,6 @@
 /**
  * @module encode
- * This module handles the logic flow of choosing which
- * FFmpeg command to use for the current job.
+ * This module handles the step 2 of @processJob
  */
 
 // Import node modules
@@ -99,7 +98,7 @@ module.exports = encode = {
             }
             catch (e) {
               // If bitmap based hardsub failed, reject with its error code
-              // and let @worker handle it
+              // and let @processJob handle it
               logger.error(e);
               return reject(e);
             }
@@ -150,7 +149,7 @@ module.exports = encode = {
             }
             catch (e) {
               // If bitmap based hardsub failed, reject with its error code
-              // and let @worker handle it
+              // and let @processJob handle it
               logger.error(e);
               return reject(e);
             }
@@ -159,7 +158,7 @@ module.exports = encode = {
       }
       catch (e) {
         // Reject with the error code from FFmpeg or FFprobe
-        // and let @worker handle it
+        // and let @processJob handle it
         logger.error(e);
         return reject(e);
       }

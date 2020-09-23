@@ -1,7 +1,6 @@
 /**
  * @module notification
- * This module handles getting metadata of the show from Anilist
- * and then sending notification to discord webhooks
+ * This module handles sending messages to the broker
  */
 
 // Import node modules
@@ -14,7 +13,7 @@ require('toml-require').install({ toml: require('toml') });
  * Fetches metadata of the show and sends it to discord webhooks
  * @param {{Object}} job - Current job
  * @param {{string}} outputFileName - Name of outputFile
- * @param {{number}} errorCode - error code from @worker
+ * @param {{number}} errorCode - error code from @processJob
  * @return {{void}}
  */
 const send = (job, outputFileName, errorCode) => {

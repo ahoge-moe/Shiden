@@ -7,10 +7,10 @@ module.exports = messageHandler = {
   /**
    * Checks if message has all required keys
    * @param {{Object}} message
-   * @param {{Array<string>}} requiredKeys
    * @param {{boolean}}
    */
-  messageHasRequiredKeys: (message, requiredKeys) => {
+  messageHasRequiredKeys: (message) => {
+    const requiredKeys = ['inputFile', 'outputFolder'];
     return requiredKeys.every(key => typeof message[key] !== 'undefined');
   },
 
@@ -18,10 +18,22 @@ module.exports = messageHandler = {
    * Checks if message has a valid schema.
    * Currently this only works for one level deep keys.
    * @param {{Object}} message
-   * @param {{Object}} schema
    * @return {{boolean}}
    */
-  messageHasValidSchema: (message, schema) => {
+  messageHasValidSchema: (message) => {
+    const schema = {
+      inputFile: 'string',
+      outputFolder: 'string',
+      showName: 'string',
+      subtitleFile: 'string',
+      subtitleOffset: 'number',
+      videoIndex: 'number',
+      audioIndex: 'number',
+      subIndex: 'number',
+      fontStyle: 'string',
+      fontSize: 'number',
+    };
+
     const messageKeys = Object.keys(message);
     return messageKeys.every(key => {
       if (schema[key] === 'Array') return Array.isArray(message[key]);

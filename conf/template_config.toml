@@ -29,7 +29,7 @@ maxTimeout = 3600000 # in milliseconds. Can NOT be larger than 2147483647 (max s
 randomize = false
 forever = true # if true, "retries" is ignored
 unref = false
-maxRetryTime = "Infinity"
+maxRetryTime = 0 # in milliseconds. 0 means Infinity
 
 # For notification module
 [notification]

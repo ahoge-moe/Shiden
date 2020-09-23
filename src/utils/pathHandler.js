@@ -1,7 +1,7 @@
 /**
  * @module pathHandler
  * This module defines the path of some files and folders
- * and provides some functions for parsing paths
+ * and provides functions for parsing paths
  */
 
 // Import node modules
@@ -10,7 +10,6 @@ const path = require('path');
 module.exports = pathHandler = {
   assetsFolder: path.join(process.cwd(), 'assets'),
   tempFolder: path.join(process.cwd(), 'temp'),
-  queueFile: path.join(process.cwd(), 'src/queue.json'),
   rcloneBinary: path.join(process.cwd(), 'bin/rclone'),
   ffmpegBinary: path.join(process.cwd(), 'bin/ffmpeg'),
   ffprobeBinary: path.join(process.cwd(), 'bin/ffprobe'),

@@ -1,6 +1,6 @@
 /**
- * @module processor
- * This module handles processing jobs from the queue
+ * @module processJob
+ * This module handles processing jobs 
  */
 
 // Import node modules
@@ -13,7 +13,7 @@ const tempHandler = require(path.join(process.cwd(), 'src/utils/tempHandler.js')
 const encode = require(path.join(process.cwd(), 'src/utils/encode.js'));
 const notification = require(path.join(process.cwd(), 'src/utils/notification.js'));
 
-module.exports = processNextJob = (job) => {
+module.exports = processJob = (job) => {
   return new Promise(async (resolve, reject) => {
     try {
       // Delete files in folder/
