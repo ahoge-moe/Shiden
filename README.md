@@ -5,8 +5,10 @@ Shiden (紫電), meaning "purple lightning" in Japanese, is an application for h
 - Connect to and receive *jobs* from an **inbound** message-broker, and then proceed to hardsub.
 - Connect to and send *messages* to an **outbound** message-broker, after hardsubbing is done.
 - Video files are downloaded and uploaded using [rclone](https://rclone.org/).
-- Unopinionated. Read [Usage](#usage) below.
-- Optionally, a message-broker (e.g. [RabbitMQ](https://www.rabbitmq.com/)) can be installed on the same machine as Shiden, and have an instance of [Raikiri](https://github.com/wizo06/Raikiri) running on the same machine. This will effectively expose Shiden to HTTP endpoints, and can be used as a microservice through HTTP endpoints instead.
+- Video files are hardsubbed using [ffmpeg](https://ffmpeg.org/).
+- Subtitles can be text-based or bitmap-based.
+- Hardsubbing is unopinionated. Read [Usage](#usage) below.
+- Optionally, Shiden can be used in conjuction with [Raikiri](https://github.com/wizo06/Raikiri). This will effectively expose Shiden to HTTP endpoints, and can be used as a microservice through HTTP endpoints instead.
 
 # Requirements
 - x86_64 CPU architecture
