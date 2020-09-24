@@ -48,6 +48,15 @@ forever = true # if true, "retries" is ignored.
 unref = false # Whether to unref the setTimeout's. Read more about it here https://nodejs.org/api/timers.html#timers_timeout_unref
 maxRetryTime = 0 # milliseconds. 0 means Infinity.
 
+# In the event that a message fails to reach the outbound broker,
+# send a message to discord webhook instead.
+[discord]
+webhooks = [
+  # "name" is only relevant for logging
+  { name = "...", url = "..." },
+  { name = "...", url = "..." },
+]
+
 # Flags when running child processes
 [flags]
 rclone = "--bwlimit 40M --config conf/rclone.conf"

@@ -1,7 +1,7 @@
 /**
  * @module worker
  * This is the entry point of Shiden.
- * It connects to the broker and listens to a queue for messages.
+ * It connects to the inbound broker and listens to a queue for messages.
  */
 const amqp = require('amqplib');
 const logger = require('logger');
@@ -16,7 +16,7 @@ const processJob = require(path.join(process.cwd(), 'src/utils/processJob.js'));
   const operation = retry.operation(loadConfigFile().retry);
 
   operation.attempt(async currentAttempt => {
-    logger.info(`Attempting to connect to broker`);
+    logger.info(`Attempting to connect to inbound broker`);
     if (currentAttempt !== 1) logger.info(`Current retry: #${currentAttempt - 1}`);
 
     try {
@@ -26,7 +26,7 @@ const processJob = require(path.join(process.cwd(), 'src/utils/processJob.js'));
       workerHelper.setupEventsForChannel(channel, operation);
       await channel.prefetch(1);
       const ok = await channel.checkQueue(loadConfigFile().broker.inbound.queue);
-      if (ok) logger.success(`Connection successful`);
+      if (ok) logger.success(`Connection to inbound broker successful`);
       operation.reset();
 
       await channel.consume(loadConfigFile().broker.inbound.queue, async (msg) => {
@@ -44,16 +44,16 @@ const processJob = require(path.join(process.cwd(), 'src/utils/processJob.js'));
         try {
           const msgParsed = await workerHelper.validateMessage(msg);
 
-          logger.success(`Job received from broker`);
+          logger.success(`Job received from inbound broker`);
           workerHelper.printMessageAsTable(msgParsed);
 
           try {
-            await processJob(msgParsed); // download, hardsub, upload. takes like 10 minutes
+            await processJob(msgParsed);
             channel.ack(msg);
           }
           catch (e) {
             logger.error(e);
-            if (e === 'childProcessKilled') return; // fix this string
+            if (e === 'childProcessKilled') return;
             channel.nack(msg, false, true); // nack
           }
         }
