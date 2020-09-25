@@ -3,7 +3,9 @@ Shiden (紫電), meaning "purple lightning" in Japanese, is an application for h
 
 # Features
 - Connect to and receive *jobs* from an **inbound** message-broker, and then proceed to hardsub.
+- If the connection to the inbound message-broker fails to establish or is broken while processing a job, Shiden can be configured to attempt to reconnect in the config file.
 - Connect to and send *messages* to an **outbound** message-broker, after hardsubbing is done.
+- If the connection to the outbound message-broker fails to establish, a message will be sent to discord webhook(s) instead.
 - Video files are downloaded and uploaded using [rclone](https://rclone.org/).
 - Video files are hardsubbed using [ffmpeg](https://ffmpeg.org/).
 - Subtitles can be text-based or bitmap-based.
