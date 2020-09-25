@@ -28,7 +28,8 @@ uploadDestination = ["destination1:", "destination2:"]
   password = ""
   heartbeat = 60 # seconds
   vhost = "/"
-  queue = ""
+  exchange = ""
+  routingKey = ""
   closeMessage = "Closed via management plugin"
 
 # Settings for retry attempts when failed to connect to broker.

@@ -21,6 +21,13 @@ const sendToBroker = (job, outputFileName) => {
     const tempFolder = tempHandler.getTempFolderPath();
     const transcodedFile = path.join(tempFolder, outputFileName);
     const fileStats = fs.statSync(transcodedFile);
+    
+    const msg = {
+      'show': job.showName ?? '...',
+      'episode': outputFileName,
+      'filesize': fileStats.size,
+      'sub': 'HARDSUB'
+    };
 
     try {
       // Attempt to send msg to outbound broker
@@ -31,19 +38,13 @@ const sendToBroker = (job, outputFileName) => {
       const channel = await connection.createChannel();
       channel.on('close', (err) => { logger.debug(`Channel close: ${err}`) });
       channel.on('error', err => { logger.debug(`Channel error: ${err}`) });
-      const ok = await channel.assertQueue(loadConfigFile().broker.outbound.queue, { durable: false });
+      const ok = await channel.checkExchange(loadConfigFile().broker.outbound.exchange);
       if (ok) logger.success(`Connection to outbound broker successful`);
 
-      const msg = {
-        'show': job.showName ?? '...',
-        'episode': outputFileName,
-        'filesize': fileStats.size,
-        'sub': 'HARDSUB'
-      };
-
-      logger.info(`Sending message to outbound broker`);
-      await channel.sendToQueue(
-        loadConfigFile().broker.outbound.queue,
+      logger.info(`Sending message to outbound exchange: ${loadConfigFile().broker.outbound.exchange}`);
+      await channel.publish(
+        loadConfigFile().broker.outbound.exchange,
+        loadConfigFile().broker.outbound.routingKey,
         Buffer.from(JSON.stringify(msg)),
         { persistent: false }
       );
@@ -57,9 +58,9 @@ const sendToBroker = (job, outputFileName) => {
       // If failed, send msg to discord webhook instead
       logger.error(e);
       try {
+        logger.info(`Sending message to discord webhooks instead`);
         // Send to discord webhook
         const json = {
-          content: `\`\`\`{\n  "show": "${job.showName ?? '...'}",\n  "episdoe": "${outputFileName}",\n  "filesize": ${fileStats.size},\n  "sub": "HARDSUB"\n } \`\`\``,
           embeds: [
             {
               title: outputFileName,
@@ -74,6 +75,12 @@ const sendToBroker = (job, outputFileName) => {
               author: {
                 name: `Failed to send to outbound broker`
               },
+              fields: [
+                {
+                  name: loadConfigFile().broker.outbound.exchange,
+                  value: `\`\`\` ${JSON.stringify(msg).replace(/,/g, ',\n')} \`\`\``,
+                }
+              ]
             }
           ]
         };

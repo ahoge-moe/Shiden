@@ -3,7 +3,7 @@
   "version": "1.3.0",
   "scripts": {
     "start": "node src/worker.js",
-    "test": "node test/producer.js && node src/worker.js"
+    "test": "node test/producer.js && node test/exchange.js"
   },
   "repository": {
     "type": "git",

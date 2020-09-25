@@ -19,24 +19,13 @@ const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHan
     const channel = await connection.createChannel();
     channel.on('close', (err) => { logger.error(`Channel close: ${err}`) });
     channel.on('error', (err) => { logger.error(`Channel error: ${err}`) });
-    await channel.assertQueue(loadConfigFile().broker.inbound.queue, { durable: false });
 
-    const msg = {
-      "inputFile": "Premiered/Grand Blue/Grand Blue - 01 [1080p].mkv",
-      "outputFolder": "Premiered [Hardsub]/Grand Blue",
-      "showName": "Grand Blue"
-    };
+    logger.info(`Asserting outbound exchange: ${loadConfigFile().broker.outbound.exchange}`);
+    await channel.assertExchange(loadConfigFile().broker.outbound.exchange, 'fanout', { durable: false,});
 
-    logger.info(`Sending message to inbound queue: ${loadConfigFile().broker.inbound.queue}`);
-    await channel.sendToQueue(
-      loadConfigFile().broker.inbound.queue, 
-      Buffer.from(JSON.stringify(msg)), 
-      { persistent: false }
-    );
-    
     setTimeout(function () {
       connection.close();
-      logger.info(`Exiting producer.js`);
+      logger.info(`Exiting exchange.js`);
       process.exit(0);
     }, 500);
   }
