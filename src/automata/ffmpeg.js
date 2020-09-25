@@ -31,7 +31,7 @@ module.exports = FFmpeg = {
         let command = [`${pathHandler.ffmpegBinary} -i "${inputFile}"`];
         command.push(await FFprobe.getVideoFlags(streams, job));
         command.push(await FFprobe.getAudioFlags(streams, job));
-        command.push(master ? '' : '-t 300');
+        command.push(master ? '' : '-t 60');
         command.push(`"${outputFile}"`);
         command = command.join(' ');
         await promisefied.exec(command);
@@ -63,7 +63,7 @@ module.exports = FFmpeg = {
         let command = [`${pathHandler.ffmpegBinary} -i "${inputFile}"`];
         command.push(`-c copy`);
         command.push(`-strict -2 -y`);
-        command.push(master ? '' : '-t 300');
+        command.push(master ? '' : '-t 60');
         command.push(`"${outputFile}"`);
         command = command.join(' ');
         await promisefied.exec(command);
@@ -137,7 +137,7 @@ module.exports = FFmpeg = {
         let command = [`${pathHandler.ffmpegBinary} -i "${inputFile}"`];
         command.push(`-vf "subtitles=${subtitleFile}:force_style='FontName=${fontName},Fontsize=${fontSize}:fontsdir=${assetsFolder}'"`);
         command.push(`-strict -2 -y`);
-        command.push(master ? '' : '-t 300');
+        command.push(master ? '' : '-t 60');
         command.push(`"${outputFile}"`);
         command = command.join(' ');
         await promisefied.exec(command);
@@ -167,7 +167,7 @@ module.exports = FFmpeg = {
         command.push(`-map "[v]"`);
         command.push(`-map 0:a -acodec aac -ab 320k`);
         command.push(`-strict -2 -y`);
-        command.push(master ? '' : '-t 300');
+        command.push(master ? '' : '-t 60');
         command.push(`"${outputFile}"`);
         command = command.join(' ');
         await promisefied.exec(command);

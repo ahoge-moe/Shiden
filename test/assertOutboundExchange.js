@@ -13,7 +13,7 @@ const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHan
 
 (async () => {
   try {
-    const connection = await amqp.connect(loadConfigFile().broker.inbound);
+    const connection = await amqp.connect(loadConfigFile().broker.outbound);
     connection.on('close', (err) => { logger.error(`Connection close: ${err}`) });
     connection.on('error', (err) => { logger.error(`Connection error: ${err}`) });
     const channel = await connection.createChannel();
@@ -25,7 +25,7 @@ const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHan
 
     setTimeout(function () {
       connection.close();
-      logger.info(`Exiting exchange.js`);
+      logger.info(`Exiting`);
       process.exit(0);
     }, 500);
   }

@@ -23,21 +23,21 @@ const sendToBroker = (job, outputFileName) => {
     const fileStats = fs.statSync(transcodedFile);
     
     const msg = {
-      'show': job.showName ?? '...',
-      'episode': outputFileName,
-      'filesize': fileStats.size,
-      'sub': 'HARDSUB'
+      show: job.showName ?? '...',
+      episode: outputFileName,
+      filesize: fileStats.size,
+      sub: 'HARDSUB'
     };
 
     try {
       // Attempt to send msg to outbound broker
       logger.info(`Attempting to connect to outbound broker`);
       const connection = await amqp.connect(loadConfigFile().broker.outbound);
-      connection.on('close', err => { logger.debug(`Connection close: ${err} `) });
-      connection.on('error', err => { logger.debug(`Connection error: ${err} `) });
+      connection.on('close', err => { logger.debug(`Connection to outbound broker close: ${err} `) });
+      connection.on('error', err => { logger.debug(`Connection to outbound broker error: ${err} `) });
       const channel = await connection.createChannel();
-      channel.on('close', (err) => { logger.debug(`Channel close: ${err}`) });
-      channel.on('error', err => { logger.debug(`Channel error: ${err}`) });
+      channel.on('close', (err) => { logger.debug(`Channel to outbound broker close: ${err}`) });
+      channel.on('error', err => { logger.debug(`Channel to outbound broker error: ${err}`) });
       const ok = await channel.checkExchange(loadConfigFile().broker.outbound.exchange);
       if (ok) logger.success(`Connection to outbound broker successful`);
 
@@ -50,7 +50,7 @@ const sendToBroker = (job, outputFileName) => {
       );
       setTimeout(function () {
         connection.close();
-        logger.success(`Sent to outbound broker`);
+        logger.success(`Sent to outbound exchange`);
         resolve();
       }, 1000);
     }

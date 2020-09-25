@@ -36,7 +36,7 @@ const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHan
     
     setTimeout(function () {
       connection.close();
-      logger.info(`Exiting producer.js`);
+      logger.info(`Exiting`);
       process.exit(0);
     }, 500);
   }
