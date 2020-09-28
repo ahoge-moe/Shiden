@@ -50,16 +50,16 @@ This JSON object is expected to follow this schema:
 
 Field | Required | Description | Type | Default
 --- | --- | --- | --- | --- |
-inputFile | Yes | Full path to the source video file in the rclone remote | String |
-outputFolder | Yes | Full path to the destination folder in the rclone remote | String |
-showName | No | Name of the show used for fetching metadata | String |
-subtitleFile | No | Full path to a subtitle file | String | Subtitle stream embedded in inputFile
-subtitleOffset | No | Number of seconds to offset the subtitle | Number | 0
-videoIndex | No | Video stream index that will be used from inputFile | Number | First available video stream
-audioIndex | No | Audio stream index that will be used from inputFile | Number | First available audio stream
-subIndex | No | Subtitle stream index that will be used from inputFile (will be used from subtitleFile instead if provided) | Number | First available subtitle stream
-fontStyle | No | Font style used for text based hardsub | String | NotoSansJP-Medium
-fontSize | No | Font size used for text based hardsub | Number | 36
+`inputFile` | Yes | Full path to the source video file in the rclone remote | String |
+`outputFolder` | Yes | Full path to the destination folder in the rclone remote | String |
+`showName` | No | Name of the show used for fetching metadata | String |
+`subtitleFile` | No | Full path to a subtitle file | String | Subtitle stream embedded in `inputFile`
+`subtitleOffset` | No | Number of seconds to offset the subtitle | Number | 0
+`videoIndex` | No | Video stream index that will be used from `inputFile` | Number | First available video stream
+`audioIndex` | No | Audio stream index that will be used from `inputFile` | Number | First available audio stream
+`subIndex` | No | Subtitle stream index that will be used from `inputFile` (`subtitleFile` instead if provided) | Number | First available subtitle stream
+`fontStyle` | No | Font style used for text based hardsub | String | NotoSansJP-Medium
+`fontSize` | No | Font size used for text based hardsub | Number | 36
 
 Available font styles
 - 02UtsukushiMincho

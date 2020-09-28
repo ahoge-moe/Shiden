@@ -32,7 +32,7 @@ const processJob = require(path.join(process.cwd(), 'src/utils/processJob.js'));
       await channel.consume(loadConfigFile().broker.inbound.queue, async (msg) => {
         // msg is null when queue is deleted OR if channel.cancenl() is called
         if (msg == null) {
-          logger.error(`Queue has been deleted`);
+          logger.error(`Inbound queue has been deleted`);
           // Also kill the current connection to avoid creating new connections to the broker
           connection.close();
           process.env.killChildProcess = 'true';
@@ -42,23 +42,26 @@ const processJob = require(path.join(process.cwd(), 'src/utils/processJob.js'));
         }
 
         try {
-          const msgParsed = await workerHelper.validateMessage(msg);
+          const { shidenJob, originalMessage } = await workerHelper.validateMessage(msg);
 
-          logger.success(`Job received from inbound broker`);
-          workerHelper.printMessageAsTable(msgParsed);
+          logger.success(`Valid Shiden Job received from inbound broker`, logger.colors.magenta);
+          workerHelper.printMessageAsTable(shidenJob);
 
           try {
-            await processJob(msgParsed);
+            await processJob(shidenJob, originalMessage);
+            logger.success(`Ack'ing inbound message`);
             channel.ack(msg);
           }
           catch (e) {
             logger.error(e);
             if (e === 'childProcessKilled') return;
+            logger.error(`Nack'ing inbound message`);
             channel.nack(msg, false, true); // nack
           }
         }
         catch (e) {
           logger.error(e);
+          logger.error(`Reject'ing inbound message`);
           channel.nack(msg, false, false); // reject
         }
       }, {

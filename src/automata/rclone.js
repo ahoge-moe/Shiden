@@ -16,15 +16,15 @@ const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHan
 module.exports = rclone = {
   /**
    * Downloads the file from remote to temp folder
-   * @param {{Object}} job - Current processing job
+   * @param {{Object}} shidenJob - Current processing shidenJob
    * @return {{void}}
    */
-  downloadInputFile: job => {
+  downloadInputFile: shidenJob => {
     return new Promise(async (resolve, reject) => {
       try {
         let validSource = false;
         for (remoteName of loadConfigFile().rclone.downloadSource) {
-          if (await rclone.fileExists(remoteName, job.inputFile)) {
+          if (await rclone.fileExists(remoteName, shidenJob.inputFile)) {
             logger.success(`Found input file in ${remoteName}`);
             validSource = remoteName;
             break;
@@ -37,7 +37,7 @@ module.exports = rclone = {
           return reject(600);
         }
 
-        const jobFile = pathHandler.parseRclonePaths(validSource, job.inputFile);
+        const jobFile = pathHandler.parseRclonePaths(validSource, shidenJob.inputFile);
         const tempFolder = tempHandler.getTempFolderPath();
 
         logger.info(`Downloading ${jobFile}`);
@@ -90,17 +90,17 @@ module.exports = rclone = {
 
   /**
    * Uploads the file from temp folder to remote
-   * @param {{Object}} job - Current processing job
+   * @param {{Object}} shidenJob - Current processing shidenJob
    * @return {{void}}
    */
-  upload: (job, outputFileName) => {
+  upload: (shidenJob, outputFileName) => {
     return new Promise(async (resolve, reject) => {
       try {
         const tempFolder = tempHandler.getTempFolderPath();
         const transcodedFile = path.join(tempFolder, outputFileName);
 
         for (remoteName of loadConfigFile().rclone.uploadDestination) {
-          const destination = pathHandler.parseRclonePaths(remoteName, job.outputFolder);
+          const destination = pathHandler.parseRclonePaths(remoteName, shidenJob.outputFolder);
           logger.info(`Uploading to ${destination}`);
 
           const command = `${pathHandler.rcloneBinary} copy "${transcodedFile}" "${destination}" ${loadConfigFile().flags.rclone}`;
@@ -121,17 +121,17 @@ module.exports = rclone = {
   /**
    * Downloads the subtitle file from remote to temp folder
    * Returns true or false for succeeding in downloading the file
-   * @param {{Object}} job
+   * @param {{Object}} shidenJob
    * @return {{void}}
    */
-  downloadSubtitleFile: job => {
+  downloadSubtitleFile: shidenJob => {
     return new Promise(async (resolve, reject) => {
-      if (job.subtitleFile) {
+      if (shidenJob.subtitleFile) {
         try {
-          logger.info('Job has specified subtitle file. Downloading subtitle file...', logger.colors.green);
+          logger.info('shidenJob has specified subtitle file. Downloading subtitle file...', logger.colors.green);
           let validSource = false;
           for (remoteName of loadConfigFile().rclone.downloadSource) {
-            if (await rclone.fileExists(remoteName, job.subtitleFile)) {
+            if (await rclone.fileExists(remoteName, shidenJob.subtitleFile)) {
               logger.success(`Found subtitle file in ${remoteName}`);
               validSource = remoteName;
               break;
@@ -144,7 +144,7 @@ module.exports = rclone = {
             return reject(602);
           }
 
-          const subtitleFile = pathHandler.parseRclonePaths(validSource, job.subtitleFile);
+          const subtitleFile = pathHandler.parseRclonePaths(validSource, shidenJob.subtitleFile);
           const tempFolder = tempHandler.getTempFolderPath();
 
           logger.info(`Downloading ${subtitleFile}`);

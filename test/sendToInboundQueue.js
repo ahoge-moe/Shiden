@@ -21,10 +21,17 @@ const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHan
     channel.on('error', (err) => { logger.error(`Channel error: ${err}`) });
     await channel.assertQueue(loadConfigFile().broker.inbound.queue, { durable: false });
 
+    // const msg = {
+    //   "inputFile": "Premiered/Grand Blue/Grand Blue - 01 [1080p].mkv",
+    //   "outputFolder": "Premiered [Hardsub]/Grand Blue",
+    //   "showName": "Grand Blue"
+    // };
+
     const msg = {
-      "inputFile": "Premiered/Grand Blue/Grand Blue - 01 [1080p].mkv",
-      "outputFolder": "Premiered [Hardsub]/Grand Blue",
-      "showName": "Grand Blue"
+      show: 'Grand Blue',
+      episode: 'Grand Blue - 01 [1080p].mkv',
+      filesize: 123,
+      sub: 'HARDSUB'
     };
 
     logger.info(`Sending message to inbound queue: ${loadConfigFile().broker.inbound.queue}`);

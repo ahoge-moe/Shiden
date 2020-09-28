@@ -13,7 +13,7 @@ const tempHandler = require(path.join(process.cwd(), 'src/utils/tempHandler.js')
 const encode = require(path.join(process.cwd(), 'src/utils/encode.js'));
 const notification = require(path.join(process.cwd(), 'src/utils/notification.js'));
 
-module.exports = processJob = (job) => {
+module.exports = processJob = (shidenJob, originalMessage) => {
   return new Promise(async (resolve, reject) => {
     try {
       // Delete files in folder/
@@ -21,22 +21,22 @@ module.exports = processJob = (job) => {
       
       // Step 1 Download
       logger.info('[1/4] Downloading input file...', logger.colors.yellow);
-      await rclone.downloadInputFile(job);
+      await rclone.downloadInputFile(shidenJob);
   
       // Download subtitle file if job has specified it
-      await rclone.downloadSubtitleFile(job);
+      await rclone.downloadSubtitleFile(shidenJob);
   
       // Step 2 Encode
       logger.info('[2/4] Encoding file...', logger.colors.yellow)
-      const outputFileName = await encode.x264(job);
+      const outputFileName = await encode.x264(shidenJob);
   
       // Step 3 Upload
       logger.info('[3/4] Uploading encoded file...', logger.colors.yellow);
-      await rclone.upload(job, outputFileName);
+      await rclone.upload(shidenJob, outputFileName);
   
       // Step 4 Send message to broker
       logger.info('[4/4] Sending message to broker...', logger.colors.yellow);
-      await notification.sendToBroker(job, outputFileName);
+      await notification.sendToBroker(shidenJob, outputFileName, originalMessage);
   
       // Delete files in folder/
       tempHandler.destroy();

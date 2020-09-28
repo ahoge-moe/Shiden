@@ -19,13 +19,23 @@ const validateMessage = (msg) => {
   return new Promise(async (resolve, reject) => {
     try {
       // Check for JSON syntax. If it has wrong syntax, catch() will handle the error
-      const msgParsed = await promisefied.jsonParse(msg.content);
+      const originalMessage = await promisefied.jsonParse(msg.content);
+      logger.info(`Original message from inbound broker`);
+      printMessageAsTable(originalMessage);
+      logger.info(`Creating Shiden Job object`);
+      // ------------------------------------------------
+      const shidenJob = {
+        inputFile: `Airing/${originalMessage.show}/${originalMessage.episode}`,
+        outputFolder: `Airing [Hardsub]/${originalMessage.show}`,
+        showName: `${originalMessage.show}`
+      };
+      // ------------------------------------------------
       // Check for required keys
-      if (!messageHandler.messageHasRequiredKeys(msgParsed)) return reject('Missing required key');
+      if (!messageHandler.messageHasRequiredKeys(shidenJob)) return reject('Missing required key');
       // Check for schema
-      if (!messageHandler.messageHasValidSchema(msgParsed)) return reject('Invalid schema');
+      if (!messageHandler.messageHasValidSchema(shidenJob)) return reject('Invalid schema');
 
-      resolve(msgParsed);
+      resolve({ shidenJob, originalMessage});
     }
     catch (e) {
       return reject(e);

@@ -22,15 +22,15 @@ module.exports = FFmpeg = {
    * @param {{string}} inputFile - Path to input file
    * @param {{string}} outputFile - Path to output file
    * @param {{Array<Object>}} streams - Array of streams from temp file, extracted with FFprobe
-   * @param {{Object}} job - Current job
+   * @param {{Object}} shidenJob - Current shidenJob
    * @return {{void}}
    */
-  prepare: (inputFile, outputFile, streams, job) => {
+  prepare: (inputFile, outputFile, streams, shidenJob) => {
     return new Promise(async (resolve, reject) => {
       try {
         let command = [`${pathHandler.ffmpegBinary} -i "${inputFile}"`];
-        command.push(await FFprobe.getVideoFlags(streams, job));
-        command.push(await FFprobe.getAudioFlags(streams, job));
+        command.push(await FFprobe.getVideoFlags(streams, shidenJob));
+        command.push(await FFprobe.getAudioFlags(streams, shidenJob));
         command.push(master ? '' : '-t 60');
         command.push(`"${outputFile}"`);
         command = command.join(' ');
@@ -108,22 +108,22 @@ module.exports = FFmpeg = {
    * @param {{string}} subtitleFile - Path to subtitle file
    * @param {{string}} assetsFolder - Path to assets folder
    * @param {{string}} outputFile - Path to output file
-   * @param {{Object}} job - Current job
+   * @param {{Object}} shidenJob - Current shidenJob
    * @return {{void}}
    */
-  hardsubText: (inputFile, subtitleFile, assetsFolder, outputFile, job) => {
+  hardsubText: (inputFile, subtitleFile, assetsFolder, outputFile, shidenJob) => {
     return new Promise(async (resolve, reject) => {
       try {
-        // Defaults to NotoSansJP-Medium fontstyle if not provided in job
-        const fontName = (job.fontStyle) ? job.fontStyle : 'NotoSansJP-Medium';
-        const fontSize = (job.fontSize) ? job.fontSize : 36;
+        // Defaults to NotoSansJP-Medium fontstyle if not provided in shidenJob
+        const fontName = (shidenJob.fontStyle) ? shidenJob.fontStyle : 'NotoSansJP-Medium';
+        const fontSize = (shidenJob.fontSize) ? shidenJob.fontSize : 36;
 
-        // If job specified subtitle offset
-        if (job.subtitleOffset) {
-          logger.info(`Job has provided offset number: ${logger.colors.cyan}${job.subtitleOffset}`);
+        // If shidenJob specified subtitle offset
+        if (shidenJob.subtitleOffset) {
+          logger.info(`shidenJob has provided offset number: ${logger.colors.cyan}${shidenJob.subtitleOffset}`);
           const subFileExt = path.extname(subtitleFile);
 
-          let command = [`${pathHandler.ffmpegBinary} -itsoffset ${job.subtitleOffset} -i "${subtitleFile}"`];
+          let command = [`${pathHandler.ffmpegBinary} -itsoffset ${shidenJob.subtitleOffset} -i "${subtitleFile}"`];
           command.push(`-c copy`);
           command.push(`"offset${subFileExt}"`);
           command = command.join(' ');
@@ -159,10 +159,10 @@ module.exports = FFmpeg = {
    * @param {{string}} outputFile - Path to output file
    * @return {{void}}
    */
-  hardsubBitmap: (inputFileOne, inputFileTwo, index, outputFile, job) => {
+  hardsubBitmap: (inputFileOne, inputFileTwo, index, outputFile, shidenJob) => {
     return new Promise(async (resolve, reject) => {
       try {
-        let command = [`${pathHandler.ffmpegBinary} -i "${inputFileOne}" -itsoffset ${job.subtitleOffset ? job.subtitleOffset : 0} -i "${inputFileTwo}"`];
+        let command = [`${pathHandler.ffmpegBinary} -i "${inputFileOne}" -itsoffset ${shidenJob.subtitleOffset ? shidenJob.subtitleOffset : 0} -i "${inputFileTwo}"`];
         command.push(`-filter_complex "[0:v][1:${index}]overlay[v]"`);
         command.push(`-map "[v]"`);
         command.push(`-map 0:a -acodec aac -ab 320k`);

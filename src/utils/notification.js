@@ -14,21 +14,25 @@ const version = require(path.join(process.cwd(), 'package.json')).version;
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 const tempHandler = require(path.join(process.cwd(), 'src/utils/tempHandler.js'));
 const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
+const { printMessageAsTable } = require(path.join(process.cwd(), 'src/utils/workerHelper.js'));
 
-const sendToBroker = (job, outputFileName) => {
+const sendToBroker = (job, outputFileName, originalMessage) => {
   return new Promise(async (resolve, reject) => {
 
     const tempFolder = tempHandler.getTempFolderPath();
     const transcodedFile = path.join(tempFolder, outputFileName);
     const fileStats = fs.statSync(transcodedFile);
     
-    const msg = {
-      show: job.showName ?? '...',
+    logger.info(`Sending message to outbound broker`);
+    // ------------------------------------------------
+    originalMessage = {
+      ...originalMessage,
       episode: outputFileName,
-      filesize: fileStats.size,
-      sub: 'HARDSUB'
+      filesize: fileStats.size
     };
-
+    // ------------------------------------------------
+    printMessageAsTable(originalMessage);
+    
     try {
       // Attempt to send msg to outbound broker
       logger.info(`Attempting to connect to outbound broker`);
@@ -45,7 +49,7 @@ const sendToBroker = (job, outputFileName) => {
       await channel.publish(
         loadConfigFile().broker.outbound.exchange,
         loadConfigFile().broker.outbound.routingKey,
-        Buffer.from(JSON.stringify(msg)),
+        Buffer.from(JSON.stringify(originalMessage)),
         { persistent: false }
       );
       setTimeout(function () {
@@ -78,7 +82,7 @@ const sendToBroker = (job, outputFileName) => {
               fields: [
                 {
                   name: loadConfigFile().broker.outbound.exchange,
-                  value: `\`\`\` ${JSON.stringify(msg).replace(/,/g, ',\n')} \`\`\``,
+                  value: `\`\`\` ${JSON.stringify(originalMessage).replace(/,/g, ',\n')} \`\`\``,
                 }
               ]
             }
@@ -105,7 +109,7 @@ const sendToBroker = (job, outputFileName) => {
         resolve();
       }
       catch (e) {
-        // If also failed, reject for now.
+        // If sending to discord also failed, reject for now.
         // TODO: maybe save it on a local file
         reject(e);
       }

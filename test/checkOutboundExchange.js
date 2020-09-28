@@ -8,9 +8,10 @@
 const amqp = require('amqplib');
 const logger = require('logger');
 const path = require('path');
-const util = require('util');
 
 const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
+const { printMessageAsTable } = require(path.join(process.cwd(), 'src/utils/workerHelper.js'));
+const { jsonParse } = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 
 (async () => {
   try {
@@ -26,14 +27,15 @@ const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHan
     logger.info(`Binding exchange ${loadConfigFile().broker.outbound.exchange} to queue ${ok.queue}`);
     await channel.bindQueue(ok.queue, loadConfigFile().broker.outbound.exchange, '');
     logger.info(`Listening queue ${ok.queue} for incoming messages...`);
-    await channel.consume(ok.queue, msg => {
+    await channel.consume(ok.queue, async msg => {
       if (msg == null) {
         logger.error('msg is null');
         connection.close();
         process.kill(1);
       }
 
-      logger.info(util.inspect(JSON.parse(msg.content)));
+      const msgParsed = await jsonParse(msg.content);
+      printMessageAsTable(msgParsed);
       connection.close();
       process.kill(0);
     });

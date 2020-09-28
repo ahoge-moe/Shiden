@@ -35,24 +35,24 @@ module.exports = FFprobe = {
   /**
   * Determines which video flag to use for FFmpeg.prepare()
   * @param {{Array<Object>}} streams - Array of streams from temp file
-  * @param {{Object}} job - Current job
+  * @param {{Object}} shidenJob - Current shidenJob
   * @return {{Promise<string>}} - Returns the video flag to be used in FFmpeg.prepare()
   */
-  getVideoFlags: (streams, job) => {
+  getVideoFlags: (streams, shidenJob) => {
     return new Promise((resolve, reject) => {
-      if (job.videoIndex) {
-        logger.info(`Job has provided video index: ${logger.colors.cyan}${job.videoIndex}`);
-        const videoStream = streams.filter(stream => stream.index == job.videoIndex)[0];
+      if (shidenJob.videoIndex) {
+        logger.info(`shidenJob has provided video index: ${logger.colors.cyan}${shidenJob.videoIndex}`);
+        const videoStream = streams.filter(stream => stream.index == shidenJob.videoIndex)[0];
         if (videoStream && videoStream.codec_type === 'video') {
-          return resolve(`-map 0:${job.videoIndex} -c:v copy`);
+          return resolve(`-map 0:${shidenJob.videoIndex} -c:v copy`);
         }
         else {
-          logger.error(`Stream with index: ${job.videoIndex} is not a video stream or does not exist.`);
+          logger.error(`Stream with index: ${shidenJob.videoIndex} is not a video stream or does not exist.`);
           return reject(801);
         }
       }
 
-      logger.info(`Video index not provided in job. Using first available video stream.`);
+      logger.info(`Video index not provided in shidenJob. Using first available video stream.`);
       return resolve(`-map 0:v -c:v copy`);
     });
   },
@@ -60,24 +60,24 @@ module.exports = FFprobe = {
   /**
    * Determines which audio flag to use for FFmpeg.prepare()
    * @param {{Array<Object>}} streams - Array of streams from temp file
-   * @param {{Object}} job - Current job
+   * @param {{Object}} shidenJob - Current shidenJob
    * @return {{Promise<string>}} - Returns the audio flag to be used in FFmpeg.prepare()
    */
-  getAudioFlags: (streams, job) => {
+  getAudioFlags: (streams, shidenJob) => {
     return new Promise((resolve, reject) => {
-      if (job.audioIndex) {
-        logger.info(`Job has provided audio index: ${logger.colors.cyan}${job.audioIndex}`);
-        const audioStream = streams.filter(stream => stream.index == job.audioIndex)[0];
+      if (shidenJob.audioIndex) {
+        logger.info(`shidenJob has provided audio index: ${logger.colors.cyan}${shidenJob.audioIndex}`);
+        const audioStream = streams.filter(stream => stream.index == shidenJob.audioIndex)[0];
         if (audioStream && audioStream.codec_type === 'audio') {
-          return resolve(`-map 0:${job.audioIndex} -acodec aac -ab 320k`);
+          return resolve(`-map 0:${shidenJob.audioIndex} -acodec aac -ab 320k`);
         }
         else {
-          logger.error(`Stream with index: ${job.audioIndex} is not an audio stream or does not exist.`);
+          logger.error(`Stream with index: ${shidenJob.audioIndex} is not an audio stream or does not exist.`);
           return reject(802);
         }
       }
 
-      logger.info(`Audio index not provided in job. Looking for stereo audio stream.`);
+      logger.info(`Audio index not provided in shidenJob. Looking for stereo audio stream.`);
       const stereoAudioStream = streams.filter(stream => stream.channels === 2)[0];
       if (stereoAudioStream) {
         logger.success(`Stereo audio stream found.`);
@@ -108,27 +108,27 @@ module.exports = FFprobe = {
   },
 
   /**
-   * Returns info about the subtitle stream provided in job.
+   * Returns info about the subtitle stream provided in shidenJob.
    * Otherwise returns info about first available subtitle stream.
    * @param {{Array<Object>}} streams - Array of streams from temp file
-   * @param {{Object}} job - Current job
+   * @param {{Object}} shidenJob - Current shidenJob
    * @return {{Promise<Object>}} - Returns subtitle stream info
    */
-  determineSubStream: (streams, job) => {
+  determineSubStream: (streams, shidenJob) => {
     return new Promise((resolve, reject) => {
-      if (job.subIndex) {
-        logger.info(`Job has provided subtitle index: ${logger.colors.cyan}${job.subIndex}`);
-        const jobSpecifiedSubStream = streams.filter(stream => stream.index == job.subIndex)[0];
+      if (shidenJob.subIndex) {
+        logger.info(`shidenJob has provided subtitle index: ${logger.colors.cyan}${shidenJob.subIndex}`);
+        const jobSpecifiedSubStream = streams.filter(stream => stream.index == shidenJob.subIndex)[0];
         if (jobSpecifiedSubStream && jobSpecifiedSubStream.codec_type === 'subtitle') {
           return resolve(jobSpecifiedSubStream);
         }
         else {
-          logger.error(`Stream with index: ${job.subIndex} is not a subtitle stream or does not exist.`);
+          logger.error(`Stream with index: ${shidenJob.subIndex} is not a subtitle stream or does not exist.`);
           return reject(803);
         }
       }
 
-      logger.info(`Subtitle index not provided in job. Using first available subtitle stream.`);
+      logger.info(`Subtitle index not provided in shidenJob. Using first available subtitle stream.`);
       const firstAvailableSubtitleStream = streams.filter(stream => stream.codec_type === 'subtitle')[0];
       return resolve(firstAvailableSubtitleStream);
     });
