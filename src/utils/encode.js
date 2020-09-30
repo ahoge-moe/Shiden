@@ -32,16 +32,19 @@ module.exports = encode = {
         const outputFileName = path.basename(outputFile);
 
         // Step 1: Rename input file
-        logger.info(`Renaming ${inputFileName} to ${path.basename(tempInputFile)}`);
+        logger.info(`Renaming...`);
         fs.renameSync(inputFile, tempInputFile);
+        logger.success(`Renamed`);
 
         // Step 2: Extract streams info from input file
-        logger.info(`Probing ${path.basename(tempInputFile)}`);
+        logger.info(`Probing...`);
         const inputFileStreams = await FFprobe.getStreams(tempInputFile);
+        logger.success(`Probed`);
 
         // Step 3: Prepare a file that only has 1 video stream and 1 audio stream
-        logger.info(`Extracting video and audio stream into ${path.basename(preppedInputFile)}`);
+        logger.info(`Extracting video and audio stream`);
         await FFmpeg.prepare(tempInputFile, preppedInputFile, inputFileStreams, shidenJob);
+        logger.success(`Extracted`);
 
         // If shidenJob has specified subtitle file
         if (shidenJob.subtitleFile) {
@@ -80,7 +83,7 @@ module.exports = encode = {
             logger.info(`Hardsubbing with text based subtitle`);
             await FFmpeg.hardsubText(preppedInputFile, assFile, pathHandler.assetsFolder, outputFile, shidenJob);
 
-            logger.success(`Hardsubbing completed`);
+            logger.success(`Hardsubbed`);
             return resolve(outputFileName);
           }
           catch (e) {
@@ -92,7 +95,7 @@ module.exports = encode = {
               logger.info(`Hardsubbing with bitmap based subtitle`);
               await FFmpeg.hardsubBitmap(preppedInputFile, tempSubFile, subStream.index, outputFile, shidenJob);
 
-              logger.success(`Hardsubbing completed`);
+              logger.success(`Hardsubbed`);
               return resolve(outputFileName);
             }
             catch (e) {
@@ -104,14 +107,14 @@ module.exports = encode = {
           }
         }
 
-        logger.info(`Subtitle file not provided in shidenJob. Probing ${path.basename(tempInputFile)}`);
+        logger.info(`Subtitle file not provided in shidenJob. Using inputFile.`);
         // If shidenJob did not specify subtitle file
         if (!FFprobe.hasSub(inputFileStreams)) {
           // Step 4: If no subtitle stream, simply change container
           logger.info(`Changing container`);
           await FFmpeg.changeContainer(preppedInputFile, outputFile);
 
-          logger.success(`Hardsubbing completed`);
+          logger.success(`Hardsubbed`);
           return resolve(outputFileName);
         }
         else {
@@ -130,7 +133,7 @@ module.exports = encode = {
             logger.info(`Hardsubbing with text based subtitle`);
             await FFmpeg.hardsubText(preppedInputFile, assFile, pathHandler.assetsFolder, outputFile, shidenJob);
 
-            logger.success(`Hardsubbing completed`);
+            logger.success(`Hardsubbed`);
             return resolve(outputFileName);
           }
           catch (e) {
@@ -143,7 +146,7 @@ module.exports = encode = {
               logger.info(`Hardsubbing with bitmap based subtitle`);
               await FFmpeg.hardsubBitmap(preppedInputFile, tempInputFile, subStream.index, outputFile, shidenJob);
 
-              logger.success(`Hardsubbing completed`);
+              logger.success(`Hardsubbed`);
               return resolve(outputFileName);
             }
             catch (e) {

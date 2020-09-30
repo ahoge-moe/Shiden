@@ -22,7 +22,7 @@ const validateMessage = (msg) => {
       const originalMessage = await promisefied.jsonParse(msg.content);
       logger.info(`Original message from inbound broker`);
       printMessageAsTable(originalMessage);
-      logger.info(`Creating Shiden Job object`);
+      logger.info(`Creating Shiden Job object...`);
       // ------------------------------------------------
       const shidenJob = {
         inputFile: `Airing/${originalMessage.show}/${originalMessage.episode}`,

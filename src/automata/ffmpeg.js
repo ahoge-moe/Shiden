@@ -35,7 +35,6 @@ module.exports = FFmpeg = {
         command.push(`"${outputFile}"`);
         command = command.join(' ');
         await promisefied.exec(command);
-        logger.success(`File has been prepared in ${path.basename(outputFile)}`);
         return resolve();
       }
       catch (e) {

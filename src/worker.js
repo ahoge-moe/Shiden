@@ -16,7 +16,7 @@ const processJob = require(path.join(process.cwd(), 'src/utils/processJob.js'));
   const operation = retry.operation(loadConfigFile().retry);
 
   operation.attempt(async currentAttempt => {
-    logger.info(`Attempting to connect to inbound broker`);
+    logger.info(`Connecting to inbound broker...`);
     if (currentAttempt !== 1) logger.info(`Current retry: #${currentAttempt - 1}`);
 
     try {
@@ -26,7 +26,8 @@ const processJob = require(path.join(process.cwd(), 'src/utils/processJob.js'));
       workerHelper.setupEventsForChannel(channel, operation);
       await channel.prefetch(1);
       const ok = await channel.checkQueue(loadConfigFile().broker.inbound.queue);
-      if (ok) logger.success(`Connection to inbound broker successful`);
+      if (ok) logger.success(`Connected`);
+      workerHelper.printMessageAsTable(ok);
       operation.reset();
 
       await channel.consume(loadConfigFile().broker.inbound.queue, async (msg) => {
@@ -43,14 +44,14 @@ const processJob = require(path.join(process.cwd(), 'src/utils/processJob.js'));
 
         try {
           const { shidenJob, originalMessage } = await workerHelper.validateMessage(msg);
-
-          logger.success(`Valid Shiden Job received from inbound broker`, logger.colors.magenta);
+          logger.success(`Created`, logger.colors.magenta);
           workerHelper.printMessageAsTable(shidenJob);
 
           try {
             await processJob(shidenJob, originalMessage);
-            logger.success(`Ack'ing inbound message`);
-            channel.ack(msg);
+            logger.info(`Ack'ing inbound message`);
+            await channel.ack(msg);
+            logger.success(`Ack'ed`);
           }
           catch (e) {
             logger.error(e);

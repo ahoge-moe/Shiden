@@ -25,7 +25,7 @@ module.exports = rclone = {
         let validSource = false;
         for (remoteName of loadConfigFile().rclone.downloadSource) {
           if (await rclone.fileExists(remoteName, shidenJob.inputFile)) {
-            logger.success(`Found input file in ${remoteName}`);
+            logger.success(`Found in ${remoteName}`);
             validSource = remoteName;
             break;
           }
@@ -40,11 +40,11 @@ module.exports = rclone = {
         const jobFile = pathHandler.parseRclonePaths(validSource, shidenJob.inputFile);
         const tempFolder = tempHandler.getTempFolderPath();
 
-        logger.info(`Downloading ${jobFile}`);
+        logger.info(`Downloading...`);
         const command = `${pathHandler.rcloneBinary} copy "${jobFile}" "${tempFolder}" ${loadConfigFile().flags.rclone}`;
         await promisefied.exec(command);
 
-        logger.success(`Download completed`);
+        logger.success(`Downloaded`);
         return resolve();
       }
       catch (e) {
@@ -65,7 +65,7 @@ module.exports = rclone = {
   fileExists: (remoteName, inputFile) => {
     return new Promise(async (resolve, reject) => {
       try {
-        logger.info(`Checking for file in ${remoteName}`);
+        logger.info(`Looking for file in ${remoteName}...`);
 
         const fileName = path.basename(inputFile);
         const remoteToCheck = pathHandler.parseRclonePaths(remoteName, inputFile);
@@ -81,7 +81,7 @@ module.exports = rclone = {
         return resolve(false);
       }
       catch (e) {
-        logger.warning(`File not found in ${remoteName}`);
+        logger.warning(`Not found in ${remoteName}`);
         if (e === 'childProcessKilled') return reject(e);
         return resolve(false);
       }
@@ -105,7 +105,7 @@ module.exports = rclone = {
 
           const command = `${pathHandler.rcloneBinary} copy "${transcodedFile}" "${destination}" ${loadConfigFile().flags.rclone}`;
           await promisefied.exec(command);
-          logger.success(`Upload completed`);
+          logger.success(`Uploaded`);
         }
         return resolve();
       }

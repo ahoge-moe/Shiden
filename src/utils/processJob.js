@@ -20,22 +20,22 @@ module.exports = processJob = (shidenJob, originalMessage) => {
       tempHandler.destroy();
       
       // Step 1 Download
-      logger.info('[1/4] Downloading input file...', logger.colors.yellow);
+      logger.info('[1/4] Downloading...', logger.colors.yellow);
       await rclone.downloadInputFile(shidenJob);
   
       // Download subtitle file if job has specified it
       await rclone.downloadSubtitleFile(shidenJob);
   
       // Step 2 Encode
-      logger.info('[2/4] Encoding file...', logger.colors.yellow)
+      logger.info('[2/4] Encoding...', logger.colors.yellow)
       const outputFileName = await encode.x264(shidenJob);
   
       // Step 3 Upload
-      logger.info('[3/4] Uploading encoded file...', logger.colors.yellow);
+      logger.info('[3/4] Uploading...', logger.colors.yellow);
       await rclone.upload(shidenJob, outputFileName);
   
       // Step 4 Send message to broker
-      logger.info('[4/4] Sending message to broker...', logger.colors.yellow);
+      logger.info('[4/4] Sending message to outbound broker...', logger.colors.yellow);
       await notification.sendToBroker(shidenJob, outputFileName, originalMessage);
   
       // Delete files in folder/

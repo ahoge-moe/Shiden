@@ -9,7 +9,7 @@ uploadDestination = ["destination1:", "destination2:"]
   # Used in @worker
   [broker.inbound]
   protocol = "amqp"
-  host = "localhost"
+  hostname = "localhost"
   port = "5672"
   username = ""
   password = ""
@@ -22,7 +22,7 @@ uploadDestination = ["destination1:", "destination2:"]
   # Used in @notification
   [broker.outbound]
   protocol = "amqp"
-  host = "localhost"
+  hostname = "localhost"
   port = "5672"
   username = ""
   password = ""

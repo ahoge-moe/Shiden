@@ -80,7 +80,7 @@ module.exports = FFprobe = {
       logger.info(`Audio index not provided in shidenJob. Looking for stereo audio stream.`);
       const stereoAudioStream = streams.filter(stream => stream.channels === 2)[0];
       if (stereoAudioStream) {
-        logger.success(`Stereo audio stream found.`);
+        logger.info(`Stereo audio stream found.`);
         return resolve(`-map 0:${stereoAudioStream.index} -acodec aac -ab 320k`);
       }
       else {
