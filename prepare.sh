@@ -25,27 +25,6 @@ _info () {
   echo -e "${FG_CYAN}i ${FG_WHITE}${1}${DEFAULT}"
 }
 
-if dpkg --get-selections | grep -q "^unzip[[:space:]]*install$" >/dev/null; then
-  _success "unzip installed"
-else
-  _info "installing unzip"
-  sudo apt install unzip
-fi
-
-if dpkg --get-selections | grep -q "^tar[[:space:]]*install$" >/dev/null; then
-  _success "tar installed"
-else
-  _info "installing tar"
-  sudo apt install tar
-fi
-
-if dpkg --get-selections | grep -q "^curl[[:space:]]*install$" >/dev/null; then
-  _success "curl installed"
-else
-  _info "installing curl"
-  sudo apt install curl
-fi
-
 script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "${script_path}"
 mkdir -p bin
@@ -97,22 +76,6 @@ else
   _success "Installed rclone"
 fi
 
-# Rclone config
-if [ -f conf/rclone.conf ]; then
-  _success "Found rclone.conf"
-else
-  _info "Configuring rclone ..."
-  bin/rclone config --config conf/rclone.conf
-fi
-
-# node_modules
-if [ -d node_modules ]; then
-  _success "Found node modules/"
-else
-  _info "Installing node modules"
-  npm i
-fi
-
 # Config files
 branch_name=$(cat .git/HEAD | cut -d "/" -f 3)
 if [ "${branch_name}" == "master" ]; then
@@ -126,15 +89,6 @@ if [ "${branch_name}" == "master" ]; then
     _info "Please make the necessary changes in conf/user_config.toml"
   fi
 
-  if [ -f conf/user_auth.yml ]; then
-    _success "Found user_auth.yml"
-  else
-    _info "Creating user_auth.yml ..."
-    cp conf/template_auth.yml conf/user_auth.yml
-    _success "Created user_auth.yml"
-    _info "Please make the necessary changes in conf/user_auth.yml"
-  fi
-
 else
 
   if [ -f conf/dev_config.toml ]; then
@@ -146,13 +100,12 @@ else
     _info "Please make the necessary changes in conf/dev_config.toml"
   fi
 
-  if [ -f conf/dev_auth.yml ]; then
-    _success "Found dev_auth.yml"
-  else
-    _info "Creating dev_auth.yml ..."
-    cp conf/template_auth.yml conf/dev_auth.yml
-    _success "Created dev_auth.yml"
-    _info "Please make the necessary changes in conf/dev_auth.yml"
-  fi
+fi
 
+# node_modules
+if [ -d node_modules ]; then
+  _success "Found node modules/"
+else
+  _info "Installing node modules"
+  npm i
 fi

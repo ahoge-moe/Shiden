@@ -1,30 +1,63 @@
-### Changes are required ###
+# Download from one, upload to all.
+[rclone]
+downloadSource = ["source1:", "source2:"]
+uploadDestination = ["destination1:", "destination2:"]
 
-# Rclone remotes
-[remote]
-# List of remote storages that rclone will check if the file exists before downloading the file
-downloadSource = ["source1:", "source2:", "source3:"]
+[broker]
 
-# List of remote storages that rclone will upload the hardsubbed file to
-uploadDestination = ["destination1:", "destination2:", "destination3:"]
+  # Settings for the broker to listen messages from
+  # Used in @worker
+  [broker.inbound]
+  protocol = "amqp"
+  hostname = "localhost"
+  port = "5672"
+  username = ""
+  password = ""
+  heartbeat = 60 # seconds
+  vhost = "/"
+  queue = ""
+  closeMessage = "Closed via management plugin"
 
-########################################################################
+  # Settings for the broker to send messages to
+  # Used in @notification
+  [broker.outbound]
+  protocol = "amqp"
+  hostname = "localhost"
+  port = "5672"
+  username = ""
+  password = ""
+  heartbeat = 60 # seconds
+  vhost = "/"
+  exchange = ""
+  routingKey = ""
+  closeMessage = "Closed via management plugin"
 
-### Changes are optional ###
+# Settings for retry attempts when failed to connect to broker.
+# However, if the connection was closed by an operator, these settings 
+# will be irrelevant and no retry attempts will be made. More specifically,
+# if the message sent by the operator is equals to "closeMessage".
+# The following formula is used to calculate interval in-between retries
+# Math.min(random * minTimeout * Math.pow(factor, attempt), maxTimeout)
+# Read more about Math.min() and Math.pow() here https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math
+[retry]
+retries = 10 # Max number of retry attempts. Keep this number low or might run out of memory.
+factor = 2 # Exponential back-off factor.
+minTimeout = 60000 # milliseconds. Can NOT be less than 1 (min setTimeout limit).
+maxTimeout = 3600000 # milliseconds. Can NOT be larger than 2147483647 (max setTimeout limit).
+randomize = false
+forever = true # if true, "retries" is ignored.
+unref = false # Whether to unref the setTimeout's. Read more about it here https://nodejs.org/api/timers.html#timers_timeout_unref
+maxRetryTime = 0 # milliseconds. 0 means Infinity.
 
-# For notification module
-[notification]
-# List of discord webhooks to send notifications to
-discordWebhooks = [
-  { name = "", url = "https://discordapp.com/..." },
-  { name = "", url = "https://discordapp.com/..." },
-  { name = "", url = "https://discordapp.com/..." },
+# In the event that a message fails to reach the outbound broker,
+# send a message to discord webhook instead.
+[discord]
+webhooks = [
+  # "name" is only relevant for logging
+  { name = "...", url = "..." },
+  { name = "...", url = "..." },
 ]
 
 # Flags when running child processes
 [flags]
-rclone = "--bwlimit 20M --config conf/rclone.conf"
-
-# ExpressJS settings
-[express]
-port = 64000
+rclone = "--bwlimit 40M --config conf/rclone.conf"

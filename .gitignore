@@ -12,6 +12,3 @@ node_modules/
 
 # Ignore temp folders
 temp/
-
-# Ignore queue file
-queue.json

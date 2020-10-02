@@ -6,27 +6,26 @@
 // Import node modules
 const path = require('path');
 const logger = require('logger');
-require('toml-require').install({ toml: require('toml') });
 
 // Import custom modules
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
 const pathHandler = require(path.join(process.cwd(), 'src/utils/pathHandler.js'));
 const tempHandler = require(path.join(process.cwd(), 'src/utils/tempHandler.js'));
-const CONFIG = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
+const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHandler.js'));
 
 module.exports = rclone = {
   /**
    * Downloads the file from remote to temp folder
-   * @param {{Object}} job - Current processing job
+   * @param {{Object}} shidenJob - Current processing shidenJob
    * @return {{void}}
    */
-  downloadInputFile: job => {
+  downloadInputFile: shidenJob => {
     return new Promise(async (resolve, reject) => {
       try {
         let validSource = false;
-        for (remoteName of CONFIG.remote.downloadSource) {
-          if (await rclone.fileExists(remoteName, job.inputFile)) {
-            logger.success(`Found input file in ${logger.colors.bright}${remoteName}`);
+        for (remoteName of loadConfigFile().rclone.downloadSource) {
+          if (await rclone.fileExists(remoteName, shidenJob.inputFile)) {
+            logger.success(`Found in ${remoteName}`);
             validSource = remoteName;
             break;
           }
@@ -38,19 +37,20 @@ module.exports = rclone = {
           return reject(600);
         }
 
-        const jobFile = pathHandler.parseRclonePaths(validSource, job.inputFile);
+        const jobFile = pathHandler.parseRclonePaths(validSource, shidenJob.inputFile);
         const tempFolder = tempHandler.getTempFolderPath();
 
-        logger.info(`Downloading ${logger.colors.bright}${jobFile}`);
-        const command = `${pathHandler.rcloneBinary} copy "${jobFile}" "${tempFolder}" ${CONFIG.flags.rclone}`;
+        logger.info(`Downloading...`);
+        const command = `${pathHandler.rcloneBinary} copy "${jobFile}" "${tempFolder}" ${loadConfigFile().flags.rclone}`;
         await promisefied.exec(command);
 
-        logger.success(`Download completed`);
+        logger.success(`Downloaded`);
         return resolve();
       }
       catch (e) {
         logger.error(e);
         logger.error(`rclone failed during download`);
+        if (e === 'childProcessKilled') return reject(e);
         return reject(600);
       }
     });
@@ -65,12 +65,12 @@ module.exports = rclone = {
   fileExists: (remoteName, inputFile) => {
     return new Promise(async (resolve, reject) => {
       try {
-        logger.info(`Checking for file in ${logger.colors.bright}${remoteName}`);
+        logger.info(`Looking for file in ${remoteName}...`);
 
         const fileName = path.basename(inputFile);
         const remoteToCheck = pathHandler.parseRclonePaths(remoteName, inputFile);
 
-        const command = `${pathHandler.rcloneBinary} lsf "${remoteToCheck}" --files-only ${CONFIG.flags.rclone.match(/--config \w+\/\w+\.conf/)}`;
+        const command = `${pathHandler.rcloneBinary} lsf "${remoteToCheck}" --files-only ${loadConfigFile().flags.rclone.match(/--config \w+\/\w+\.conf/)}`;
         const response = await promisefied.exec(command);
 
         // If first file in lsf is the same as fileName, then assume file is found
@@ -81,7 +81,8 @@ module.exports = rclone = {
         return resolve(false);
       }
       catch (e) {
-        logger.error(`File not found in ${logger.colors.bright}${remoteName}`);
+        logger.warning(`Not found in ${remoteName}`);
+        if (e === 'childProcessKilled') return reject(e);
         return resolve(false);
       }
     });
@@ -89,28 +90,29 @@ module.exports = rclone = {
 
   /**
    * Uploads the file from temp folder to remote
-   * @param {{Object}} job - Current processing job
+   * @param {{Object}} shidenJob - Current processing shidenJob
    * @return {{void}}
    */
-  upload: (job, outputFileName) => {
+  upload: (shidenJob, outputFileName) => {
     return new Promise(async (resolve, reject) => {
       try {
         const tempFolder = tempHandler.getTempFolderPath();
         const transcodedFile = path.join(tempFolder, outputFileName);
 
-        for (remoteName of CONFIG.remote.uploadDestination) {
-          const destination = pathHandler.parseRclonePaths(remoteName, job.outputFolder);
-          logger.info(`Uploading to ${logger.colors.bright}${destination}`);
+        for (remoteName of loadConfigFile().rclone.uploadDestination) {
+          const destination = pathHandler.parseRclonePaths(remoteName, shidenJob.outputFolder);
+          logger.info(`Uploading to ${destination}`);
 
-          const command = `${pathHandler.rcloneBinary} copy "${transcodedFile}" "${destination}" ${CONFIG.flags.rclone}`;
+          const command = `${pathHandler.rcloneBinary} copy "${transcodedFile}" "${destination}" ${loadConfigFile().flags.rclone}`;
           await promisefied.exec(command);
-          logger.success(`Upload completed`);
+          logger.success(`Uploaded`);
         }
         return resolve();
       }
       catch (e) {
         logger.error(e);
         logger.error(`rclone failed during upload`);
+        if (e === 'childProcessKilled') return reject(e);
         return reject(601);
       }
     });
@@ -119,18 +121,18 @@ module.exports = rclone = {
   /**
    * Downloads the subtitle file from remote to temp folder
    * Returns true or false for succeeding in downloading the file
-   * @param {{Object}} job
+   * @param {{Object}} shidenJob
    * @return {{void}}
    */
-  downloadSubtitleFile: job => {
+  downloadSubtitleFile: shidenJob => {
     return new Promise(async (resolve, reject) => {
-      if (job.subtitleFile) {
+      if (shidenJob.subtitleFile) {
         try {
-          logger.info('Job has specified subtitle file. Downloading subtitle file...', logger.colors.green);
+          logger.info('shidenJob has specified subtitle file. Downloading subtitle file...', logger.colors.green);
           let validSource = false;
-          for (remoteName of CONFIG.remote.downloadSource) {
-            if (await rclone.fileExists(remoteName, job.subtitleFile)) {
-              logger.success(`Found subtitle file in ${logger.colors.bright}${remoteName}`);
+          for (remoteName of loadConfigFile().rclone.downloadSource) {
+            if (await rclone.fileExists(remoteName, shidenJob.subtitleFile)) {
+              logger.success(`Found subtitle file in ${remoteName}`);
               validSource = remoteName;
               break;
             }
@@ -142,17 +144,18 @@ module.exports = rclone = {
             return reject(602);
           }
 
-          const subtitleFile = pathHandler.parseRclonePaths(validSource, job.subtitleFile);
+          const subtitleFile = pathHandler.parseRclonePaths(validSource, shidenJob.subtitleFile);
           const tempFolder = tempHandler.getTempFolderPath();
 
-          logger.info(`Downloading ${logger.colors.bright}${subtitleFile}`);
-          const command = `${pathHandler.rcloneBinary} copy "${subtitleFile}" "${tempFolder}" ${CONFIG.flags.rclone}`;
+          logger.info(`Downloading ${subtitleFile}`);
+          const command = `${pathHandler.rcloneBinary} copy "${subtitleFile}" "${tempFolder}" ${loadConfigFile().flags.rclone}`;
           await promisefied.exec(command);
 
           logger.success(`Download completed`);
           return resolve();
         }
         catch (e) {
+          if (e === 'childProcessKilled') return reject(e);
           return reject(602);
         }
       }

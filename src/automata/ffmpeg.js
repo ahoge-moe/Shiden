@@ -7,7 +7,6 @@
 const path = require('path');
 const fs = require('fs');
 const logger = require('logger');
-require('toml-require').install({ toml: require('toml') });
 
 // Import custom modules
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
@@ -23,29 +22,27 @@ module.exports = FFmpeg = {
    * @param {{string}} inputFile - Path to input file
    * @param {{string}} outputFile - Path to output file
    * @param {{Array<Object>}} streams - Array of streams from temp file, extracted with FFprobe
-   * @param {{Object}} job - Current job
+   * @param {{Object}} shidenJob - Current shidenJob
    * @return {{void}}
    */
-  prepare: (inputFile, outputFile, streams, job) => {
+  prepare: (inputFile, outputFile, streams, shidenJob) => {
     return new Promise(async (resolve, reject) => {
       try {
         let command = [`${pathHandler.ffmpegBinary} -i "${inputFile}"`];
-        command.push(await FFprobe.getVideoFlags(streams, job));
-        command.push(await FFprobe.getAudioFlags(streams, job));
-        command.push(master ? '' : '-t 300');
+        command.push(await FFprobe.getVideoFlags(streams, shidenJob));
+        command.push(await FFprobe.getAudioFlags(streams, shidenJob));
+        command.push(master ? '' : '-t 60');
         command.push(`"${outputFile}"`);
         command = command.join(' ');
         await promisefied.exec(command);
-        logger.success(`File has been prepared in ${logger.colors.bright}${path.basename(outputFile)}`);
         return resolve();
       }
       catch (e) {
         logger.error(e);
         // If error was thrown from FFprobe, reject with their error code
-        // and let @worker handle it
-        if (errorCode === 801) return reject(e);
-        if (errorCode === 802) return reject(e);
-
+        // and let @encode handle it
+        if (e === 801 || 802) return reject(e);
+        if (e === 'childProcessKilled') return reject(e);
         // If error was thrown from running this function
         // Reject with 700
         return reject(700);
@@ -65,7 +62,7 @@ module.exports = FFmpeg = {
         let command = [`${pathHandler.ffmpegBinary} -i "${inputFile}"`];
         command.push(`-c copy`);
         command.push(`-strict -2 -y`);
-        command.push(master ? '' : '-t 300');
+        command.push(master ? '' : '-t 60');
         command.push(`"${outputFile}"`);
         command = command.join(' ');
         await promisefied.exec(command);
@@ -73,6 +70,7 @@ module.exports = FFmpeg = {
       }
       catch (e) {
         logger.error(e);
+        if (e === 'childProcessKilled') return reject(e);
         return reject(701);
       }
     });
@@ -97,6 +95,7 @@ module.exports = FFmpeg = {
       }
       catch (e) {
         logger.debug(e);
+        if (e === 'childProcessKilled') return reject(e);
         return reject(702);
       }
     });
@@ -108,22 +107,22 @@ module.exports = FFmpeg = {
    * @param {{string}} subtitleFile - Path to subtitle file
    * @param {{string}} assetsFolder - Path to assets folder
    * @param {{string}} outputFile - Path to output file
-   * @param {{Object}} job - Current job
+   * @param {{Object}} shidenJob - Current shidenJob
    * @return {{void}}
    */
-  hardsubText: (inputFile, subtitleFile, assetsFolder, outputFile, job) => {
+  hardsubText: (inputFile, subtitleFile, assetsFolder, outputFile, shidenJob) => {
     return new Promise(async (resolve, reject) => {
       try {
-        // Defaults to NotoSansJP-Medium fontstyle if not provided in job
-        const fontName = (job.fontStyle) ? job.fontStyle : 'NotoSansJP-Medium';
-        const fontSize = (job.fontSize) ? job.fontSize : 36;
+        // Defaults to NotoSansJP-Medium fontstyle if not provided in shidenJob
+        const fontName = (shidenJob.fontStyle) ? shidenJob.fontStyle : 'NotoSansJP-Medium';
+        const fontSize = (shidenJob.fontSize) ? shidenJob.fontSize : 36;
 
-        // If job specified subtitle offset
-        if (job.subtitleOffset) {
-          logger.info(`Payload has provided offset number: ${logger.colors.cyan}${job.subtitleOffset}`);
+        // If shidenJob specified subtitle offset
+        if (shidenJob.subtitleOffset) {
+          logger.info(`shidenJob has provided offset number: ${logger.colors.cyan}${shidenJob.subtitleOffset}`);
           const subFileExt = path.extname(subtitleFile);
 
-          let command = [`${pathHandler.ffmpegBinary} -itsoffset ${job.subtitleOffset} -i "${subtitleFile}"`];
+          let command = [`${pathHandler.ffmpegBinary} -itsoffset ${shidenJob.subtitleOffset} -i "${subtitleFile}"`];
           command.push(`-c copy`);
           command.push(`"offset${subFileExt}"`);
           command = command.join(' ');
@@ -137,7 +136,7 @@ module.exports = FFmpeg = {
         let command = [`${pathHandler.ffmpegBinary} -i "${inputFile}"`];
         command.push(`-vf "subtitles=${subtitleFile}:force_style='FontName=${fontName},Fontsize=${fontSize}:fontsdir=${assetsFolder}'"`);
         command.push(`-strict -2 -y`);
-        command.push(master ? '' : '-t 300');
+        command.push(master ? '' : '-t 60');
         command.push(`"${outputFile}"`);
         command = command.join(' ');
         await promisefied.exec(command);
@@ -145,6 +144,7 @@ module.exports = FFmpeg = {
       }
       catch (e) {
         logger.error(e);
+        if (e === 'childProcessKilled') return reject(e);
         return reject(703);
       }
     });
@@ -158,15 +158,15 @@ module.exports = FFmpeg = {
    * @param {{string}} outputFile - Path to output file
    * @return {{void}}
    */
-  hardsubBitmap: (inputFileOne, inputFileTwo, index, outputFile, job) => {
+  hardsubBitmap: (inputFileOne, inputFileTwo, index, outputFile, shidenJob) => {
     return new Promise(async (resolve, reject) => {
       try {
-        let command = [`${pathHandler.ffmpegBinary} -i "${inputFileOne}" -itsoffset ${job.subtitleOffset ? job.subtitleOffset : 0} -i "${inputFileTwo}"`];
+        let command = [`${pathHandler.ffmpegBinary} -i "${inputFileOne}" -itsoffset ${shidenJob.subtitleOffset ? shidenJob.subtitleOffset : 0} -i "${inputFileTwo}"`];
         command.push(`-filter_complex "[0:v][1:${index}]overlay[v]"`);
         command.push(`-map "[v]"`);
         command.push(`-map 0:a -acodec aac -ab 320k`);
         command.push(`-strict -2 -y`);
-        command.push(master ? '' : '-t 300');
+        command.push(master ? '' : '-t 60');
         command.push(`"${outputFile}"`);
         command = command.join(' ');
         await promisefied.exec(command);
@@ -174,6 +174,7 @@ module.exports = FFmpeg = {
       }
       catch (e) {
         logger.error(e);
+        if (e === 'childProcessKilled') return reject(e);
         return reject(704);
       }
     });
