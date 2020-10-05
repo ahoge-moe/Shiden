@@ -113,8 +113,8 @@ module.exports = FFmpeg = {
   hardsubText: (inputFile, subtitleFile, assetsFolder, outputFile, shidenJob) => {
     return new Promise(async (resolve, reject) => {
       try {
-        // Defaults to OpenSans-Bold fontstyle if not provided in shidenJob
-        const fontName = (shidenJob.fontStyle) ? shidenJob.fontStyle : 'OpenSans-Bold';
+        // Defaults to Open Sans Bold fontstyle if not provided in shidenJob
+        const fontName = (shidenJob.fontStyle) ? shidenJob.fontStyle : 'Open Sans Bold';
         const fontSize = (shidenJob.fontSize) ? shidenJob.fontSize : 36;
 
         // If shidenJob specified subtitle offset
