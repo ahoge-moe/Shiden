@@ -58,14 +58,10 @@ Field | Required | Description | Type | Default
 `videoIndex` | No | Video stream index that will be used from `inputFile` | Number | First available video stream
 `audioIndex` | No | Audio stream index that will be used from `inputFile` | Number | First available audio stream
 `subIndex` | No | Subtitle stream index that will be used from `inputFile` (`subtitleFile` instead if provided) | Number | First available subtitle stream
-`fontStyle` | No | Font style used for text based hardsub | String | NotoSansJP-Medium
+`fontStyle` | No | Font style used for text based hardsub | String | OpenSans-Bold
 `fontSize` | No | Font size used for text based hardsub | Number | 36
 
-Available font styles
-- 02UtsukushiMincho
-- Noto Sans JP Medium
-- Noto Serif JP Medium
-- Open Sans SemiBold
+Available font styles: see `assets/` folder.
 
 # Error codes
 
