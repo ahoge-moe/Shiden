@@ -12,10 +12,10 @@
   "author": "wizo06",
   "license": "ISC",
   "dependencies": {
-    "amqplib": "^0.6.0",
+    "amqplib": "^0.8.0",
     "logger": "github:wizo06/logger",
     "request": "^2.88.2",
-    "retry": "github:wizo06/node-retry",
+    "retry": "github:tim-kos/node-retry",
     "table": "^6.0.3",
     "toml-require": "^1.2.0"
   }
