@@ -9,14 +9,10 @@ const fs = require('fs');
 const logger = require('logger');
 require('toml-require').install({ toml: require('toml') });
 
-// master will be set to TRUE if current git branch name is 'master'
-const master = ('master' === fs.readFileSync(path.join(process.cwd(), '.git/HEAD'), { encoding: 'utf8' }).match(/ref: refs\/heads\/([^\n]+)/)[1]);
-
 module.exports = configHandler = {
   loadConfigFile: () => {
     try {
-      if (master) return require(path.join(process.cwd(), 'conf/user_config.toml'));
-      else return require(path.join(process.cwd(), 'conf/dev_config.toml'));
+      return require(path.join(process.cwd(), 'config/user_config.toml'));
     }
     catch (e) {
       logger.error(e);

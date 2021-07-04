@@ -25,8 +25,6 @@ _info () {
   echo -e "${FG_CYAN}i ${FG_WHITE}${1}${DEFAULT}"
 }
 
-script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-cd "${script_path}"
 mkdir -p bin
 
 # FFmpeg and FFprobe
@@ -76,36 +74,5 @@ else
   _success "Installed rclone"
 fi
 
-# Config files
-branch_name=$(cat .git/HEAD | cut -d "/" -f 3)
-if [ "${branch_name}" == "master" ]; then
-
-  if [ -f conf/user_config.toml ]; then
-    _success "Found user_config.toml"
-  else
-    _info "Creating user_config.toml ..."
-    cp conf/template_config.toml conf/user_config.toml
-    _success "Created user_config.toml"
-    _info "Please make the necessary changes in conf/user_config.toml"
-  fi
-
-else
-
-  if [ -f conf/dev_config.toml ]; then
-    _success "Found dev_config.toml"
-  else
-    _info "Creating dev_config.toml ..."
-    cp conf/template_config.toml conf/dev_config.toml
-    _success "Created dev_config.toml"
-    _info "Please make the necessary changes in conf/dev_config.toml"
-  fi
-
-fi
-
-# node_modules
-if [ -d node_modules ]; then
-  _success "Found node modules/"
-else
-  _info "Installing node modules"
-  npm i
-fi
+cp config/config-template.toml config/user_config.toml
+npm i
