@@ -6,7 +6,7 @@
  */
 
 const amqp = require('amqplib');
-const logger = require('logger');
+const logger = require('@wizo06/logger');
 const path = require('path');
 
 const { loadConfigFile } = require(path.join(process.cwd(), 'src/utils/configHandler.js'));

@@ -5,7 +5,7 @@
 
 // Import node modules
 const path = require('path');
-const logger = require('logger');
+const logger = require('@wizo06/logger');
 
 // Import custom modules
 const rclone = require(path.join(process.cwd(), 'src/automata/rclone.js'));

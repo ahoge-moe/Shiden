@@ -6,7 +6,7 @@
 // Import node modules
 const path = require('path');
 const fs = require('fs');
-const logger = require('logger');
+const logger = require('@wizo06/logger');
 
 // Import custom modules
 const promisefied = require(path.join(process.cwd(), 'src/utils/promisefied.js'));
