@@ -4,7 +4,7 @@
  * It connects to the inbound broker and listens to a queue for messages.
  */
 const amqp = require('amqplib');
-const logger = require('logger');
+const logger = require('@wizo06/logger');
 const path = require('path');
 const retry = require('retry');
 

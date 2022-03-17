@@ -2,7 +2,7 @@
  * @module workerHelper
  * Helper functions for @worker
  */
-const logger = require('logger');
+const logger = require('@wizo06/logger');
 const path = require('path');
 const { table } = require('table');
 

@@ -6,7 +6,7 @@
 // Import node modules
 const amqp = require('amqplib');
 const path = require('path');
-const logger = require('logger');
+const logger = require('@wizo06/logger');
 const fs = require('fs');
 const version = require(path.join(process.cwd(), 'package.json')).version;
 
