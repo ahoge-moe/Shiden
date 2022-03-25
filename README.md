@@ -1,45 +1,9 @@
-# About
-Shiden (紫電), meaning "purple lightning" in Japanese, is an application for hardsubbing video files. 
+# What is Shiden?
 
-# Features
-- Connect to and receive *jobs* from an **inbound** message-broker, and then proceed to hardsub.
-- If the connection to the inbound message-broker fails to establish or is broken while processing a job, Shiden can be configured to attempt to reconnect in the config file.
-- Connect to and send *messages* to an **outbound** message-broker, after hardsubbing is done.
-- If the connection to the outbound message-broker fails to establish, a message will be sent to discord webhook(s) instead.
-- Video files are downloaded and uploaded using [rclone](https://rclone.org/).
-- Video files are hardsubbed using [ffmpeg](https://ffmpeg.org/).
-- Subtitles can be text-based or bitmap-based.
-- Hardsubbing is unopinionated. Read [Usage](#usage) below.
-- Optionally, Shiden can be used in conjuction with [Raikiri](https://github.com/wizo06/Raikiri). This will effectively expose Shiden to HTTP endpoints, and can be used as a microservice through HTTP endpoints instead.
+Shiden is a collection of microservices for acquiring and hardsubbing video files.
 
-# Requirements
-- x86_64 CPU architecture
-- Linux
-- Node.js
-- unzip, tar, curl
-
-# Getting Started
-
-1. Clone repo
-```bash
-git clone https://github.com/wizo06/Shiden.git
-```
-2. Download binaries and install Node.js dependencies
-```bash
-./prepare.sh
-```
-3. Configure rclone
-```bash
-bin/rclone config --config conf/rclone.conf
-```
-4. Edit this file as necessary
-```bash
-nano conf/user_config.toml
-```
-5. Start Shiden
-```bash
-npm start
-```
+- Shiden follows the Event-Driven Architecture paradigm, and it uses RabbitMQ as the message broker.
+- All services are connection failure tolerant. Shiden will attempt to reconnect to RabbitMQ if it loses connection, with an exponential backoff retry.
 
 # Usage
 Shiden is meant to be unopinionated when hardsubbing files. This means that the first available stream will be chosen if it's not specified in the message from the broker.
@@ -84,3 +48,25 @@ Available font styles: see `assets/` folder.
 | 900 | promisefied.exec() exited with non-0 code |
 | 901 | promisefied.request() returned with error |
 | 902 | promisefied.jsonParse() failed to parse string because of SyntaxError |
+
+# Contribution
+
+## Local development
+
+- [Go]
+- [FFmpeg]
+- [rclone]
+- [docker]
+- [protoc]
+
+Create a RabbitMQ container
+
+```console
+$ docker run -d --hostname my-rabbit -e RABBITMQ_DEFAULT_USER=user -e RABBITMQ_DEFAULT_PASS=password -p 8080:15672 -p 5672:5672 rabbitmq:3-management
+```
+
+Generate from proto files
+
+```console
+$ protoc --go_out=. ./proto/*
+```

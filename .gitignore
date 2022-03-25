@@ -1,5 +1,0 @@
-node_modules/
-bin/
-temp/
-conf/*
-!conf/*template*

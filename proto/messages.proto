@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+option go_package = "./generated_proto";
+
+enum FontName {
+    FontName_UNKNOWN = 0;
+    NOTO_SANS_JP_BOLD = 1;
+    NOTO_SANS_JP_MEDIUM = 2;
+}
+
+enum Backend {
+    Backend_UNKNOWN = 0;
+    alias = 1;
+    acd = 2;
+    azureblob = 3;
+    b2 = 4;
+    box = 5;
+    crypt = 6;
+    cache = 7;
+    chunker = 8;
+    compress = 9;
+    drive = 10;
+    dropbox = 11;
+    fichier = 12;
+    filefabric = 13;
+    ftp = 14;
+    gcs = 15;
+    gphotos = 16;
+    hasher = 17;
+    hdfs = 18;
+    http = 19;
+    swift = 20;
+    hubic = 21;
+    jottacloud = 22;
+    koofr = 23;
+    local = 24;
+    mailru = 25;
+    mega = 26;
+    memory = 27;
+    netstorage = 28;
+    onedrive = 29;
+    opendrive = 30;
+    pcloud = 31;
+    premiumizeme = 32;
+    putio = 33;
+    qingstor = 34;
+    s3 = 35;
+    seafile = 36;
+    sftp = 37;
+    sharefile = 38;
+    sia = 39;
+    storj = 40;
+    tardigrade = 41;
+    sugarsync = 42;
+    union = 43;
+    uptobox = 44;
+    webdav = 45;
+    yandex = 46;
+    zoho = 47;
+}
+
+message PrepareRequest {
+    string input_file = 1 [json_name = "inputFile"];
+	string output_file = 2 [json_name = "outputFile"];   
+	int32 video_index = 3 [json_name = "videoIndex"];
+	int32 audio_index = 4 [json_name = "audioIndex"];
+}
+
+message EncodeRequest {
+    RcloneConfig rclone_config = 1 [json_name = "rcloneConfig"];
+    string path_to_file = 2 [json_name = "pathToFile"];
+}
+
+message RcloneConfig {
+    Backend backend = 1 [json_name = "backend"];
+    string drive_team_drive = 2 [json_name = "driveTeamDrive"];
+    string drive_token = 3 [json_name = "driveToken"];
+    string dropbox_token = 4 [json_name = "dropboxToken"];
+}
